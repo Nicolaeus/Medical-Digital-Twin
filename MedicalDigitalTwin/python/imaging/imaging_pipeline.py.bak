@@ -1,0 +1,31 @@
+from dicom.dicom_importer import (
+    DicomImporter
+)
+
+from radiomics.feature_extractor import (
+    FeatureExtractor
+)
+
+
+def main():
+
+    importer = DicomImporter()
+
+    study = importer.scan_study(
+        "../../data/dicom"
+    )
+
+    print(
+        f"{len(study)} DICOM files loaded"
+    )
+
+    extractor = FeatureExtractor()
+
+    # future:
+    # segmentation output
+
+    print("Pipeline ready")
+
+
+if __name__ == "__main__":
+    main()

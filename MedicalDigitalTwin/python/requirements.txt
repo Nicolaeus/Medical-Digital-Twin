@@ -1,0 +1,30 @@
+# DICOM
+pydicom
+
+# Medical imaging
+SimpleITK
+nibabel
+
+# Scientific computing
+numpy
+pandas
+
+# Visualisation
+matplotlib
+
+# Data export
+openpyxl
+
+# Segmentation
+TotalSegmentator
+
+# Radiomics (future)
+pyradiomics
+
+# API future
+fastapi
+uvicorn
+
+# Utilities
+tqdm
+python-dotenv

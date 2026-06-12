@@ -1,0 +1,8559 @@
+# Medical Digital Twin (MDT)
+
+## Specification v1.0
+
+### Author
+
+Nicolas Pirault
+
+### Version
+
+1.0 Draft
+
+### Status
+
+Research & Development
+
+---
+
+# 1. Introduction
+
+## 1.1 Vision
+
+Medical Digital Twin (MDT) est une plateforme de nouvelle génération visant à construire un jumeau numérique humain évolutif, capable de représenter de manière dynamique l'état de santé d'un individu à travers le temps.
+
+Contrairement aux systèmes médicaux traditionnels qui stockent des informations de manière cloisonnée, MDT vise à unifier l'ensemble des dimensions biologiques, anatomiques, physiologiques, comportementales et environnementales d'une personne dans un modèle cohérent et interconnecté.
+
+L'objectif ultime n'est pas uniquement de décrire un patient, mais de comprendre sa trajectoire de santé.
+
+---
+
+# 2. Objectifs
+
+## 2.1 Objectifs principaux
+
+Le système doit permettre :
+
+* La centralisation des données médicales.
+* La création d'un jumeau numérique individuel.
+* L'analyse longitudinale de l'évolution d'un individu.
+* L'intégration de données multi-échelles.
+* L'identification de corrélations entre paramètres.
+* La simulation de scénarios de santé.
+* Le développement futur de modèles prédictifs.
+
+---
+
+## 2.2 Objectifs scientifiques
+
+MDT doit permettre l'étude des interactions entre :
+
+* Anatomie
+* Physiologie
+* Biologie
+* Génomique
+* Transcriptomique
+* Nutrition
+* Activité physique
+* Sommeil
+* Exposome
+* Environnement
+* Pathologies
+* Thérapeutiques
+
+---
+
+## 2.3 Objectifs techniques
+
+Le système doit :
+
+* Être modulaire.
+* Être extensible.
+* Être indépendant des fournisseurs.
+* Être compatible avec les standards médicaux.
+* Permettre l'intégration future d'algorithmes d'IA.
+
+---
+
+# 3. Philosophie du projet
+
+La plupart des systèmes actuels répondent à la question :
+
+"Quel est l'état du patient aujourd'hui ?"
+
+MDT cherche à répondre à :
+
+"Comment cet individu évolue-t-il dans le temps ?"
+
+et :
+
+"Quels sont les facteurs influençant cette évolution ?"
+
+---
+
+# 4. Architecture conceptuelle
+
+## 4.1 Vue générale
+
+Le jumeau numérique est constitué de plusieurs couches complémentaires.
+
+```text
+Environment
+      │
+      ▼
+ Exposome Layer
+      │
+      ▼
+ Lifestyle Layer
+      │
+      ▼
+ Physiology Layer
+      │
+      ▼
+ Anatomy Layer
+      │
+      ▼
+ Cellular Layer
+      │
+      ▼
+ Molecular Layer
+```
+
+---
+
+# 5. Domaines fonctionnels
+
+## 5.1 Identity Domain
+
+Informations administratives.
+
+### Données
+
+* Identifiant patient
+* Nom
+* Prénom
+* Sexe
+* Date de naissance
+* Taille
+* Poids
+
+---
+
+## 5.2 Anatomy Domain
+
+Description structurelle du corps humain.
+
+### Sources
+
+* CT
+* IRM
+* PET
+* DEXA
+* Échographie
+
+### Données
+
+* Organes
+* Volumes
+* Surfaces
+* Densités
+* Composition corporelle
+
+### Exemples
+
+* Volume hépatique
+* Volume pulmonaire
+* Masse musculaire
+* Graisse viscérale
+* Densité osseuse
+
+---
+
+## 5.3 Imaging Domain
+
+Gestion des examens d'imagerie.
+
+### Modalités
+
+* CT
+* MRI
+* PET
+* SPECT
+* CBCT
+* Radiographie
+
+### Fonctions
+
+* Import DICOM
+* Stockage
+* Reconstruction
+* Segmentation
+* Visualisation
+
+---
+
+## 5.4 Biology Domain
+
+Biologie clinique standard.
+
+### Sous-domaines
+
+#### Hématologie
+
+* Hémoglobine
+* Leucocytes
+* Plaquettes
+
+#### Inflammation
+
+* CRP
+* VS
+* Ferritine
+
+#### Métabolisme
+
+* Glycémie
+* HbA1c
+* Insuline
+
+#### Fonction rénale
+
+* Créatinine
+* DFG
+
+#### Fonction hépatique
+
+* ALAT
+* ASAT
+* GGT
+
+---
+
+## 5.5 Genomics Domain
+
+Description du patrimoine génétique.
+
+### Données
+
+* Variants
+* SNP
+* Prédispositions
+
+### Objectifs
+
+* Risques génétiques
+* Pharmacogénétique
+
+---
+
+## 5.6 Transcriptomics Domain
+
+Analyse de l'expression génique.
+
+### Données
+
+* ARN messagers
+* microARN
+* Expression génique
+
+### Objectifs
+
+* Activité biologique réelle
+* Réponse inflammatoire
+* Vieillissement cellulaire
+
+---
+
+## 5.7 Proteomics Domain
+
+Analyse protéique.
+
+### Données
+
+* Cytokines
+* Facteurs de croissance
+* Marqueurs cellulaires
+
+---
+
+## 5.8 Metabolomics Domain
+
+Métabolites circulants.
+
+### Données
+
+* Acides aminés
+* Lipides
+* Lactate
+* Corps cétoniques
+
+---
+
+## 5.9 Microbiome Domain
+
+Analyse des microbiotes.
+
+### Sources
+
+* Intestinal
+* Buccal
+* Cutané
+
+### Objectifs
+
+* Inflammation
+* Métabolisme
+* Immunité
+
+---
+
+## 5.10 Nutrition Domain
+
+Description des apports alimentaires.
+
+### Données
+
+* Calories
+* Protéines
+* Lipides
+* Glucides
+* Fibres
+
+### Données avancées
+
+* Oméga 3
+* Oméga 6
+* Index glycémique
+* Charge glycémique
+* Niveau de transformation alimentaire
+
+---
+
+## 5.11 Activity Domain
+
+Activité physique.
+
+### Sources
+
+* Garmin
+* Polar
+* Fitbit
+* Apple Health
+
+### Données
+
+* Pas
+* Distance
+* Calories
+* Temps actif
+
+### Données avancées
+
+* Force
+* Endurance
+* Puissance
+* Charge chronique
+
+---
+
+## 5.12 Sleep Domain
+
+Sommeil.
+
+### Données
+
+* Durée
+* REM
+* Sommeil profond
+* Réveils
+* Dette de sommeil
+
+---
+
+## 5.13 Cardiology Domain
+
+Santé cardiovasculaire.
+
+### Sources
+
+* ECG
+* Tension
+* Montres connectées
+
+### Données
+
+* FC repos
+* FC effort
+* HRV
+* VO2max
+* Pression artérielle
+
+---
+
+## 5.14 Exposome Domain
+
+Description des expositions au cours de la vie.
+
+### Expositions physiques
+
+* Rayonnements ionisants
+* UV
+* Bruit
+* Radon
+
+### Expositions chimiques
+
+* Pesticides
+* Solvants
+* Métaux lourds
+* Perturbateurs endocriniens
+
+### Expositions professionnelles
+
+* Amiante
+* Cytotoxiques
+* Produits chimiques
+
+### Expositions comportementales
+
+* Tabac
+* Alcool
+* Drogues
+
+---
+
+## 5.15 Radiation Domain
+
+Spécifique à l'exposition radiologique.
+
+### Données
+
+* Examens
+* Doses
+* Organes exposés
+
+### Indicateurs
+
+* Dose cumulée
+* Radiation Burden Score
+
+---
+
+## 5.16 Timeline Domain
+
+Historisation.
+
+Chaque donnée doit être associée :
+
+* à une date
+* à une source
+* à un niveau de confiance
+
+L'ensemble du système est temporel.
+
+---
+
+# 6. Le concept de Digital Twin
+
+Un Digital Twin est une représentation numérique vivante d'un individu.
+
+Il n'est pas limité à un instant donné.
+
+Il évolue continuellement à mesure que de nouvelles données sont intégrées.
+
+Chaque Twin possède :
+
+* une complétude
+* une cohérence
+* une confiance
+* une profondeur historique
+
+---
+
+# 7. Twin Completeness Score
+
+Premier indicateur du système.
+
+Objectif :
+
+Mesurer la qualité du jumeau numérique.
+
+Exemple :
+
+Anatomy : 100 %
+
+Biology : 85 %
+
+Nutrition : 60 %
+
+Sleep : 40 %
+
+Activity : 70 %
+
+Cardiology : 30 %
+
+Exposome : 15 %
+
+Global Twin Completeness : 57 %
+
+---
+
+FIN DE LA PARTIE 1
+
+# 8. Domain Model
+
+## 8.1 Principes
+
+MDT n'est pas un simple dossier patient.
+
+MDT est un système orienté observations.
+
+Tout élément du système doit pouvoir répondre aux questions :
+
+* Qui ?
+* Quoi ?
+* Quand ?
+* Comment ?
+* Quelle source ?
+* Quel niveau de confiance ?
+
+---
+
+# 9. Entités Fondamentales
+
+## 9.1 Patient
+
+Le patient représente l'individu réel.
+
+### Attributs
+
+```text
+PatientId
+ExternalId
+LastName
+FirstName
+BirthDate
+Sex
+Height
+Weight
+CreatedAt
+UpdatedAt
+```
+
+### Relations
+
+```text
+Patient
+ ├── DigitalTwins
+ ├── Measurements
+ ├── Observations
+ ├── Events
+ ├── Studies
+ └── Documents
+```
+
+---
+
+## 9.2 DigitalTwin
+
+Représentation numérique d'un individu à un instant donné.
+
+### Attributs
+
+```text
+TwinId
+PatientId
+Version
+CreationDate
+CompletenessScore
+ConfidenceScore
+Status
+```
+
+### Statuts
+
+```text
+Draft
+Building
+Active
+Archived
+```
+
+---
+
+## 9.3 Observation
+
+Plus petite unité d'information.
+
+Une observation correspond à une information observée.
+
+### Exemples
+
+```text
+CRP = 12 mg/L
+
+Poids = 82 kg
+
+Temps de sommeil = 6 h
+
+VO2Max = 42
+```
+
+### Attributs
+
+```text
+ObservationId
+PatientId
+Domain
+Code
+Label
+Value
+Unit
+DateTime
+Source
+Confidence
+```
+
+---
+
+## 9.4 Measurement
+
+Observation validée et normalisée.
+
+### Exemple
+
+```text
+Créatinine
+```
+
+peut provenir :
+
+* d'un laboratoire
+* d'un hôpital
+* d'un export CSV
+
+Une fois normalisée :
+
+```text
+Measurement
+```
+
+---
+
+## 9.5 Event
+
+Événement ayant un impact sur la santé.
+
+### Exemples
+
+```text
+Hospitalisation
+Intervention
+Accident
+COVID
+Vaccination
+Exposition chimique
+Scanner
+```
+
+### Attributs
+
+```text
+EventId
+Type
+StartDate
+EndDate
+Severity
+Description
+```
+
+---
+
+## 9.6 Study
+
+Examen médical structuré.
+
+### Exemples
+
+```text
+CT
+IRM
+PET
+ECG
+Biologie
+```
+
+### Attributs
+
+```text
+StudyId
+PatientId
+StudyDate
+StudyType
+Institution
+Source
+```
+
+---
+
+# 10. Sources de Données
+
+## 10.1 Concept
+
+Une donnée n'existe jamais seule.
+
+Chaque donnée doit être reliée à une source.
+
+---
+
+## 10.2 Source
+
+### Attributs
+
+```text
+SourceId
+Name
+Type
+Manufacturer
+Version
+ImportDate
+```
+
+### Types
+
+```text
+Hospital
+Laboratory
+PACS
+Garmin
+AppleHealth
+Fitbit
+Manual
+CSV
+FHIR
+DICOM
+```
+
+---
+
+# 11. Architecture Temporelle
+
+Le temps est une dimension fondamentale.
+
+MDT doit permettre de répondre :
+
+```text
+Que savait-on du patient le 15 mars 2022 ?
+```
+
+---
+
+## 11.1 Historisation
+
+Aucune donnée n'est supprimée.
+
+Chaque modification crée une nouvelle version.
+
+---
+
+## 11.2 Time Slice
+
+Un Time Slice représente l'état complet du patient à une date donnée.
+
+Exemple :
+
+```text
+2026-06-10
+```
+
+Le système reconstruit :
+
+```text
+Anatomie
+Biologie
+Sommeil
+Activité
+Exposome
+```
+
+à cette date.
+
+---
+
+# 12. Health Graph
+
+## 12.1 Concept
+
+Toutes les données sont reliées dans un graphe.
+
+Exemple :
+
+```text
+Patient
+ │
+ ├── CRP
+ ├── Sommeil
+ ├── Activité
+ └── CT
+```
+
+---
+
+## 12.2 Relations
+
+Exemples :
+
+```text
+Sommeil ↓
+        │
+        ▼
+Inflammation ↑
+
+Inflammation ↑
+        │
+        ▼
+CRP ↑
+```
+
+Ces liens peuvent être :
+
+* observés
+* calculés
+* déduits
+* validés scientifiquement
+
+---
+
+# 13. Knowledge Layer
+
+Le système doit pouvoir intégrer :
+
+## Connaissances établies
+
+Exemple :
+
+```text
+Tabac
+ ↓
+Cancer pulmonaire
+```
+
+---
+
+## Hypothèses
+
+Exemple :
+
+```text
+Exposition X
+ ↓
+Marqueur Y
+```
+
+niveau de preuve faible.
+
+---
+
+# 14. Twin Confidence Score
+
+Objectif :
+
+Mesurer la fiabilité du jumeau.
+
+---
+
+## Facteurs
+
+### Complétude
+
+```text
+Nombre de domaines renseignés
+```
+
+### Fraîcheur
+
+```text
+Date des données
+```
+
+### Cohérence
+
+```text
+Absence de contradictions
+```
+
+### Qualité
+
+```text
+Source médicale validée
+```
+
+---
+
+# 15. Data Lake
+
+MDT doit être capable de stocker :
+
+## Structuré
+
+```text
+SQL
+JSON
+FHIR
+```
+
+---
+
+## Semi-structuré
+
+```text
+PDF
+CSV
+XML
+```
+
+---
+
+## Non structuré
+
+```text
+DICOM
+Images
+Rapports
+Documents
+```
+
+---
+
+# 16. Objectif V1
+
+La V1 ne cherche pas à prédire.
+
+La V1 cherche à :
+
+1. Centraliser
+2. Normaliser
+3. Historiser
+4. Corréler
+
+Les prédictions viendront plus tard.
+
+---
+
+# 17. Premier Cas d'Usage
+
+Création d'un premier Digital Twin.
+
+### Données disponibles
+
+```text
+CT thoraco-abdominal
+Prise de sang
+Garmin
+Poids
+Taille
+```
+
+### Résultat
+
+```text
+Twin #0001
+
+Completeness : 42 %
+
+Domains :
+- Anatomy
+- Biology
+- Activity
+```
+
+Le système est alors capable de suivre son enrichissement dans le temps.
+
+---
+
+FIN DE LA PARTIE 2
+
+# 18. Architecture Technique
+
+## 18.1 Principes
+
+MDT est conçu comme une plateforme scientifique, médicale et analytique.
+
+L'architecture doit permettre :
+
+* l'évolutivité ;
+* la modularité ;
+* l'intégration de nouveaux domaines ;
+* l'analyse de très grands volumes de données ;
+* l'intégration future de modèles d'IA.
+
+---
+
+# 19. Architecture Générale
+
+## 19.1 Vue d'ensemble
+
+```text
+┌───────────────────────────────┐
+│          MDT WEB UI           │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│          MDT API              │
+└───────────────┬───────────────┘
+                │
+     ┌──────────┴──────────┐
+     │                     │
+     ▼                     ▼
+
+.NET Core           Python Services
+
+     │                     │
+     └──────────┬──────────┘
+                │
+                ▼
+         PostgreSQL
+```
+
+---
+
+# 20. Stack Technique
+
+## Backend Principal
+
+Technologie :
+
+```text
+C#
+ASP.NET Core
+```
+
+Responsabilités :
+
+* API REST
+* Authentification
+* Gestion utilisateurs
+* Gestion patients
+* Gestion Twin
+* Workflow métier
+
+---
+
+## Backend Scientifique
+
+Technologie :
+
+```text
+Python
+```
+
+Responsabilités :
+
+* Traitement DICOM
+* Segmentation
+* Radiomique
+* Statistiques
+* Corrélations
+* IA
+* Génomique
+* Transcriptomique
+
+---
+
+## Base de Données
+
+Technologie :
+
+```text
+PostgreSQL
+```
+
+Motivations :
+
+* robustesse
+* JSON natif
+* performances
+* extensions scientifiques
+
+---
+
+## Frontend
+
+Technologie cible :
+
+```text
+Blazor
+```
+
+Alternative :
+
+```text
+React
+```
+
+---
+
+# 21. Solution .NET
+
+## Structure
+
+```text
+MedicalDigitalTwin.sln
+
+src/
+
+├── MDT.Domain
+├── MDT.Application
+├── MDT.Infrastructure
+├── MDT.Api
+├── MDT.Web
+├── MDT.Modules
+├── MDT.Analytics
+└── MDT.AI
+```
+
+---
+
+# 22. MDT.Domain
+
+Contient :
+
+* Entités
+* Value Objects
+* Interfaces
+* Énumérations
+
+Aucune dépendance externe.
+
+---
+
+## Exemples
+
+```text
+Patient
+DigitalTwin
+Observation
+Measurement
+Event
+Study
+```
+
+---
+
+# 23. MDT.Application
+
+Contient :
+
+* Cas d'usage
+* Services métier
+* DTO
+
+Exemples :
+
+```text
+CreatePatient
+CreateTwin
+ImportBiology
+ImportSleepData
+GenerateTwin
+```
+
+---
+
+# 24. MDT.Infrastructure
+
+Contient :
+
+* PostgreSQL
+* Repositories
+* Connecteurs
+
+Exemples :
+
+```text
+PatientRepository
+TwinRepository
+BiologyRepository
+```
+
+---
+
+# 25. MDT.Api
+
+Expose :
+
+```text
+/api/patients
+/api/twins
+/api/biology
+/api/imaging
+/api/activity
+/api/sleep
+```
+
+---
+
+# 26. MDT.Web
+
+Interface utilisateur.
+
+Modules :
+
+```text
+Dashboard
+Patients
+Timeline
+Twin Builder
+Imaging
+Biology
+Sleep
+Activity
+Exposome
+Analytics
+```
+
+---
+
+# 27. Services Python
+
+## Objectif
+
+Externaliser tous les calculs lourds.
+
+---
+
+# 28. Imaging Service
+
+Responsabilités :
+
+```text
+Import DICOM
+Segmentation
+Radiomique
+Volumes
+Reconstructions
+```
+
+Bibliothèques :
+
+```text
+pydicom
+SimpleITK
+MONAI
+PyRadiomics
+TotalSegmentator
+```
+
+---
+
+# 29. Analytics Service
+
+Responsabilités :
+
+```text
+Statistiques
+Corrélations
+Scores
+Analyses longitudinales
+```
+
+Bibliothèques :
+
+```text
+pandas
+numpy
+scipy
+statsmodels
+```
+
+---
+
+# 30. AI Service
+
+Responsabilités :
+
+```text
+Machine Learning
+Prédiction
+Classification
+Clustering
+Anomalies
+```
+
+Bibliothèques :
+
+```text
+scikit-learn
+xgboost
+pytorch
+```
+
+---
+
+# 31. Genomics Service
+
+Responsabilités :
+
+```text
+Analyse ADN
+Variants
+SNP
+Pharmacogénétique
+```
+
+Formats :
+
+```text
+VCF
+BAM
+FASTQ
+```
+
+---
+
+# 32. Transcriptomics Service
+
+Responsabilités :
+
+```text
+Analyse ARNm
+Expression génique
+microARN
+```
+
+Formats :
+
+```text
+FASTQ
+CSV
+TSV
+```
+
+---
+
+# 33. Data Storage
+
+## Données relationnelles
+
+Stockées dans PostgreSQL.
+
+Exemples :
+
+```text
+Patients
+Observations
+Mesures
+Événements
+```
+
+---
+
+## Données volumineuses
+
+Stockées dans :
+
+```text
+data/
+```
+
+Exemples :
+
+```text
+DICOM
+IRM
+Images
+PDF
+FASTQ
+VCF
+```
+
+---
+
+# 34. Organisation des données
+
+```text
+data/
+
+├── dicom/
+├── imaging/
+├── biology/
+├── genomics/
+├── transcriptomics/
+├── proteomics/
+├── metabolomics/
+├── microbiome/
+├── nutrition/
+├── activity/
+├── sleep/
+└── exposome/
+```
+
+---
+
+# 35. Architecture d'Import
+
+## Sources médicales
+
+```text
+DICOM
+FHIR
+HL7
+CSV
+PDF
+```
+
+---
+
+## Sources personnelles
+
+```text
+Garmin
+Apple Health
+Fitbit
+Polar
+Withings
+Oura
+```
+
+---
+
+## Sources biologiques
+
+```text
+Laboratoires
+Hôpitaux
+Exports CSV
+FHIR
+```
+
+---
+
+# 36. Pipeline d'Import
+
+```text
+Import
+   ↓
+Validation
+   ↓
+Normalisation
+   ↓
+Stockage
+   ↓
+Indexation
+   ↓
+Intégration Twin
+```
+
+---
+
+# 37. Moteur de Corrélation
+
+Objectif :
+
+Détecter automatiquement des relations.
+
+---
+
+## Exemple
+
+```text
+Sommeil ↓
+HRV ↓
+CRP ↑
+```
+
+Association détectée.
+
+---
+
+## Types de corrélations
+
+### Temporelles
+
+```text
+A précède B
+```
+
+### Statistiques
+
+```text
+Pearson
+Spearman
+```
+
+### Cliniques
+
+Basées sur la littérature.
+
+---
+
+# 38. Knowledge Graph
+
+Tous les objets du système peuvent être reliés.
+
+Exemple :
+
+```text
+Patient
+ │
+ ├── Activité
+ ├── Sommeil
+ ├── CRP
+ └── Scanner
+```
+
+---
+
+# 39. Twin Builder
+
+Responsable de :
+
+```text
+Construire
+Mettre à jour
+Versionner
+Valider
+```
+
+un Digital Twin.
+
+---
+
+# 40. Twin Snapshot
+
+Capture complète d'un Twin à une date donnée.
+
+Exemple :
+
+```text
+Twin 2026-06-10
+```
+
+contient :
+
+```text
+Anatomie
+Biologie
+Sommeil
+Activité
+Exposome
+```
+
+au même instant.
+
+---
+
+# 41. Sécurité
+
+Objectifs :
+
+* RGPD
+* pseudonymisation
+* chiffrement
+
+---
+
+## Données sensibles
+
+* ADN
+* ARNm
+* données médicales
+
+doivent être protégées spécifiquement.
+
+---
+
+# 42. Audit Trail
+
+Toutes les opérations doivent être historisées.
+
+Exemples :
+
+```text
+Création
+Modification
+Suppression
+Import
+Export
+```
+
+---
+
+# 43. Scalabilité
+
+Architecture prévue pour :
+
+```text
+1 patient
+100 patients
+10000 patients
+100000 patients
+```
+
+sans changement fondamental de conception.
+
+---
+
+# 44. Objectif Technique V1
+
+Construire :
+
+```text
+Patient
++
+Observations
++
+Timeline
++
+Twin
+```
+
+sans IA.
+
+---
+
+# 45. Objectif Technique V2
+
+Ajouter :
+
+```text
+Imagerie
+Biologie avancée
+Nutrition
+Sommeil
+Activité
+Exposome
+```
+
+---
+
+# 46. Objectif Technique V3
+
+Ajouter :
+
+```text
+Génomique
+Transcriptomique
+Protéomique
+Métabolomique
+```
+
+---
+
+# 47. Objectif Technique V4
+
+Ajouter :
+
+```text
+Corrélations automatiques
+Knowledge Graph
+```
+
+---
+
+# 48. Objectif Technique V5
+
+Ajouter :
+
+```text
+Prédiction
+Simulation
+Digital Human Twin avancé
+```
+
+---
+
+FIN DE LA PARTIE 3
+
+# 49. Modèle de Données Global MDT
+
+## 49.1 Philosophie
+
+Le système repose sur quatre concepts fondamentaux :
+
+```text
+Patient
+Observation
+Event
+Digital Twin
+```
+
+Tout le reste découle de ces objets.
+
+---
+
+# 50. Vue d'ensemble
+
+```text
+Patient
+│
+├── Observations
+├── Events
+├── Studies
+├── Documents
+├── Sources
+└── Twins
+```
+
+---
+
+# 51. Table MDT_PATIENTS
+
+## Description
+
+Entité principale représentant un individu.
+
+### Colonnes
+
+```sql
+patient_id UUID PRIMARY KEY
+
+external_id VARCHAR(100)
+
+first_name VARCHAR(100)
+last_name VARCHAR(100)
+
+birth_date DATE
+sex VARCHAR(20)
+
+height_cm NUMERIC(8,2)
+weight_kg NUMERIC(8,2)
+
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+---
+
+# 52. Table MDT_SOURCES
+
+## Description
+
+Origine des données.
+
+### Exemples
+
+```text
+Garmin
+Apple Health
+Laboratoire
+PACS
+DICOM
+FHIR
+```
+
+### Colonnes
+
+```sql
+source_id UUID PRIMARY KEY
+
+name VARCHAR(255)
+
+source_type VARCHAR(100)
+
+manufacturer VARCHAR(255)
+
+version VARCHAR(100)
+
+created_at TIMESTAMP
+```
+
+---
+
+# 53. Table MDT_OBSERVATIONS
+
+## Description
+
+Brique fondamentale du système.
+
+Une observation représente une mesure unique.
+
+### Exemples
+
+```text
+CRP = 8.2
+
+Poids = 82 kg
+
+Temps sommeil = 6h12
+
+VO2max = 45
+```
+
+### Colonnes
+
+```sql
+observation_id UUID PRIMARY KEY
+
+patient_id UUID
+
+source_id UUID
+
+domain VARCHAR(100)
+
+category VARCHAR(100)
+
+code VARCHAR(100)
+
+label VARCHAR(255)
+
+value_numeric NUMERIC
+
+value_text TEXT
+
+value_json JSONB
+
+unit VARCHAR(50)
+
+observation_date TIMESTAMP
+
+confidence_score NUMERIC(5,2)
+
+created_at TIMESTAMP
+```
+
+---
+
+# 54. Table MDT_MEASUREMENTS
+
+## Description
+
+Version normalisée d'une observation.
+
+### Colonnes
+
+```sql
+measurement_id UUID PRIMARY KEY
+
+observation_id UUID
+
+normalized_value NUMERIC
+
+normalized_unit VARCHAR(50)
+
+reference_min NUMERIC
+
+reference_max NUMERIC
+
+status VARCHAR(50)
+
+created_at TIMESTAMP
+```
+
+---
+
+# 55. Table MDT_EVENTS
+
+## Description
+
+Événements impactant la santé.
+
+### Exemples
+
+```text
+COVID
+Vaccination
+Hospitalisation
+Intervention
+Accident
+```
+
+### Colonnes
+
+```sql
+event_id UUID PRIMARY KEY
+
+patient_id UUID
+
+event_type VARCHAR(100)
+
+title VARCHAR(255)
+
+description TEXT
+
+severity INTEGER
+
+start_date TIMESTAMP
+
+end_date TIMESTAMP
+
+created_at TIMESTAMP
+```
+
+---
+
+# 56. Table MDT_STUDIES
+
+## Description
+
+Examens structurés.
+
+### Exemples
+
+```text
+CT
+IRM
+PET
+ECG
+Biologie
+```
+
+### Colonnes
+
+```sql
+study_id UUID PRIMARY KEY
+
+patient_id UUID
+
+source_id UUID
+
+study_type VARCHAR(100)
+
+study_date TIMESTAMP
+
+description TEXT
+
+created_at TIMESTAMP
+```
+
+---
+
+# 57. Table MDT_DOCUMENTS
+
+## Description
+
+Documents associés.
+
+### Exemples
+
+```text
+PDF
+Compte-rendu
+Rapport
+Image
+```
+
+### Colonnes
+
+```sql
+document_id UUID PRIMARY KEY
+
+patient_id UUID
+
+study_id UUID
+
+file_name VARCHAR(500)
+
+file_path TEXT
+
+mime_type VARCHAR(100)
+
+upload_date TIMESTAMP
+```
+
+---
+
+# 58. Table MDT_DIGITAL_TWINS
+
+## Description
+
+Version d'un jumeau numérique.
+
+### Colonnes
+
+```sql
+twin_id UUID PRIMARY KEY
+
+patient_id UUID
+
+version VARCHAR(50)
+
+creation_date TIMESTAMP
+
+completeness_score NUMERIC(5,2)
+
+confidence_score NUMERIC(5,2)
+
+status VARCHAR(50)
+```
+
+---
+
+# 59. Table MDT_TWIN_SNAPSHOTS
+
+## Description
+
+État complet du Twin à une date.
+
+### Colonnes
+
+```sql
+snapshot_id UUID PRIMARY KEY
+
+twin_id UUID
+
+snapshot_date TIMESTAMP
+
+snapshot_data JSONB
+
+created_at TIMESTAMP
+```
+
+---
+
+# 60. Domaines MDT
+
+Chaque observation appartient à un domaine.
+
+---
+
+## Anatomy
+
+```text
+Volume hépatique
+Volume pulmonaire
+Graisse viscérale
+```
+
+---
+
+## Biology
+
+```text
+CRP
+HbA1c
+Créatinine
+```
+
+---
+
+## Nutrition
+
+```text
+Calories
+Protéines
+Fibres
+```
+
+---
+
+## Activity
+
+```text
+Pas
+Distance
+Charge
+```
+
+---
+
+## Sleep
+
+```text
+Durée
+REM
+Profond
+```
+
+---
+
+## Cardiology
+
+```text
+HRV
+VO2max
+FC repos
+```
+
+---
+
+## Exposome
+
+```text
+Pesticides
+UV
+Rayonnements
+```
+
+---
+
+## Genomics
+
+```text
+SNP
+Variants
+```
+
+---
+
+## Transcriptomics
+
+```text
+Expression génique
+ARNm
+microARN
+```
+
+---
+
+# 61. Architecture JSONB
+
+## Pourquoi JSONB ?
+
+Toutes les données biologiques ne sont pas prévisibles.
+
+Exemple :
+
+```json
+{
+  "gene": "BRCA1",
+  "variant": "c.68_69delAG",
+  "classification": "Pathogenic"
+}
+```
+
+ou
+
+```json
+{
+  "sleep_rem_minutes": 82,
+  "sleep_deep_minutes": 95
+}
+```
+
+---
+
+# 62. Indexation
+
+Tous les champs suivants doivent être indexés :
+
+```text
+patient_id
+observation_date
+domain
+category
+study_date
+```
+
+---
+
+# 63. Historisation
+
+Aucune donnée n'est supprimée.
+
+Principe :
+
+```text
+INSERT ONLY
+```
+
+Les corrections créent une nouvelle version.
+
+---
+
+# 64. Time Series First
+
+Toutes les données sont considérées comme des séries temporelles.
+
+Exemple :
+
+```text
+Poids
+CRP
+VO2max
+Sommeil
+```
+
+sont des valeurs évoluant dans le temps.
+
+---
+
+# 65. Health State
+
+L'état de santé est reconstruit à partir des observations.
+
+Il n'est jamais stocké directement.
+
+---
+
+# 66. Twin Completeness Calculation
+
+Calculé à partir :
+
+```text
+Anatomy
+Biology
+Nutrition
+Sleep
+Activity
+Cardiology
+Exposome
+Genomics
+Transcriptomics
+```
+
+---
+
+# 67. Twin Confidence Calculation
+
+Calculé à partir :
+
+```text
+Qualité des sources
+Ancienneté
+Cohérence
+Fréquence des mesures
+```
+
+---
+
+# 68. Vision Long Terme
+
+La base doit être capable de stocker :
+
+```text
+100 ans de vie
+
++
+100 000 observations
+
++
+plusieurs générations de Twin
+```
+
+pour un même individu.
+
+---
+
+FIN DE LA PARTIE 4
+
+# 69. Feature Layer
+
+## 69.1 Principe Fondamental
+
+La Feature est l'unité élémentaire de connaissance de MDT.
+
+Une observation est une mesure brute.
+
+Une Feature est une représentation interprétable d'un aspect de l'individu.
+
+---
+
+## 69.2 Exemple
+
+### Observation
+
+```text
+CRP = 8.2 mg/L
+Date : 2026-01-01
+```
+
+### Feature
+
+```text
+Feature : CRP
+
+CurrentValue : 8.2
+Trend : Increasing
+History : Available
+Confidence : High
+```
+
+---
+
+# 70. Définition d'une Feature
+
+Une Feature possède :
+
+```text
+FeatureId
+FeatureCode
+FeatureName
+FeatureCategory
+
+CurrentValue
+CurrentUnit
+
+Trend
+
+ConfidenceScore
+
+LastUpdate
+
+History
+
+Sources
+```
+
+---
+
+# 71. Types de Features
+
+## Anatomical Features
+
+Décrivent la structure du corps.
+
+### Exemples
+
+```text
+LiverVolume
+LungVolume
+MuscleMass
+VisceralFatMass
+BoneDensity
+```
+
+---
+
+## Biological Features
+
+Décrivent l'état biologique.
+
+### Exemples
+
+```text
+CRP
+HbA1c
+Creatinine
+Ferritin
+VitaminD
+```
+
+---
+
+## Physiological Features
+
+Décrivent le fonctionnement.
+
+### Exemples
+
+```text
+HRV
+VO2Max
+BloodPressure
+RestingHeartRate
+RespiratoryRate
+```
+
+---
+
+## Behavioral Features
+
+Décrivent le mode de vie.
+
+### Exemples
+
+```text
+SleepDuration
+DailySteps
+WeeklyTrainingLoad
+ProteinIntake
+AlcoholConsumption
+```
+
+---
+
+## Environmental Features
+
+Décrivent l'environnement.
+
+### Exemples
+
+```text
+IonizingRadiationExposure
+UVExposure
+NoiseExposure
+PesticideExposure
+```
+
+---
+
+## Genetic Features
+
+Décrivent le génome.
+
+### Exemples
+
+```text
+BRCA1
+APOE
+MTHFR
+```
+
+---
+
+## Molecular Features
+
+Décrivent les mécanismes cellulaires.
+
+### Exemples
+
+```text
+IL6
+TNFAlpha
+MicroRNA21
+GeneExpressionScore
+```
+
+---
+
+# 72. Table MDT_FEATURES
+
+## Description
+
+Catalogue de toutes les Features connues du système.
+
+### Colonnes
+
+```sql
+feature_id UUID PRIMARY KEY
+
+feature_code VARCHAR(100)
+
+feature_name VARCHAR(255)
+
+feature_category VARCHAR(100)
+
+unit VARCHAR(50)
+
+description TEXT
+
+created_at TIMESTAMP
+```
+
+---
+
+# 73. Table MDT_PATIENT_FEATURES
+
+## Description
+
+État actuel d'une Feature pour un patient.
+
+### Colonnes
+
+```sql
+patient_feature_id UUID PRIMARY KEY
+
+patient_id UUID
+
+feature_id UUID
+
+current_value_numeric NUMERIC
+
+current_value_text TEXT
+
+current_value_json JSONB
+
+trend VARCHAR(50)
+
+confidence_score NUMERIC(5,2)
+
+last_update TIMESTAMP
+```
+
+---
+
+# 74. Table MDT_FEATURE_HISTORY
+
+## Description
+
+Historique complet d'une Feature.
+
+### Colonnes
+
+```sql
+feature_history_id UUID PRIMARY KEY
+
+patient_feature_id UUID
+
+observation_id UUID
+
+value_numeric NUMERIC
+
+value_text TEXT
+
+value_json JSONB
+
+recorded_at TIMESTAMP
+```
+
+---
+
+# 75. Feature Vector
+
+À tout instant, un patient peut être représenté par un vecteur de Features.
+
+Exemple :
+
+```text
+CRP                 = 0.35
+HbA1c               = 0.42
+SleepDuration       = 0.71
+HRV                 = 0.64
+MuscleMass          = 0.58
+VisceralFatMass     = 0.29
+```
+
+---
+
+# 76. Twin Construction
+
+Le Twin n'est plus construit directement à partir des observations.
+
+Pipeline :
+
+```text
+Observations
+      ↓
+Normalization
+      ↓
+Features
+      ↓
+Feature Vector
+      ↓
+Digital Twin
+```
+
+---
+
+# 77. Avantages
+
+Cette architecture permet :
+
+* l'analyse longitudinale ;
+* la comparaison entre patients ;
+* les corrélations ;
+* le clustering ;
+* les modèles prédictifs ;
+* les futures bases vectorielles.
+
+---
+
+# 78. Vision Long Terme
+
+Le Digital Twin est défini comme :
+
+> L'état d'un individu représenté par l'ensemble de ses Features observables, mesurables ou déduites à un instant donné.
+
+Cette définition devient la référence conceptuelle de MDT.
+
+---
+
+FIN DE LA SECTION FEATURE LAYER
+
+# 79. Knowledge Graph & Causal Graph Layer
+
+## 79.1 Objectif
+
+Le Knowledge Graph représente les relations entre les Features du Digital Twin.
+
+Contrairement à un entrepôt de données, MDT doit être capable de représenter :
+
+* des associations ;
+* des dépendances ;
+* des influences ;
+* des mécanismes biologiques.
+
+---
+
+# 80. Principe Fondamental
+
+Le monde réel n'est pas constitué de données isolées.
+
+Il est constitué de relations.
+
+Exemple :
+
+```text
+SleepDuration
+      ↓
+HRV
+      ↓
+Inflammation
+      ↓
+CardiovascularRisk
+```
+
+Le rôle du Knowledge Graph est de représenter ces relations.
+
+---
+
+# 81. Types de Graphes
+
+MDT utilise plusieurs graphes simultanément.
+
+## Knowledge Graph
+
+Représente :
+
+```text
+Ce que nous savons
+```
+
+---
+
+## Correlation Graph
+
+Représente :
+
+```text
+Ce que nous observons
+```
+
+---
+
+## Causal Graph
+
+Représente :
+
+```text
+Ce que nous pensons être causal
+```
+
+---
+
+## Patient Graph
+
+Représente :
+
+```text
+Ce qui est vrai pour un individu donné
+```
+
+---
+
+# 82. Nœuds du Graphe
+
+Le nœud fondamental est :
+
+```text
+Feature
+```
+
+---
+
+## Exemples
+
+```text
+CRP
+
+HbA1c
+
+SleepDuration
+
+VO2Max
+
+MuscleMass
+
+VisceralFatMass
+
+IL6
+
+BRCA1
+```
+
+---
+
+# 83. Relations
+
+Une relation relie deux Features.
+
+---
+
+## Exemple
+
+```text
+SleepDuration
+        ↓
+HRV
+```
+
+---
+
+# 84. Types de Relations
+
+## ASSOCIATED_WITH
+
+Association statistique.
+
+Exemple :
+
+```text
+VisceralFatMass
+ASSOCIATED_WITH
+HbA1c
+```
+
+---
+
+## INFLUENCES
+
+Influence probable.
+
+Exemple :
+
+```text
+SleepDuration
+INFLUENCES
+HRV
+```
+
+---
+
+## CAUSES
+
+Lien causal établi.
+
+Exemple :
+
+```text
+Smoking
+CAUSES
+LungCancerRisk
+```
+
+---
+
+## PREDICTS
+
+Capacité prédictive.
+
+Exemple :
+
+```text
+HbA1c
+PREDICTS
+DiabetesRisk
+```
+
+---
+
+## PART_OF
+
+Relation hiérarchique.
+
+Exemple :
+
+```text
+REM
+PART_OF
+SleepQuality
+```
+
+---
+
+## DERIVED_FROM
+
+Feature calculée.
+
+Exemple :
+
+```text
+BMI
+DERIVED_FROM
+Height
+Weight
+```
+
+---
+
+# 85. Niveau de Preuve
+
+Chaque relation possède un niveau de preuve.
+
+---
+
+## LEVEL 1
+
+Consensus scientifique fort.
+
+Exemple :
+
+```text
+Tabac
+→ Cancer pulmonaire
+```
+
+---
+
+## LEVEL 2
+
+Très forte littérature.
+
+---
+
+## LEVEL 3
+
+Résultat de cohortes.
+
+---
+
+## LEVEL 4
+
+Corrélations internes MDT.
+
+---
+
+## LEVEL 5
+
+Hypothèses.
+
+---
+
+# 86. Confidence Score
+
+Chaque relation possède :
+
+```text
+0.00 → 1.00
+```
+
+---
+
+## Exemple
+
+```text
+SleepDuration
+INFLUENCES
+HRV
+
+Confidence = 0.92
+```
+
+---
+
+# 87. Table MDT_GRAPH_NODES
+
+```sql
+node_id UUID PRIMARY KEY
+
+feature_id UUID
+
+node_type VARCHAR(100)
+
+created_at TIMESTAMP
+```
+
+---
+
+# 88. Table MDT_GRAPH_EDGES
+
+```sql
+edge_id UUID PRIMARY KEY
+
+source_node_id UUID
+
+target_node_id UUID
+
+relationship_type VARCHAR(100)
+
+confidence_score NUMERIC(5,2)
+
+evidence_level INTEGER
+
+created_at TIMESTAMP
+```
+
+---
+
+# 89. Table MDT_GRAPH_EVIDENCE
+
+Permet de justifier une relation.
+
+```sql
+evidence_id UUID PRIMARY KEY
+
+edge_id UUID
+
+evidence_type VARCHAR(100)
+
+reference_text TEXT
+
+reference_source TEXT
+
+confidence_score NUMERIC(5,2)
+```
+
+---
+
+# 90. Evidence Types
+
+## Scientific Publication
+
+Article scientifique.
+
+---
+
+## Clinical Guideline
+
+Recommandation officielle.
+
+---
+
+## Cohort Analysis
+
+Résultat statistique MDT.
+
+---
+
+## Expert Validation
+
+Validation humaine.
+
+---
+
+## AI Generated Hypothesis
+
+Hypothèse générée automatiquement.
+
+---
+
+# 91. Patient Graph
+
+Chaque patient possède son propre graphe.
+
+Exemple :
+
+```text
+Patient #123
+
+SleepDuration ↓
+        ↓
+HRV ↓
+        ↓
+CRP ↑
+```
+
+Cette chaîne est propre à cet individu.
+
+---
+
+# 92. Population Graph
+
+Agrégation de tous les patients.
+
+Exemple :
+
+```text
+10000 patients
+```
+
+↓
+
+```text
+Corrélations globales
+```
+
+---
+
+# 93. Feature Clusters
+
+Le système peut détecter des groupes.
+
+Exemple :
+
+```text
+Sleep
+HRV
+Stress
+Inflammation
+```
+
+Cluster :
+
+```text
+Recovery
+```
+
+---
+
+# 94. Risk Graph
+
+Certaines Features deviennent des indicateurs de risque.
+
+Exemple :
+
+```text
+VisceralFatMass
+      ↓
+HbA1c
+      ↓
+DiabetesRisk
+```
+
+---
+
+# 95. Disease Models
+
+MDT doit permettre de définir :
+
+```text
+Disease Graphs
+```
+
+Exemple :
+
+Diabète :
+
+```text
+VisceralFat
+      ↓
+InsulinResistance
+      ↓
+HbA1c
+      ↓
+Diabetes
+```
+
+---
+
+# 96. Twin Reasoning Engine
+
+Le moteur de raisonnement utilise :
+
+* Features
+* Relations
+* Évidences
+
+pour produire des hypothèses.
+
+---
+
+## Exemple
+
+Le système observe :
+
+```text
+Sleep ↓
+HRV ↓
+CRP ↑
+```
+
+Il peut suggérer :
+
+```text
+Inflammatory State
+```
+
+avec un score de confiance.
+
+---
+
+# 97. Règle Fondamentale MDT
+
+Aucune conclusion ne doit être produite sans :
+
+* données ;
+* relations ;
+* niveau de preuve ;
+* score de confiance.
+
+---
+
+# 98. Objectif V1
+
+Knowledge Graph statique.
+
+Relations définies manuellement.
+
+---
+
+# 99. Objectif V2
+
+Corrélations automatiques.
+
+---
+
+# 100. Objectif V3
+
+Graphe causal enrichi.
+
+---
+
+# 101. Objectif V4
+
+Découverte de nouvelles relations.
+
+---
+
+# 102. Objectif V5
+
+Simulation de trajectoires de santé.
+
+---
+
+FIN DE LA PARTIE 5
+
+# 103. Temporal Engine & Health Trajectory Layer
+
+## 103.1 Vision
+
+Le temps est une dimension fondamentale du Medical Digital Twin.
+
+Une photographie ne constitue pas un jumeau numérique.
+
+Un jumeau numérique doit être capable de représenter :
+
+* le passé ;
+* le présent ;
+* les trajectoires ;
+* les tendances ;
+* les ruptures ;
+* les projections futures.
+
+---
+
+# 104. Principe Fondamental
+
+Le système ne stocke pas un état.
+
+Le système stocke une évolution.
+
+---
+
+## Exemple
+
+Mauvais modèle :
+
+```text
+CRP = 8
+```
+
+Bon modèle :
+
+```text
+CRP
+
+2024 : 2
+2025 : 4
+2026 : 8
+```
+
+La tendance contient davantage d'information que la valeur instantanée.
+
+---
+
+# 105. Health Trajectory
+
+## Définition
+
+Une Health Trajectory représente l'évolution d'une Feature dans le temps.
+
+---
+
+## Exemple
+
+```text
+SleepDuration
+
+2024 : 7h40
+2025 : 7h05
+2026 : 6h10
+```
+
+Trajectoire :
+
+```text
+Déclin progressif
+```
+
+---
+
+# 106. Temporal Resolution
+
+Chaque Feature possède une résolution temporelle naturelle.
+
+---
+
+## Haute fréquence
+
+```text
+Fréquence cardiaque
+HRV
+Activité
+Sommeil
+```
+
+Résolution :
+
+```text
+Minutes
+Heures
+```
+
+---
+
+## Moyenne fréquence
+
+```text
+Poids
+Tension
+Nutrition
+```
+
+Résolution :
+
+```text
+Jours
+Semaines
+```
+
+---
+
+## Basse fréquence
+
+```text
+CT
+IRM
+Biologie
+```
+
+Résolution :
+
+```text
+Mois
+Années
+```
+
+---
+
+## Très basse fréquence
+
+```text
+Génome
+```
+
+Résolution :
+
+```text
+Vie entière
+```
+
+---
+
+# 107. Temporal Feature Object
+
+Chaque Feature possède :
+
+```text
+Current Value
+History
+Trend
+Velocity
+Acceleration
+Volatility
+```
+
+---
+
+# 108. Velocity
+
+Mesure la vitesse de changement.
+
+---
+
+## Exemple
+
+```text
+Poids
+
+Janvier : 80
+Mars : 85
+```
+
+Velocity :
+
+```text
++2.5 kg/mois
+```
+
+---
+
+# 109. Acceleration
+
+Mesure l'accélération de la trajectoire.
+
+---
+
+## Exemple
+
+```text
+CRP
+
+2
+4
+12
+```
+
+La progression s'accélère.
+
+---
+
+# 110. Volatility
+
+Mesure la stabilité.
+
+---
+
+## Exemple
+
+Patient A :
+
+```text
+HRV
+70
+71
+72
+69
+70
+```
+
+Volatilité faible.
+
+---
+
+Patient B :
+
+```text
+HRV
+30
+80
+40
+90
+25
+```
+
+Volatilité forte.
+
+---
+
+# 111. Health State Timeline
+
+L'état de santé est reconstruit à différentes dates.
+
+---
+
+## Exemple
+
+### 2020
+
+```text
+Poids : 78
+CRP : 2
+VO2Max : 48
+```
+
+---
+
+### 2025
+
+```text
+Poids : 90
+CRP : 8
+VO2Max : 36
+```
+
+---
+
+# 112. Health State Reconstruction
+
+Le système doit répondre :
+
+```text
+Quel était l'état du patient au 15/03/2023 ?
+```
+
+---
+
+# 113. Temporal Snapshots
+
+Chaque Snapshot représente :
+
+```text
+Patient
++
+Features
++
+Graph
++
+Scores
+```
+
+à une date donnée.
+
+---
+
+# 114. Life Events
+
+Certains événements modifient fortement la trajectoire.
+
+---
+
+## Exemples
+
+```text
+Cancer
+COVID
+Accident
+Grossesse
+Traitement
+```
+
+---
+
+# 115. Temporal Markers
+
+Les événements deviennent des marqueurs temporels.
+
+---
+
+## Exemple
+
+```text
+2024-01
+Début traitement
+
+2024-06
+Amélioration CRP
+```
+
+---
+
+# 116. Transition Detection
+
+Détecter automatiquement :
+
+```text
+Ruptures
+Plateaux
+Accélérations
+```
+
+---
+
+## Exemple
+
+```text
+Poids stable
+
+↓
+
+Prise de poids rapide
+```
+
+Transition détectée.
+
+---
+
+# 117. Aging Layer
+
+Le vieillissement est modélisé explicitement.
+
+---
+
+## Chronological Age
+
+```text
+52 ans
+```
+
+---
+
+## Biological Age
+
+Calculé à partir :
+
+```text
+Anatomie
+Biologie
+Sommeil
+Activité
+Cardio
+```
+
+---
+
+# 118. Organ Aging
+
+Chaque organe possède sa trajectoire.
+
+---
+
+## Exemple
+
+```text
+Heart Age
+Liver Age
+Kidney Age
+Brain Age
+```
+
+---
+
+# 119. Recovery Layer
+
+Mesure la capacité de récupération.
+
+---
+
+## Variables
+
+```text
+HRV
+Sommeil
+Inflammation
+Activité
+```
+
+---
+
+# 120. Resilience Layer
+
+Mesure la résistance aux perturbations.
+
+---
+
+## Exemple
+
+Après :
+
+```text
+COVID
+```
+
+Retour à la normale en :
+
+```text
+15 jours
+```
+
+Résilience élevée.
+
+---
+
+# 121. Health Momentum
+
+Concept central MDT.
+
+---
+
+Définition :
+
+Direction globale de la trajectoire de santé.
+
+---
+
+## Positive Momentum
+
+```text
+Sommeil ↑
+
+HRV ↑
+
+CRP ↓
+
+VO2Max ↑
+```
+
+---
+
+## Negative Momentum
+
+```text
+Sommeil ↓
+
+CRP ↑
+
+Graisse viscérale ↑
+
+VO2Max ↓
+```
+
+---
+
+# 122. Health Drift
+
+Écart progressif par rapport à un état optimal.
+
+---
+
+## Exemple
+
+```text
+2020
+Excellent état
+
+↓
+
+2026
+Dégradation lente
+```
+
+---
+
+# 123. Twin Timeline
+
+Le Twin est constitué d'une succession de versions.
+
+---
+
+```text
+Twin V1
+Twin V2
+Twin V3
+Twin V4
+```
+
+---
+
+Chaque version représente :
+
+```text
+Le même individu
+à un instant différent
+```
+
+---
+
+# 124. Projection Layer
+
+Non utilisé en V1.
+
+Prévu pour :
+
+```text
+1 an
+5 ans
+10 ans
+```
+
+---
+
+# 125. Objectif V1
+
+Historiser.
+
+---
+
+# 126. Objectif V2
+
+Détecter les tendances.
+
+---
+
+# 127. Objectif V3
+
+Détecter les ruptures.
+
+---
+
+# 128. Objectif V4
+
+Mesurer la trajectoire.
+
+---
+
+# 129. Objectif V5
+
+Projeter l'évolution future.
+
+---
+
+# 130. Définition MDT
+
+Le Medical Digital Twin n'est pas une représentation du patient.
+
+Le Medical Digital Twin est une représentation de la trajectoire de santé d'un individu à travers le temps.
+
+---
+
+FIN DE LA PARTIE 6
+
+# 131. Human Physiology Engine
+
+## 131.1 Vision
+
+Le Human Physiology Engine (HPE) constitue le cœur biologique du Medical Digital Twin.
+
+Son objectif est de représenter le fonctionnement de l'organisme humain à travers ses principaux systèmes physiologiques.
+
+Le HPE ne cherche pas à reproduire chaque cellule ou chaque molécule.
+
+Le HPE cherche à modéliser les mécanismes majeurs qui gouvernent l'état de santé d'un individu.
+
+---
+
+# 132. Principe Fondamental
+
+Le corps humain est composé de systèmes interconnectés.
+
+Une modification d'un système influence les autres.
+
+Exemple :
+
+```text
+Sommeil ↓
+      ↓
+Système nerveux autonome
+      ↓
+HRV ↓
+      ↓
+Inflammation ↑
+      ↓
+Risque cardiovasculaire ↑
+```
+
+---
+
+# 133. Physiological Domains
+
+Le moteur physiologique repose sur plusieurs domaines.
+
+```text
+Cardiovascular
+Respiratory
+Metabolic
+Immune
+Neurological
+Endocrine
+Musculoskeletal
+Renal
+Hepatic
+Digestive
+```
+
+---
+
+# 134. Physiological State
+
+Chaque domaine possède un état.
+
+Exemple :
+
+```text
+Cardiovascular State
+```
+
+décrit :
+
+* performance
+* stabilité
+* réserve fonctionnelle
+* trajectoire
+
+---
+
+# 135. Cardiovascular System
+
+## Objectif
+
+Modéliser le fonctionnement cardio-vasculaire.
+
+---
+
+### Features principales
+
+```text
+RestingHeartRate
+HRV
+VO2Max
+BloodPressure
+HeartAge
+```
+
+---
+
+### Indicateurs dérivés
+
+```text
+CardiovascularReserve
+CardiovascularStress
+CardiovascularRecovery
+```
+
+---
+
+### Relations
+
+```text
+Activité ↑
+       ↓
+VO2Max ↑
+
+Sommeil ↓
+       ↓
+HRV ↓
+```
+
+---
+
+# 136. Respiratory System
+
+## Features
+
+```text
+RespiratoryRate
+SpO2
+LungVolume
+FEV1
+VitalCapacity
+```
+
+---
+
+### Relations
+
+```text
+Activité
+      ↓
+Fonction pulmonaire
+
+Tabac
+      ↓
+FEV1
+```
+
+---
+
+# 137. Metabolic System
+
+Le système métabolique est probablement l'un des plus importants.
+
+---
+
+## Features
+
+```text
+HbA1c
+Glucose
+Insulin
+HOMA_IR
+
+VisceralFatMass
+MuscleMass
+
+Weight
+BMI
+```
+
+---
+
+## Relations
+
+```text
+Activité ↓
+       ↓
+InsulinResistance ↑
+
+VisceralFat ↑
+       ↓
+HbA1c ↑
+```
+
+---
+
+# 138. Immune System
+
+## Features
+
+```text
+CRP
+Leukocytes
+Ferritin
+IL6
+TNFAlpha
+```
+
+---
+
+## États
+
+```text
+Normal
+
+Activated
+
+ChronicInflammation
+
+Immunosuppression
+```
+
+---
+
+# 139. Neurological System
+
+## Features
+
+```text
+SleepDuration
+SleepQuality
+
+StressLevel
+
+ReactionTime
+
+CognitiveScore
+```
+
+---
+
+### Relations
+
+```text
+Sommeil ↓
+      ↓
+Stress ↑
+      ↓
+Inflammation ↑
+```
+
+---
+
+# 140. Endocrine System
+
+## Features
+
+```text
+TSH
+T3
+T4
+
+Cortisol
+
+Testosterone
+
+Estradiol
+```
+
+---
+
+### Relations
+
+```text
+Stress ↑
+      ↓
+Cortisol ↑
+```
+
+---
+
+# 141. Musculoskeletal System
+
+## Features
+
+```text
+MuscleMass
+
+Strength
+
+Power
+
+Mobility
+
+BoneDensity
+```
+
+---
+
+### Relations
+
+```text
+Activité ↑
+      ↓
+MuscleMass ↑
+
+MuscleMass ↑
+      ↓
+InsulinSensitivity ↑
+```
+
+---
+
+# 142. Renal System
+
+## Features
+
+```text
+Creatinine
+eGFR
+Proteinuria
+```
+
+---
+
+### Relations
+
+```text
+Hypertension
+      ↓
+eGFR ↓
+```
+
+---
+
+# 143. Hepatic System
+
+## Features
+
+```text
+ALAT
+ASAT
+GGT
+
+LiverVolume
+
+LiverFatFraction
+```
+
+---
+
+### Relations
+
+```text
+VisceralFat ↑
+      ↓
+Steatosis ↑
+```
+
+---
+
+# 144. Digestive System
+
+## Features
+
+```text
+MicrobiomeDiversity
+
+FiberIntake
+
+DigestiveSymptoms
+```
+
+---
+
+### Relations
+
+```text
+Nutrition
+      ↓
+Microbiome
+      ↓
+Inflammation
+```
+
+---
+
+# 145. Physiological State Objects
+
+Chaque système possède :
+
+```text
+CurrentState
+
+Trend
+
+Confidence
+
+History
+
+Interactions
+```
+
+---
+
+# 146. Physiological Age
+
+Chaque système possède un âge propre.
+
+---
+
+## Exemples
+
+```text
+Heart Age
+
+Lung Age
+
+Kidney Age
+
+Brain Age
+
+Muscle Age
+```
+
+---
+
+# 147. Physiological Reserve
+
+Concept central MDT.
+
+---
+
+Définition :
+
+Capacité d'un système à absorber une perturbation.
+
+---
+
+### Exemple
+
+Deux individus :
+
+```text
+VO2Max = 40
+```
+
+peuvent posséder :
+
+```text
+Reserve = élevée
+
+Reserve = faible
+```
+
+selon leur trajectoire.
+
+---
+
+# 148. Recovery Capacity
+
+Mesure :
+
+```text
+Vitesse de récupération
+```
+
+après :
+
+* maladie
+* chirurgie
+* infection
+* effort
+
+---
+
+# 149. Resilience
+
+Capacité à revenir à l'équilibre.
+
+---
+
+### Exemple
+
+```text
+COVID
+```
+
+↓
+
+```text
+Retour baseline = 10 jours
+```
+
+Résilience élevée.
+
+---
+
+# 150. Frailty
+
+Mesure de fragilité.
+
+---
+
+Construit à partir de :
+
+```text
+MuscleMass
+
+Activity
+
+Balance
+
+Sleep
+
+Inflammation
+```
+
+---
+
+# 151. Physiological Interactions
+
+Les systèmes sont connectés.
+
+---
+
+Exemple :
+
+```text
+Metabolic
+     ↓
+Immune
+     ↓
+Cardiovascular
+```
+
+---
+
+# 152. Homeostasis Engine
+
+Objectif :
+
+Mesurer l'équilibre global.
+
+---
+
+Concept :
+
+```text
+Homeostasis Score
+```
+
+---
+
+### Exemple
+
+```text
+Cardio = Stable
+
+Metabolic = Stable
+
+Immune = Stable
+
+Sleep = Stable
+```
+
+↓
+
+```text
+Homeostasis = High
+```
+
+---
+
+# 153. Health State
+
+L'état de santé global est calculé à partir :
+
+```text
+Physiology
++
+Features
++
+Timeline
+```
+
+---
+
+# 154. Physiological Signature
+
+Chaque individu possède une signature unique.
+
+---
+
+Exemple :
+
+```text
+HRV
+VO2Max
+Sleep
+CRP
+HbA1c
+```
+
+↓
+
+```text
+Physiological Fingerprint
+```
+
+---
+
+# 155. V1 Objective
+
+Représenter les systèmes.
+
+---
+
+# 156. V2 Objective
+
+Calculer les interactions.
+
+---
+
+# 157. V3 Objective
+
+Calculer les réserves physiologiques.
+
+---
+
+# 158. V4 Objective
+
+Simuler les perturbations.
+
+---
+
+# 159. V5 Objective
+
+Construire un Human Physiological Twin.
+
+---
+
+# 160. Définition MDT
+
+Un Medical Digital Twin est la représentation dynamique des systèmes physiologiques d'un individu à travers le temps, alimentée par des observations réelles et organisée sous forme de Features interconnectées.
+
+---
+
+FIN DE LA PARTIE 7
+
+# 161. Adaptive Biology Engine
+
+## 161.1 Vision
+
+Le corps humain n'est pas une machine statique.
+
+Le corps humain est un système adaptatif complexe.
+
+Le rôle de l'Adaptive Biology Engine (ABE) est de modéliser les mécanismes d'adaptation qui relient :
+
+* le génome ;
+* les cellules ;
+* les organes ;
+* la physiologie ;
+* l'environnement.
+
+L'ABE constitue la couche qui explique pourquoi une trajectoire évolue.
+
+---
+
+# 162. Principe Fondamental
+
+Le génome définit un espace de possibilités.
+
+L'environnement applique des contraintes.
+
+L'organisme produit une réponse adaptative.
+
+```text id="ev0z8j"
+Genome
+      +
+Environment
+      ↓
+Adaptation
+      ↓
+Physiology
+      ↓
+Health Trajectory
+```
+
+---
+
+# 163. Théorie MDT de l'Adaptation
+
+MDT considère que toute modification durable de l'état de santé est la conséquence d'une adaptation.
+
+---
+
+## Exemples
+
+### Activité physique
+
+```text id="vjlwmx"
+Charge mécanique
+       ↓
+Adaptation musculaire
+       ↓
+Force ↑
+```
+
+---
+
+### Stress chronique
+
+```text id="z9mnq4"
+Stress
+      ↓
+Adaptation hormonale
+      ↓
+Cortisol ↑
+```
+
+---
+
+### Pollution
+
+```text id="jlwmk1"
+Pollution
+      ↓
+Réponse inflammatoire
+      ↓
+Modification physiologique
+```
+
+---
+
+# 164. Adaptive Pressure
+
+Concept central MDT.
+
+---
+
+Définition :
+
+Toute force qui pousse un organisme à modifier son état.
+
+---
+
+## Sources
+
+```text id="7e9u7l"
+Nutrition
+
+Activité
+
+Sommeil
+
+Stress
+
+Température
+
+Rayonnements
+
+Produits chimiques
+
+Infections
+
+Vieillissement
+```
+
+---
+
+# 165. Adaptive Capacity
+
+Capacité d'un individu à répondre à une pression.
+
+---
+
+## Exemple
+
+Deux individus :
+
+```text id="e6n3kx"
+Pression identique
+```
+
+↓
+
+```text id="kpwdfm"
+Réponses différentes
+```
+
+---
+
+## Variables
+
+```text id="q6m0e6"
+Age
+
+Génome
+
+Réserve physiologique
+
+Historique
+```
+
+---
+
+# 166. Adaptive Reserve
+
+Stock adaptatif disponible.
+
+---
+
+Concept :
+
+```text id="cd0kgk"
+Capacité restante
+```
+
+avant décompensation.
+
+---
+
+## Exemple
+
+Deux individus :
+
+```text id="v91a4l"
+Même CRP
+```
+
+mais :
+
+```text id="t8vshw"
+Reserve élevée
+
+Reserve faible
+```
+
+---
+
+# 167. Adaptive Cost
+
+Toute adaptation possède un coût.
+
+---
+
+Exemples :
+
+```text id="u2zksn"
+Inflammation
+
+Stress oxydatif
+
+Fatigue
+
+Usure tissulaire
+```
+
+---
+
+# 168. Adaptive Efficiency
+
+Mesure :
+
+```text id="tv7o98"
+Résultat obtenu
+───────────────
+Coût biologique
+```
+
+---
+
+## Exemple
+
+Sportif A
+
+```text id="m1ujjz"
+VO2Max ↑
+Peu d'inflammation
+```
+
+---
+
+Sportif B
+
+```text id="9trmkk"
+VO2Max ↑
+Inflammation élevée
+```
+
+---
+
+Le sportif A possède une meilleure efficacité adaptative.
+
+---
+
+# 169. Adaptive Memory
+
+Le corps mémorise ses adaptations.
+
+---
+
+Exemples
+
+```text id="1x06fd"
+Immunité
+
+Mémoire musculaire
+
+Tolérance
+
+Sensibilisation
+```
+
+---
+
+# 170. Adaptive Signature
+
+Chaque individu possède une signature adaptative.
+
+---
+
+Exemple :
+
+```text id="2ghr3d"
+Réponse au stress
+
+Réponse à l'effort
+
+Réponse au manque de sommeil
+
+Réponse aux infections
+```
+
+---
+
+# 171. Adaptive Domains
+
+## Metabolic Adaptation
+
+```text id="gj0uvc"
+Nutrition
+      ↓
+Métabolisme
+```
+
+---
+
+## Immune Adaptation
+
+```text id="8m2l5m"
+Infection
+      ↓
+Réponse immunitaire
+```
+
+---
+
+## Musculoskeletal Adaptation
+
+```text id="5hgt7n"
+Effort
+      ↓
+Remodelage musculaire
+```
+
+---
+
+## Neuroadaptive System
+
+```text id="e5pymx"
+Stress
+      ↓
+Réorganisation fonctionnelle
+```
+
+---
+
+# 172. Genome-Environment Interface
+
+Couche essentielle MDT.
+
+---
+
+Le génome n'agit jamais seul.
+
+---
+
+Interaction :
+
+```text id="7e0s6p"
+Genome
+      ↓
+Potential
+
+Environment
+      ↓
+Pressure
+
+Potential
+      +
+Pressure
+      ↓
+Response
+```
+
+---
+
+# 173. Epigenetic Layer
+
+MDT considère l'épigénétique comme :
+
+```text id="1xmvgi"
+Mémoire biologique de l'environnement
+```
+
+---
+
+Exemples :
+
+```text id="5mjlwm"
+Stress chronique
+
+Nutrition
+
+Pollution
+
+Exposition professionnelle
+```
+
+---
+
+# 174. Transcriptomic Response Layer
+
+Mesure :
+
+```text id="7h9n4h"
+Ce que les cellules décident de faire
+```
+
+à un instant donné.
+
+---
+
+# 175. Proteomic Response Layer
+
+Mesure :
+
+```text id="v1j6yh"
+Ce que les cellules produisent réellement
+```
+
+---
+
+# 176. Metabolomic Response Layer
+
+Mesure :
+
+```text id="k7m5d3"
+Le résultat final de l'adaptation
+```
+
+---
+
+# 177. Adaptive Cascade
+
+Toute adaptation est représentée comme une cascade.
+
+---
+
+Exemple :
+
+```text id="dgt7dc"
+Sommeil ↓
+
+↓
+
+Stress ↑
+
+↓
+
+Cortisol ↑
+
+↓
+
+Inflammation ↑
+
+↓
+
+HRV ↓
+
+↓
+
+Cardio Risk ↑
+```
+
+---
+
+# 178. Adaptive Graph
+
+Extension du Knowledge Graph.
+
+---
+
+Chaque lien possède :
+
+```text id="i6o4je"
+Direction
+
+Force
+
+Délai
+
+Persistance
+```
+
+---
+
+# 179. Delay Modeling
+
+Certaines adaptations sont immédiates.
+
+---
+
+Exemple :
+
+```text id="w1kqqq"
+Effort
+
+↓
+
+Fréquence cardiaque
+```
+
+---
+
+D'autres prennent :
+
+```text id="0p08tl"
+jours
+
+semaines
+
+années
+```
+
+---
+
+# 180. Persistence Modeling
+
+Certaines adaptations disparaissent rapidement.
+
+---
+
+D'autres persistent.
+
+---
+
+Exemples :
+
+```text id="g9g2wa"
+Immunité
+
+Mémoire musculaire
+
+Modifications épigénétiques
+```
+
+---
+
+# 181. Adaptation Score
+
+Mesure :
+
+```text id="9i5lh2"
+Capacité d'adaptation globale
+```
+
+---
+
+# 182. Adaptation Age
+
+Mesure :
+
+```text id="b7ljkr"
+Age adaptatif
+```
+
+plutôt que l'âge chronologique.
+
+---
+
+# 183. Objectif V1
+
+Modéliser les pressions adaptatives.
+
+---
+
+# 184. Objectif V2
+
+Modéliser les réponses adaptatives.
+
+---
+
+# 185. Objectif V3
+
+Modéliser les coûts adaptatifs.
+
+---
+
+# 186. Objectif V4
+
+Modéliser les réserves adaptatives.
+
+---
+
+# 187. Objectif V5
+
+Simuler des trajectoires adaptatives.
+
+---
+
+# 188. Définition MDT
+
+Un organisme vivant est modélisé comme un système d'adaptation permanent soumis à des pressions environnementales et biologiques.
+
+Le rôle du Medical Digital Twin est de représenter, mesurer et comprendre ces adaptations dans le temps.
+
+---
+
+FIN DE LA PARTIE 8 – ADAPTIVE BIOLOGY ENGINE
+
+# 189. Energy & Resource Allocation Engine (ERAE)
+
+## 189.1 Vision
+
+L'Energy & Resource Allocation Engine représente le mécanisme fondamental d'arbitrage du vivant.
+
+Son objectif est de modéliser comment un organisme répartit ses ressources limitées entre différents besoins concurrents.
+
+---
+
+# 190. Principe Fondamental
+
+Les ressources biologiques sont limitées.
+
+L'organisme doit constamment arbitrer entre :
+
+```text
+Survie
+
+Réparation
+
+Immunité
+
+Croissance
+
+Performance
+
+Reproduction
+
+Cognition
+```
+
+---
+
+# 191. Théorie MDT
+
+Le corps est modélisé comme un système d'optimisation adaptative sous contraintes.
+
+---
+
+## Contraintes
+
+```text id="v1k4xn"
+Énergie
+
+Temps
+
+Matière
+
+Capacité physiologique
+
+Réserve adaptative
+```
+
+---
+
+# 192. Resource Pools
+
+Les ressources sont regroupées en pools.
+
+---
+
+## Energy Pool
+
+Représente :
+
+```text id="9g58mr"
+Calories
+
+Réserves énergétiques
+
+Métabolisme
+```
+
+---
+
+## Structural Pool
+
+Représente :
+
+```text id="2njlwm"
+Masse musculaire
+
+Masse osseuse
+
+Réserves tissulaires
+```
+
+---
+
+## Immune Pool
+
+Représente :
+
+```text id="5nq2e7"
+Capacité immunitaire
+
+Réponse inflammatoire
+```
+
+---
+
+## Cognitive Pool
+
+Représente :
+
+```text id="twm2oq"
+Attention
+
+Concentration
+
+Fonctions exécutives
+```
+
+---
+
+## Adaptive Pool
+
+Représente :
+
+```text id="mjlwm8"
+Capacité de changement
+
+Plasticité
+
+Résilience
+```
+
+---
+
+# 193. Allocation Domains
+
+Les ressources peuvent être dirigées vers :
+
+---
+
+## Survival
+
+```text id="zzxv3q"
+Respiration
+
+Circulation
+
+Température
+```
+
+---
+
+## Repair
+
+```text id="v8fym0"
+Réparation ADN
+
+Régénération
+
+Cicatrisation
+```
+
+---
+
+## Immunity
+
+```text id="c2e5yf"
+Réponse immunitaire
+
+Inflammation
+```
+
+---
+
+## Growth
+
+```text id="w1vwwq"
+Développement
+
+Anabolisme
+
+Croissance musculaire
+```
+
+---
+
+## Reproduction
+
+```text id="pkjlwm"
+Fonctions reproductrices
+```
+
+---
+
+## Performance
+
+```text id="8z1v0z"
+Sport
+
+Force
+
+Endurance
+```
+
+---
+
+## Cognition
+
+```text id="vw4mgs"
+Apprentissage
+
+Mémoire
+
+Décision
+```
+
+---
+
+# 194. Allocation Matrix
+
+Le système maintient une matrice dynamique.
+
+---
+
+Exemple :
+
+```text id="0x6e3r"
+Immunité      40 %
+
+Réparation    25 %
+
+Performance   10 %
+
+Croissance    10 %
+
+Cognition     15 %
+```
+
+---
+
+# 195. Allocation Shifts
+
+Les allocations évoluent.
+
+---
+
+## Exemple
+
+Infection
+
+Avant :
+
+```text id="7e8j0v"
+Immunité 15 %
+```
+
+---
+
+Après :
+
+```text id="udjlwm"
+Immunité 60 %
+```
+
+---
+
+# 196. Energy Budget
+
+Budget énergétique quotidien estimé.
+
+---
+
+Variables :
+
+```text id="i5vb7s"
+Apports
+
+Dépenses
+
+Réserves
+```
+
+---
+
+# 197. Metabolic Economy
+
+Mesure :
+
+```text id="cfwhjv"
+Énergie utile
+
+─────────────
+
+Énergie consommée
+```
+
+---
+
+# 198. Resource Stress
+
+Mesure :
+
+```text id="vjlwm9"
+Pression exercée sur les ressources
+```
+
+---
+
+## Exemple
+
+```text id="yzjlwm"
+Manque de sommeil
+
++
+
+Sport intense
+
++
+
+Stress professionnel
+```
+
+↓
+
+```text id="oq0lkw"
+Resource Stress élevé
+```
+
+---
+
+# 199. Allocation Conflicts
+
+Certaines fonctions sont concurrentes.
+
+---
+
+Exemples :
+
+```text id="x0gtzr"
+Immunité
+
+VS
+
+Performance
+```
+
+---
+
+```text id="wjlwm4"
+Croissance
+
+VS
+
+Reproduction
+```
+
+---
+
+# 200. Biological Debt
+
+Concept MDT.
+
+---
+
+Définition :
+
+Consommation actuelle de ressources au détriment du futur.
+
+---
+
+## Exemples
+
+```text id="vjlwm6"
+Dette de sommeil
+
+Dette métabolique
+
+Dette de récupération
+```
+
+---
+
+# 201. Recovery Budget
+
+Capacité de récupération disponible.
+
+---
+
+Variables :
+
+```text id="jlwm81"
+Sommeil
+
+Nutrition
+
+Inflammation
+
+Stress
+```
+
+---
+
+# 202. Resource Efficiency
+
+Mesure :
+
+```text id="jlwm90"
+Résultat obtenu
+
+──────────────
+
+Ressources consommées
+```
+
+---
+
+# 203. Resource Resilience
+
+Capacité à maintenir les fonctions malgré les contraintes.
+
+---
+
+# 204. Allocation Signature
+
+Chaque individu possède une stratégie d'allocation propre.
+
+---
+
+Exemple :
+
+```text id="jlwm91"
+Profil Performance
+
+Profil Survival
+
+Profil Repair
+```
+
+---
+
+# 205. Potential Engine Integration
+
+Le Potential Engine définit :
+
+```text id="jlwm92"
+Capacité maximale théorique
+```
+
+---
+
+L'ERAE détermine :
+
+```text id="jlwm93"
+Part réellement mobilisée
+```
+
+---
+
+# 206. Adaptive Biology Integration
+
+L'Adaptive Biology Engine reçoit :
+
+```text id="jlwm94"
+Ressources disponibles
+```
+
+---
+
+et produit :
+
+```text id="jlwm95"
+Réponses adaptatives
+```
+
+---
+
+# 207. Physiology Integration
+
+La physiologie observée est le résultat de :
+
+```text id="jlwm96"
+Potential
+
++
+
+Allocation
+
++
+
+Adaptation
+```
+
+---
+
+# 208. Resource Trajectory
+
+Les ressources possèdent leur propre trajectoire.
+
+---
+
+Exemples :
+
+```text id="jlwm97"
+Adaptive Reserve
+
+Immune Reserve
+
+Metabolic Reserve
+```
+
+---
+
+# 209. Future Simulation
+
+Objectif V5.
+
+---
+
+Exemple :
+
+```text id="jlwm98"
++1 h de sommeil
+
+pendant 12 mois
+```
+
+↓
+
+Simulation :
+
+```text id="jlwm99"
+Recovery Budget ↑
+
+HRV ↑
+
+Inflammation ↓
+
+Adaptive Reserve ↑
+```
+
+---
+
+# 210. Définition MDT
+
+L'état de santé résulte de la manière dont un organisme alloue ses ressources limitées pour répondre aux contraintes imposées par son environnement et sa propre biologie.
+
+---
+
+FIN DE LA PARTIE 9 – ENERGY & RESOURCE ALLOCATION ENGINE
+
+# 211. Biological Sustainability Engine (BSE)
+
+## 211.1 Vision
+
+Le Biological Sustainability Engine (BSE) est responsable de l'évaluation de la capacité d'un organisme à maintenir son fonctionnement dans le temps.
+
+Le BSE ne cherche pas à prédire la mort, la maladie ou l'espérance de vie.
+
+Le BSE cherche à mesurer :
+
+* la stabilité ;
+* les réserves ;
+* les contraintes ;
+* la capacité d'adaptation ;
+* la soutenabilité biologique.
+
+---
+
+## 211.2 Principe Fondamental
+
+Toute fonction biologique possède un coût.
+
+Toute adaptation possède un coût.
+
+Toute compensation possède un coût.
+
+La santé peut être considérée comme la capacité d'un organisme à absorber ces coûts tout en conservant son fonctionnement.
+
+---
+
+## 211.3 Objectif MDT
+
+Passer d'une vision :
+
+```text
+Maladie
+↓
+Traitement
+```
+
+à une vision :
+
+```text
+Contraintes
+↓
+Adaptations
+↓
+Soutenabilité
+```
+
+---
+
+# 212. Adaptive Capital
+
+## 212.1 Définition
+
+L'Adaptive Capital représente l'ensemble des ressources mobilisables par un organisme.
+
+---
+
+## 212.2 Analogie
+
+Dans une entreprise :
+
+```text
+Capital disponible
+```
+
+représente :
+
+* les liquidités ;
+* les actifs ;
+* les capacités de production.
+
+Dans MDT :
+
+```text
+Adaptive Capital
+```
+
+représente :
+
+* les réserves physiologiques ;
+* les réserves métaboliques ;
+* les réserves immunitaires ;
+* les réserves fonctionnelles.
+
+---
+
+## 212.3 Sous-composantes
+
+### Structural Capital
+
+Capacité structurelle disponible.
+
+Exemples :
+
+* masse musculaire ;
+* densité osseuse ;
+* qualité tissulaire.
+
+---
+
+### Metabolic Capital
+
+Capacité énergétique.
+
+Exemples :
+
+* flexibilité métabolique ;
+* sensibilité à l'insuline ;
+* composition corporelle.
+
+---
+
+### Cardiovascular Capital
+
+Exemples :
+
+* VO2max ;
+* réserve cardiaque ;
+* réserve vasculaire.
+
+---
+
+### Immune Capital
+
+Exemples :
+
+* diversité immunitaire ;
+* réserve fonctionnelle ;
+* récupération post-infection.
+
+---
+
+### Cognitive Capital
+
+Exemples :
+
+* mémoire ;
+* attention ;
+* vitesse de traitement.
+
+---
+
+### Adaptive Capital
+
+Capacité générale de réorganisation.
+
+Exemples :
+
+* plasticité ;
+* résilience ;
+* récupération.
+
+---
+
+## 212.4 Adaptive Capital Score
+
+Valeur :
+
+```text
+0 → 100
+```
+
+---
+
+### Interprétation
+
+```text
+0-20   Très faible
+
+20-40  Faible
+
+40-60  Modéré
+
+60-80  Élevé
+
+80-100 Très élevé
+```
+
+---
+
+# 213. Adaptive Debt
+
+## 213.1 Définition
+
+L'Adaptive Debt représente l'accumulation de contraintes biologiques insuffisamment compensées.
+
+---
+
+## 213.2 Concept
+
+Une dette adaptative apparaît lorsqu'un organisme consomme ses réserves plus vite qu'il ne les reconstitue.
+
+---
+
+## 213.3 Exemples
+
+### Dette de sommeil
+
+```text
+6 h
+6 h
+5 h
+5 h
+```
+
+↓
+
+```text
+Sleep Debt
+```
+
+---
+
+### Dette inflammatoire
+
+```text
+CRP élevée
+pendant plusieurs années
+```
+
+↓
+
+```text
+Inflammatory Debt
+```
+
+---
+
+### Dette métabolique
+
+```text
+Excès calorique chronique
+```
+
+↓
+
+```text
+Metabolic Debt
+```
+
+---
+
+### Dette de récupération
+
+```text
+Entraînement
+>
+Récupération
+```
+
+↓
+
+```text
+Recovery Debt
+```
+
+---
+
+## 213.4 Types
+
+```text
+Sleep Debt
+
+Metabolic Debt
+
+Inflammatory Debt
+
+Recovery Debt
+
+Psychological Debt
+
+Environmental Debt
+
+Radiation Debt
+```
+
+---
+
+## 213.5 Adaptive Debt Score
+
+Mesure globale :
+
+```text
+0 → 100
+```
+
+---
+
+### Interprétation
+
+```text
+0 = aucune dette
+
+100 = dette très importante
+```
+
+---
+
+# 214. Adaptive Capacity
+
+## 214.1 Définition
+
+Capacité actuelle d'un organisme à répondre à une nouvelle contrainte.
+
+---
+
+## 214.2 Calcul Conceptuel
+
+```text
+Adaptive Capital
+
+-
+
+Adaptive Debt
+
+-
+
+Current Stress
+```
+
+↓
+
+```text
+Adaptive Capacity
+```
+
+---
+
+## 214.3 Exemples
+
+Deux individus :
+
+### Individu A
+
+```text
+Capital = élevé
+
+Dette = faible
+```
+
+↓
+
+```text
+Capacité élevée
+```
+
+---
+
+### Individu B
+
+```text
+Capital = élevé
+
+Dette = très élevée
+```
+
+↓
+
+```text
+Capacité réduite
+```
+
+---
+
+## 214.4 Applications
+
+Mesurer :
+
+* capacité à récupérer ;
+* capacité à s'entraîner ;
+* capacité à résister à une infection ;
+* capacité à absorber un traitement.
+
+---
+
+# 215. Homeostatic Stability
+
+## 215.1 Définition
+
+Capacité à maintenir l'équilibre interne malgré les perturbations.
+
+---
+
+## 215.2 Variables
+
+### Métabolisme
+
+```text
+Glucose
+HbA1c
+```
+
+---
+
+### Inflammation
+
+```text
+CRP
+IL6
+TNFα
+```
+
+---
+
+### Cardio
+
+```text
+HRV
+Tension
+FC repos
+```
+
+---
+
+### Sommeil
+
+```text
+Durée
+Qualité
+```
+
+---
+
+## 215.3 Score
+
+```text
+Homeostatic Stability
+```
+
+Mesure :
+
+```text
+Stabilité
+
+Variabilité
+
+Robustesse
+```
+
+---
+
+# 216. System Robustness
+
+## 216.1 Définition
+
+Capacité d'un système à maintenir ses performances malgré une contrainte.
+
+---
+
+## 216.2 Exemple
+
+### Système cardiovasculaire
+
+Effort important.
+
+---
+
+Patient A :
+
+```text
+Retour baseline : 2 heures
+```
+
+---
+
+Patient B :
+
+```text
+Retour baseline : 72 heures
+```
+
+---
+
+Patient A :
+
+```text
+Robustesse élevée
+```
+
+---
+
+# 217. Sustainability Trajectory
+
+## 217.1 Définition
+
+Évolution de la soutenabilité biologique dans le temps.
+
+---
+
+## Exemple
+
+```text
+2020 : 78
+
+2021 : 77
+
+2022 : 75
+
+2023 : 72
+
+2024 : 68
+
+2025 : 64
+```
+
+---
+
+### Interprétation
+
+Déclin progressif.
+
+---
+
+## Autre exemple
+
+```text
+2020 : 52
+
+2021 : 58
+
+2022 : 63
+
+2023 : 70
+
+2024 : 76
+```
+
+---
+
+### Interprétation
+
+Amélioration durable.
+
+---
+
+# 218. Sustainability Index
+
+## 218.1 Définition
+
+Indicateur synthétique MDT.
+
+---
+
+## Objectif
+
+Résumer :
+
+```text
+Adaptive Capital
+
+Adaptive Debt
+
+Adaptive Capacity
+
+Homeostatic Stability
+
+System Robustness
+```
+
+---
+
+## Forme
+
+```text
+0 → 100
+```
+
+---
+
+## Interprétation
+
+### 80-100
+
+```text
+Soutenabilité élevée
+```
+
+---
+
+### 60-80
+
+```text
+Soutenabilité satisfaisante
+```
+
+---
+
+### 40-60
+
+```text
+Vigilance
+```
+
+---
+
+### 20-40
+
+```text
+Réserves limitées
+```
+
+---
+
+### 0-20
+
+```text
+Capacité d'adaptation fortement réduite
+```
+
+---
+
+# 219. Health Momentum Integration
+
+Le Sustainability Index doit être analysé conjointement au :
+
+```text
+Health Momentum
+```
+
+---
+
+Exemple :
+
+```text
+Sustainability = 55
+
+Momentum = positif
+```
+
+Interprétation :
+
+```text
+Réserves encore limitées
+
+mais trajectoire favorable
+```
+
+---
+
+# 220. Biological Sustainability Dashboard
+
+Le tableau de bord MDT affichera :
+
+```text
+Adaptive Capital
+
+Adaptive Debt
+
+Adaptive Capacity
+
+Homeostatic Stability
+
+System Robustness
+
+Health Momentum
+
+Sustainability Index
+```
+
+---
+
+# 221. Limites
+
+Le BSE ne mesure pas :
+
+* l'espérance de vie ;
+* le risque de décès ;
+* la valeur d'un individu ;
+* son pronostic médical.
+
+Le BSE mesure uniquement :
+
+```text
+la dynamique biologique observée
+```
+
+et
+
+```text
+la capacité d'adaptation estimée
+```
+
+à partir des données disponibles.
+
+---
+
+# 222. Objectifs V1 à V5
+
+## V1
+
+Calcul des composantes.
+
+---
+
+## V2
+
+Trajectoires temporelles.
+
+---
+
+## V3
+
+Comparaisons inter-individuelles.
+
+---
+
+## V4
+
+Simulation des interventions.
+
+---
+
+## V5
+
+Projection des trajectoires de soutenabilité.
+
+---
+
+# 223. Définition MDT
+
+La soutenabilité biologique représente la capacité d'un organisme à maintenir son équilibre fonctionnel, à s'adapter aux contraintes et à préserver ses réserves au cours du temps.
+
+---
+
+FIN DE LA PARTIE 10 – BIOLOGICAL SUSTAINABILITY ENGINE
+# 224. Multi-Scale Biological Time Engine (MBTE)
+
+## 224.1 Vision
+
+Le Multi-Scale Biological Time Engine (MBTE) est responsable de la représentation des dynamiques temporelles du vivant.
+
+Contrairement à une approche classique basée sur des timestamps, le MBTE considère que chaque processus biologique possède sa propre échelle de temps.
+
+Le rôle du MBTE est de modéliser :
+
+* les vitesses de changement ;
+* les délais de réponse ;
+* les inerties biologiques ;
+* les mémoires biologiques ;
+* les interactions entre processus rapides et lents.
+
+---
+
+# 225. Principe Fondamental
+
+Le corps humain n'évolue pas selon une horloge unique.
+
+Chaque système possède sa propre temporalité.
+
+---
+
+## Exemple
+
+```text
+Fréquence cardiaque
+```
+
+↓
+
+Réagit en :
+
+```text
+secondes
+```
+
+---
+
+```text
+CRP
+```
+
+↓
+
+Réagit en :
+
+```text
+heures
+jours
+```
+
+---
+
+```text
+Masse musculaire
+```
+
+↓
+
+Réagit en :
+
+```text
+semaines
+mois
+```
+
+---
+
+```text
+Athérosclérose
+```
+
+↓
+
+Réagit en :
+
+```text
+années
+décennies
+```
+
+---
+
+# 226. Biological Time Domains
+
+## Ultra-Fast
+
+```text
+Millisecondes
+Secondes
+Minutes
+```
+
+Exemples :
+
+* fréquence cardiaque ;
+* activité neuronale ;
+* glycémie instantanée.
+
+---
+
+## Fast
+
+```text
+Heures
+Jours
+```
+
+Exemples :
+
+* inflammation aiguë ;
+* récupération ;
+* sommeil.
+
+---
+
+## Intermediate
+
+```text
+Semaines
+Mois
+```
+
+Exemples :
+
+* VO2max ;
+* composition corporelle ;
+* HbA1c.
+
+---
+
+## Slow
+
+```text
+Années
+```
+
+Exemples :
+
+* vieillissement ;
+* densité osseuse ;
+* fonction rénale.
+
+---
+
+## Very Slow
+
+```text
+Décennies
+Vie entière
+```
+
+Exemples :
+
+* génome ;
+* prédispositions génétiques ;
+* certaines modifications épigénétiques.
+
+---
+
+# 227. Feature Time Model
+
+Chaque Feature possède un modèle temporel.
+
+---
+
+## Structure
+
+```text
+Feature
+├── Current Value
+├── Time Scale
+├── Response Time
+├── Recovery Time
+├── Persistence
+├── Memory
+└── Inertia
+```
+
+---
+
+# 228. Response Time
+
+## Définition
+
+Temps nécessaire pour qu'une Feature réponde à une perturbation.
+
+---
+
+### Exemple
+
+```text
+Heart Rate
+```
+
+↓
+
+```text
+Quelques secondes
+```
+
+---
+
+### Exemple
+
+```text
+Bone Density
+```
+
+↓
+
+```text
+Plusieurs années
+```
+
+---
+
+# 229. Recovery Time
+
+## Définition
+
+Temps nécessaire pour revenir vers un état de référence.
+
+---
+
+### Exemple
+
+```text
+Fréquence cardiaque après effort
+```
+
+↓
+
+```text
+Minutes
+```
+
+---
+
+### Exemple
+
+```text
+COVID sévère
+```
+
+↓
+
+```text
+Semaines ou mois
+```
+
+---
+
+# 230. Persistence
+
+## Définition
+
+Durée pendant laquelle un changement reste observable.
+
+---
+
+### Faible persistance
+
+```text
+Glycémie
+```
+
+---
+
+### Forte persistance
+
+```text
+Masse musculaire
+
+Mémoire immunitaire
+```
+
+---
+
+# 231. Biological Memory
+
+## Définition
+
+Capacité d'un système à conserver l'empreinte du passé.
+
+---
+
+# 232. Types de Mémoire
+
+## Immune Memory
+
+Exemples :
+
+```text
+Vaccination
+
+Infection
+```
+
+---
+
+## Muscular Memory
+
+Exemples :
+
+```text
+Entraînement
+
+Réentraînement
+```
+
+---
+
+## Metabolic Memory
+
+Exemples :
+
+```text
+Diabète
+
+Obésité
+```
+
+---
+
+## Epigenetic Memory
+
+Exemples :
+
+```text
+Stress chronique
+
+Nutrition
+
+Expositions
+```
+
+---
+
+## Behavioral Memory
+
+Exemples :
+
+```text
+Habitudes
+
+Routines
+
+Sommeil
+```
+
+---
+
+# 233. Inertia
+
+## Définition
+
+Résistance d'une Feature au changement.
+
+---
+
+### Faible inertie
+
+```text
+Fréquence cardiaque
+```
+
+---
+
+### Forte inertie
+
+```text
+Taille
+
+Génome
+```
+
+---
+
+# 234. Biological Momentum
+
+## Définition
+
+Tendance naturelle d'une Feature à poursuivre son évolution.
+
+---
+
+### Exemple
+
+```text
+Prise de poids
+```
+
+Une fois engagée :
+
+```text
+Momentum positif
+```
+
+---
+
+### Exemple
+
+```text
+Perte musculaire
+```
+
+Peut devenir auto-entretenue.
+
+---
+
+# 235. Biological Thresholds
+
+Certaines transitions ne sont pas linéaires.
+
+---
+
+## Exemple
+
+```text
+HbA1c
+```
+
+reste stable.
+
+Puis :
+
+```text
+Franchissement d'un seuil
+```
+
+↓
+
+```text
+Diabète
+```
+
+---
+
+# 236. Tipping Points
+
+## Définition
+
+Point à partir duquel le système change brutalement d'état.
+
+---
+
+### Exemple
+
+```text
+Réserve cardiaque insuffisante
+```
+
+↓
+
+```text
+Décompensation
+```
+
+---
+
+### Exemple
+
+```text
+Réserve métabolique insuffisante
+```
+
+↓
+
+```text
+Diabète
+```
+
+---
+
+# 237. Temporal Interactions
+
+Les processus rapides influencent les processus lents.
+
+---
+
+## Exemple
+
+```text
+Sommeil
+```
+
+↓
+
+```text
+Inflammation
+```
+
+↓
+
+```text
+Métabolisme
+```
+
+↓
+
+```text
+Vieillissement
+```
+
+---
+
+# 238. Cascades Temporelles
+
+Le système représente :
+
+```text
+Cause
+↓
+Effets rapides
+↓
+Effets intermédiaires
+↓
+Effets lents
+```
+
+---
+
+## Exemple
+
+```text
+Stress chronique
+```
+
+↓
+
+```text
+Cortisol ↑
+```
+
+↓
+
+```text
+Sommeil ↓
+```
+
+↓
+
+```text
+Inflammation ↑
+```
+
+↓
+
+```text
+Vieillissement accéléré
+```
+
+---
+
+# 239. Biological Clocks
+
+Chaque système possède une horloge.
+
+---
+
+## Immune Clock
+
+Mesure :
+
+```text
+Activation
+Récupération
+Vieillissement immunitaire
+```
+
+---
+
+## Metabolic Clock
+
+Mesure :
+
+```text
+Sensibilité métabolique
+```
+
+---
+
+## Cardiovascular Clock
+
+Mesure :
+
+```text
+Vieillissement cardiovasculaire
+```
+
+---
+
+## Cognitive Clock
+
+Mesure :
+
+```text
+Performance cognitive
+```
+
+---
+
+## Musculoskeletal Clock
+
+Mesure :
+
+```text
+Vieillissement musculaire
+```
+
+---
+
+# 240. Multi-Age Model
+
+MDT distingue :
+
+```text
+Chronological Age
+```
+
+et :
+
+```text
+Biological Ages
+```
+
+---
+
+## Exemples
+
+```text
+Heart Age
+
+Lung Age
+
+Kidney Age
+
+Brain Age
+
+Muscle Age
+
+Immune Age
+
+Metabolic Age
+```
+
+---
+
+# 241. Temporal Compression
+
+Le système peut résumer :
+
+```text
+10 ans
+20 ans
+50 ans
+```
+
+de trajectoire biologique.
+
+---
+
+# 242. Temporal Expansion
+
+Le système peut analyser :
+
+```text
+1 heure
+1 jour
+1 semaine
+```
+
+avec une grande précision.
+
+---
+
+# 243. Predictive Horizon
+
+Chaque Feature possède un horizon de prévisibilité.
+
+---
+
+### Exemple
+
+```text
+Fréquence cardiaque
+```
+
+↓
+
+Prévisible :
+
+```text
+minutes
+```
+
+---
+
+### Exemple
+
+```text
+Densité osseuse
+```
+
+↓
+
+Prévisible :
+
+```text
+années
+```
+
+---
+
+# 244. Temporal Confidence
+
+La confiance d'une prédiction dépend :
+
+* de l'échelle temporelle ;
+* de la qualité des données ;
+* de la stabilité de la Feature.
+
+---
+
+# 245. Temporal Health Vector
+
+À tout instant :
+
+```text
+Health Vector(t)
+```
+
+représente :
+
+```text
+Features
+
+States
+
+Systems
+
+Adaptive Metrics
+
+Sustainability Metrics
+```
+
+---
+
+# 246. Dynamic Twin
+
+Le Digital Twin n'est plus un objet statique.
+
+Il devient :
+
+```text
+Twin(t)
+```
+
+fonction du temps.
+
+---
+
+# 247. Objectifs V1
+
+Historisation multi-échelle.
+
+---
+
+# 248. Objectifs V2
+
+Détection des tendances.
+
+---
+
+# 249. Objectifs V3
+
+Détection des points de bascule.
+
+---
+
+# 250. Objectifs V4
+
+Simulation temporelle.
+
+---
+
+# 251. Objectifs V5
+
+Reconstruction complète des trajectoires biologiques.
+
+---
+
+# 252. Définition MDT
+
+Le temps biologique est une propriété fondamentale du vivant.
+
+Le rôle du MBTE est de représenter les différentes horloges biologiques, leurs interactions et leur influence sur les trajectoires de santé.
+
+---
+
+FIN DE LA PARTIE 11 – MULTI-SCALE BIOLOGICAL TIME ENGINE
+
+# 253. Biological Information Engine (BIE)
+
+## 253.1 Vision
+
+Le Biological Information Engine (BIE) représente les mécanismes de traitement de l'information du vivant.
+
+L'objectif du BIE est de modéliser :
+
+* l'acquisition d'information ;
+* le stockage d'information ;
+* la transmission d'information ;
+* la transformation d'information ;
+* la mémoire biologique.
+
+---
+
+# 254. Principe Fondamental
+
+Le vivant est un système de traitement d'information.
+
+L'énergie permet l'action.
+
+L'information permet la décision.
+
+---
+
+## Théorie MDT
+
+```text
+Information
+      ↓
+Décision biologique
+      ↓
+Allocation
+      ↓
+Adaptation
+      ↓
+Physiologie
+```
+
+---
+
+# 255. Sources d'Information
+
+Le corps reçoit continuellement des informations.
+
+---
+
+## Externes
+
+```text
+Lumière
+
+Température
+
+Nourriture
+
+Bruit
+
+Stress
+
+Toxiques
+
+Agents infectieux
+```
+
+---
+
+## Internes
+
+```text
+Glycémie
+
+Inflammation
+
+Hormones
+
+Douleur
+
+Pression artérielle
+```
+
+---
+
+# 256. Biological Information Hierarchy
+
+Le vivant traite l'information à plusieurs niveaux.
+
+---
+
+```text
+Genome
+      ↓
+Epigenome
+      ↓
+Transcriptome
+      ↓
+Proteome
+      ↓
+Metabolome
+      ↓
+Cell
+      ↓
+Tissue
+      ↓
+Organ
+      ↓
+Organism
+```
+
+---
+
+# 257. Information Domains
+
+## Genetic Information
+
+Information codée dans l'ADN.
+
+---
+
+### Caractéristiques
+
+```text
+Très stable
+
+Faible vitesse de changement
+```
+
+---
+
+## Epigenetic Information
+
+Information régulatrice.
+
+---
+
+### Caractéristiques
+
+```text
+Adaptative
+
+Semi-persistante
+```
+
+---
+
+## Transcriptomic Information
+
+Information active.
+
+---
+
+### Signification
+
+```text
+Ce que la cellule décide de produire
+```
+
+---
+
+## Proteomic Information
+
+Information exécutée.
+
+---
+
+### Signification
+
+```text
+Ce que la cellule fait réellement
+```
+
+---
+
+## Metabolic Information
+
+Information résultante.
+
+---
+
+### Signification
+
+```text
+Conséquence fonctionnelle
+```
+
+---
+
+# 258. Information Flow
+
+Le vivant est représenté comme un flux.
+
+---
+
+```text
+Genome
+      ↓
+Epigenome
+      ↓
+Transcriptome
+      ↓
+Proteome
+      ↓
+Metabolome
+      ↓
+Physiology
+```
+
+---
+
+# 259. Reverse Information Flow
+
+Les informations circulent aussi en sens inverse.
+
+---
+
+Exemple :
+
+```text
+Stress
+      ↓
+Hormones
+      ↓
+Epigenome
+```
+
+---
+
+Exemple :
+
+```text
+Nutrition
+      ↓
+Microbiome
+      ↓
+Transcriptome
+```
+
+---
+
+# 260. Biological Sensors
+
+Le vivant est un système de capteurs.
+
+---
+
+## Capteurs métaboliques
+
+```text
+Glucose
+
+Insuline
+
+Leptine
+```
+
+---
+
+## Capteurs immunitaires
+
+```text
+Pathogènes
+
+Inflammation
+```
+
+---
+
+## Capteurs mécaniques
+
+```text
+Pression
+
+Charge
+
+Étirement
+```
+
+---
+
+## Capteurs neurologiques
+
+```text
+Vision
+
+Audition
+
+Douleur
+```
+
+---
+
+# 261. Biological Communication
+
+Les cellules communiquent constamment.
+
+---
+
+## Signaux hormonaux
+
+```text
+Insuline
+
+Cortisol
+
+Adrénaline
+```
+
+---
+
+## Cytokines
+
+```text
+IL6
+
+TNFα
+```
+
+---
+
+## Vésicules extracellulaires
+
+```text
+Exosomes
+```
+
+---
+
+## Neurotransmetteurs
+
+```text
+Dopamine
+
+Sérotonine
+
+GABA
+```
+
+---
+
+# 262. Information Networks
+
+Le corps est constitué de réseaux.
+
+---
+
+## Réseau nerveux
+
+Transmission rapide.
+
+---
+
+## Réseau hormonal
+
+Transmission lente.
+
+---
+
+## Réseau immunitaire
+
+Transmission adaptative.
+
+---
+
+## Réseau métabolique
+
+Transmission énergétique.
+
+---
+
+# 263. Information Latency
+
+Chaque réseau possède un délai.
+
+---
+
+## Neuronal
+
+```text
+Millisecondes
+```
+
+---
+
+## Hormonal
+
+```text
+Minutes
+Heures
+```
+
+---
+
+## Immunitaire
+
+```text
+Heures
+Jours
+```
+
+---
+
+## Épigénétique
+
+```text
+Jours
+Années
+```
+
+---
+
+# 264. Information Memory
+
+Toute information n'est pas oubliée.
+
+---
+
+## Mémoire immunitaire
+
+```text
+Vaccins
+
+Infections
+```
+
+---
+
+## Mémoire épigénétique
+
+```text
+Stress
+
+Nutrition
+
+Pollution
+```
+
+---
+
+## Mémoire musculaire
+
+```text
+Entraînement
+```
+
+---
+
+## Mémoire comportementale
+
+```text
+Habitudes
+```
+
+---
+
+# 265. Information Compression
+
+L'organisme résume l'information.
+
+---
+
+Exemple :
+
+```text
+Millions d'événements
+```
+
+↓
+
+```text
+Habitude
+```
+
+---
+
+Exemple :
+
+```text
+Expositions répétées
+```
+
+↓
+
+```text
+Adaptation
+```
+
+---
+
+# 266. Information Quality
+
+Toutes les informations n'ont pas la même valeur.
+
+---
+
+## Dimensions
+
+```text
+Précision
+
+Pertinence
+
+Persistance
+
+Fiabilité
+```
+
+---
+
+# 267. Information Entropy
+
+Concept MDT.
+
+---
+
+Définition :
+
+Niveau d'incertitude biologique.
+
+---
+
+## Exemple
+
+Patient :
+
+```text
+Très peu de données
+```
+
+↓
+
+```text
+Entropie élevée
+```
+
+---
+
+Patient :
+
+```text
+Données nombreuses
+```
+
+↓
+
+```text
+Entropie réduite
+```
+
+---
+
+# 268. Information Coherence
+
+Mesure :
+
+```text
+Compatibilité des informations
+```
+
+---
+
+Exemple :
+
+```text
+VO2Max très élevé
+
++
+activité très faible
+```
+
+↓
+
+```text
+Incohérence
+```
+
+---
+
+# 269. Information Graph
+
+Extension du Knowledge Graph.
+
+---
+
+Chaque relation possède :
+
+```text
+Source
+
+Direction
+
+Confiance
+
+Persistance
+
+Latence
+```
+
+---
+
+# 270. Biological Information State
+
+À tout instant MDT maintient :
+
+```text
+Information State(t)
+```
+
+---
+
+Composé de :
+
+```text
+Genome
+
+Epigenome
+
+Transcriptome
+
+Proteome
+
+Metabolome
+
+Signals
+
+Memories
+```
+
+---
+
+# 271. Information Potential
+
+Concept MDT.
+
+---
+
+Définition :
+
+Information encore non exprimée.
+
+---
+
+Exemple :
+
+```text
+Prédisposition génétique
+```
+
+présente mais inactive.
+
+---
+
+# 272. Information Activation
+
+Transition :
+
+```text
+Potentiel
+```
+
+↓
+
+```text
+Expression
+```
+
+---
+
+Exemple :
+
+```text
+Stress chronique
+```
+
+↓
+
+```text
+Activation de voies biologiques
+```
+
+---
+
+# 273. Information Cost
+
+Toute information possède un coût.
+
+---
+
+Exemple :
+
+```text
+Surveillance immunitaire
+
+Réparation ADN
+
+Activité neuronale
+```
+
+consomment des ressources.
+
+---
+
+# 274. Information-Energy Coupling
+
+Couche centrale MDT.
+
+---
+
+```text
+Information
+      ↓
+Allocation
+      ↓
+Énergie
+      ↓
+Action
+```
+
+---
+
+et
+
+```text
+Action
+      ↓
+Nouvelle information
+```
+
+---
+
+Boucle fermée.
+
+---
+
+# 275. Biological Learning
+
+L'organisme apprend.
+
+---
+
+Exemples :
+
+```text
+Immunité
+
+Habitudes
+
+Adaptations
+
+Tolérances
+```
+
+---
+
+# 276. Information Resilience
+
+Capacité à conserver une organisation cohérente malgré le bruit.
+
+---
+
+# 277. Information Signature
+
+Chaque individu possède une signature informationnelle unique.
+
+---
+
+Composée de :
+
+```text
+Génome
+
+Historique
+
+Expositions
+
+Adaptations
+
+Apprentissages
+```
+
+---
+
+# 278. Objectifs V1
+
+Modéliser les flux d'information.
+
+---
+
+# 279. Objectifs V2
+
+Modéliser les mémoires biologiques.
+
+---
+
+# 280. Objectifs V3
+
+Modéliser les réseaux de communication.
+
+---
+
+# 281. Objectifs V4
+
+Modéliser les apprentissages biologiques.
+
+---
+
+# 282. Objectifs V5
+
+Construire un Information Twin.
+
+---
+
+# 283. Définition MDT
+
+Le vivant est un système informationnel adaptatif capable d'acquérir, transformer, mémoriser et transmettre de l'information afin de maintenir son organisation dans un environnement changeant.
+
+---
+
+FIN DE LA PARTIE 12 – BIOLOGICAL INFORMATION ENGINE
+
+# 284. Personalized Intervention & Trajectory Optimization Engine (PITOE)
+
+## 284.1 Vision
+
+Le Personalized Intervention & Trajectory Optimization Engine (PITOE) est responsable de l'identification, de l'évaluation et de la priorisation des actions susceptibles de modifier favorablement la trajectoire biologique d'un individu.
+
+Le PITOE constitue la couche de transformation du Medical Digital Twin.
+
+Son objectif n'est pas de décrire le passé.
+
+Son objectif est d'identifier les futurs possibles.
+
+---
+
+# 285. Principe Fondamental
+
+Toute trajectoire biologique peut être influencée.
+
+Toute influence possède :
+
+* un coût ;
+* un délai ;
+* une probabilité de réussite ;
+* une amplitude d'effet.
+
+Le rôle du PITOE est de rechercher les interventions offrant le meilleur rapport :
+
+```text
+Impact attendu
+──────────────
+Effort requis
+```
+
+---
+
+# 286. Théorie MDT
+
+Une intervention est définie comme :
+
+```text
+Modification volontaire
+d'une ou plusieurs pressions biologiques
+```
+
+afin de modifier une trajectoire.
+
+---
+
+## Exemple
+
+```text
+Sommeil
+```
+
+est une pression.
+
+---
+
+```text
+Nutrition
+```
+
+est une pression.
+
+---
+
+```text
+Activité physique
+```
+
+est une pression.
+
+---
+
+```text
+Traitement médical
+```
+
+est une pression.
+
+---
+
+# 287. Intervention Object
+
+## Définition
+
+Objet représentant une action potentielle.
+
+---
+
+### Structure
+
+```text
+Intervention
+
+├── Name
+├── Description
+├── Domain
+├── Cost
+├── Complexity
+├── Expected Impact
+├── Time To Effect
+├── Sustainability
+├── Confidence
+└── Evidence Level
+```
+
+---
+
+# 288. Intervention Domains
+
+## Lifestyle
+
+Exemples :
+
+```text
+Sommeil
+
+Activité physique
+
+Nutrition
+
+Hydratation
+```
+
+---
+
+## Behavioral
+
+Exemples :
+
+```text
+Gestion du stress
+
+Organisation
+
+Habitudes
+```
+
+---
+
+## Medical
+
+Exemples :
+
+```text
+Médicaments
+
+Vaccinations
+
+Rééducation
+```
+
+---
+
+## Environmental
+
+Exemples :
+
+```text
+Réduction pollution
+
+Réduction bruit
+
+Réduction UV
+```
+
+---
+
+## Occupational
+
+Exemples :
+
+```text
+Expositions professionnelles
+
+Ergonomie
+
+Travail posté
+```
+
+---
+
+# 289. Leverage Points
+
+## Définition
+
+Un Leverage Point est une variable dont la modification entraîne une amélioration disproportionnée du système.
+
+---
+
+## Exemple
+
+Patient A :
+
+```text
+Sommeil = principal facteur limitant
+```
+
+---
+
+Patient B :
+
+```text
+Activité physique = principal facteur limitant
+```
+
+---
+
+Patient C :
+
+```text
+Stress chronique = principal facteur limitant
+```
+
+---
+
+# 290. Leverage Score
+
+Chaque intervention reçoit :
+
+```text
+Leverage Score
+```
+
+---
+
+Mesure :
+
+```text
+Effet systémique potentiel
+```
+
+---
+
+## Échelle
+
+```text
+0 → 100
+```
+
+---
+
+# 291. Effort Score
+
+Mesure :
+
+```text
+Difficulté estimée
+```
+
+---
+
+Variables :
+
+```text
+Temps
+
+Complexité
+
+Contraintes
+```
+
+---
+
+# 292. Adoption Probability
+
+Probabilité qu'une intervention soit réellement suivie.
+
+---
+
+Variables :
+
+```text
+Historique
+
+Habitudes
+
+Motivation
+
+Contexte
+```
+
+---
+
+# 293. Sustainability Score
+
+Probabilité qu'une intervention soit maintenue dans le temps.
+
+---
+
+## Exemple
+
+```text
+Marcher 30 min
+```
+
+↓
+
+Soutenabilité élevée.
+
+---
+
+```text
+Sport intensif quotidien
+```
+
+↓
+
+Soutenabilité plus faible.
+
+---
+
+# 294. Intervention Impact Model
+
+Chaque intervention agit sur :
+
+```text
+Features
+```
+
+---
+
+Puis :
+
+```text
+States
+```
+
+---
+
+Puis :
+
+```text
+Systems
+```
+
+---
+
+Puis :
+
+```text
+Trajectory
+```
+
+---
+
+# 295. Impact Horizon
+
+Une intervention possède plusieurs horizons.
+
+---
+
+## Court terme
+
+```text
+Jours
+Semaines
+```
+
+---
+
+## Moyen terme
+
+```text
+Mois
+```
+
+---
+
+## Long terme
+
+```text
+Années
+```
+
+---
+
+# 296. Simulation Engine
+
+Le PITOE doit pouvoir simuler.
+
+---
+
+## Exemple
+
+Situation actuelle :
+
+```text
+Sleep Duration = 5h30
+```
+
+---
+
+Simulation :
+
+```text
+Sleep Duration = 7h30
+```
+
+pendant :
+
+```text
+6 mois
+```
+
+---
+
+Effets attendus :
+
+```text
+HRV ↑
+
+Inflammation ↓
+
+Recovery Capacity ↑
+
+Adaptive Debt ↓
+```
+
+---
+
+# 297. Intervention Scenarios
+
+Le système doit comparer plusieurs stratégies.
+
+---
+
+## Scénario A
+
+```text
+Sommeil uniquement
+```
+
+---
+
+## Scénario B
+
+```text
+Activité uniquement
+```
+
+---
+
+## Scénario C
+
+```text
+Sommeil + Activité
+```
+
+---
+
+# 298. Intervention Ranking
+
+Classement automatique.
+
+---
+
+Critères :
+
+```text
+Impact
+
+Effort
+
+Coût
+
+Temps
+
+Confiance
+```
+
+---
+
+# 299. Trajectory Optimization
+
+Objectif :
+
+Modifier la trajectoire future.
+
+---
+
+## Exemple
+
+Trajectoire actuelle :
+
+```text
+Adaptive Capacity ↓
+```
+
+---
+
+Trajectoire cible :
+
+```text
+Adaptive Capacity ↑
+```
+
+---
+
+# 300. Multi-Objective Optimization
+
+Les objectifs peuvent être multiples.
+
+---
+
+Exemples :
+
+```text
+Performance
+
+Longévité
+
+Récupération
+
+Bien-être
+
+Prévention
+```
+
+---
+
+# 301. Trade-Off Analysis
+
+Toute intervention possède des compromis.
+
+---
+
+## Exemple
+
+```text
+Sport intensif
+```
+
+↓
+
+```text
+Performance ↑
+
+Recovery Debt ↑
+```
+
+---
+
+# 302. Opportunity Cost
+
+Choisir une intervention signifie renoncer à une autre.
+
+---
+
+Le système doit estimer :
+
+```text
+Gain perdu
+```
+
+---
+
+# 303. Adaptive Return On Investment (AROI)
+
+Concept MDT.
+
+---
+
+Définition :
+
+```text
+Gain biologique obtenu
+
+────────────────────
+
+Effort fourni
+```
+
+---
+
+## Exemple
+
+Intervention :
+
+```text
++1 heure de sommeil
+```
+
+---
+
+Gain :
+
+```text
+Adaptive Capacity ↑
+
+Inflammation ↓
+
+Recovery ↑
+```
+
+---
+
+AROI élevé.
+
+---
+
+# 304. Intervention Portfolio
+
+Le système propose :
+
+```text
+Top 3
+Top 5
+Top 10
+```
+
+interventions.
+
+---
+
+# 305. Personalized Roadmap
+
+Construction d'une feuille de route individuelle.
+
+---
+
+## Horizon
+
+```text
+30 jours
+
+90 jours
+
+1 an
+
+5 ans
+```
+
+---
+
+# 306. Dynamic Reassessment
+
+Les recommandations sont recalculées en permanence.
+
+---
+
+Une intervention efficace aujourd'hui peut devenir inutile demain.
+
+---
+
+# 307. Health Momentum Integration
+
+Le moteur cherche à maximiser :
+
+```text
+Health Momentum
+```
+
+---
+
+# 308. Sustainability Integration
+
+Le moteur cherche à améliorer :
+
+```text
+Adaptive Capacity
+
+Adaptive Capital
+
+Sustainability Index
+```
+
+---
+
+# 309. Safety Layer
+
+Le système ne doit jamais :
+
+* poser un diagnostic ;
+* remplacer un médecin ;
+* recommander un traitement médical sans validation.
+
+---
+
+# 310. Explainability
+
+Toute recommandation doit être expliquée.
+
+---
+
+## Exemple
+
+```text
+Améliorer le sommeil
+```
+
+car :
+
+```text
+Sleep Debt élevé
+
+HRV basse
+
+Recovery Capacity faible
+```
+
+---
+
+# 311. Confidence Layer
+
+Chaque recommandation possède :
+
+```text
+Confidence Score
+```
+
+---
+
+## Sources
+
+```text
+Données
+
+Littérature
+
+Simulation
+
+Historique individuel
+```
+
+---
+
+# 312. V1
+
+Classement des leviers.
+
+---
+
+# 313. V2
+
+Simulations simples.
+
+---
+
+# 314. V3
+
+Scénarios multi-interventions.
+
+---
+
+# 315. V4
+
+Optimisation personnalisée.
+
+---
+
+# 316. V5
+
+Simulation continue des trajectoires.
+
+---
+
+# 317. Définition MDT
+
+Le PITOE identifie les actions ayant la plus forte probabilité de modifier favorablement la trajectoire biologique d'un individu, en tenant compte de son potentiel, de ses contraintes, de ses capacités adaptatives et de ses objectifs.
+
+---
+
+FIN DE LA PARTIE 13 – PERSONALIZED INTERVENTION & TRAJECTORY OPTIMIZATION ENGINE
