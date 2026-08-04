@@ -1,0 +1,526 @@
+/* ===========================================================
+   Medical Digital Twin
+   charts.css
+   Chart System v1.0
+=========================================================== */
+
+
+/* ===========================================================
+   CHART CONTAINER
+=========================================================== */
+
+.chart{
+
+    position:relative;
+
+    display:flex;
+
+    flex-direction:column;
+
+    width:100%;
+
+    gap:18px;
+
+}
+
+
+/* ===========================================================
+   CARD
+=========================================================== */
+
+.chart-card{
+
+    padding:22px;
+
+    border-radius:28px;
+
+    background:var(--color-surface);
+
+    border:1px solid rgba(255,255,255,.65);
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+
+/* ===========================================================
+   HEADER
+=========================================================== */
+
+.chart-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:16px;
+
+    margin-bottom:22px;
+
+}
+
+
+/* ===========================================================
+   TITLE
+=========================================================== */
+
+.chart-title{
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    color:var(--color-text);
+
+}
+
+.chart-subtitle{
+
+    margin-top:4px;
+
+    font-size:.78rem;
+
+    color:var(--color-text-secondary);
+
+}
+
+
+/* ===========================================================
+   ACTIONS
+=========================================================== */
+
+.chart-actions{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+
+/* ===========================================================
+   BODY
+=========================================================== */
+
+.chart-body{
+
+    position:relative;
+
+    width:100%;
+
+    height:240px;
+
+}
+
+
+/* ===========================================================
+   SMALL
+=========================================================== */
+
+.chart-sm{
+
+    height:160px;
+
+}
+
+.chart-md{
+
+    height:240px;
+
+}
+
+.chart-lg{
+
+    height:340px;
+
+}
+
+
+/* ===========================================================
+   SVG
+=========================================================== */
+
+.chart svg{
+
+    width:100%;
+
+    height:100%;
+
+}
+
+
+/* ===========================================================
+   GRID
+=========================================================== */
+
+.chart-grid{
+
+    stroke:rgba(15,23,42,.06);
+
+    stroke-width:1;
+
+}
+
+
+/* ===========================================================
+   AXIS
+=========================================================== */
+
+.chart-axis{
+
+    stroke:rgba(15,23,42,.12);
+
+}
+
+.chart-label{
+
+    fill:var(--color-text-light);
+
+    font-size:11px;
+
+}
+
+
+/* ===========================================================
+   LINE
+=========================================================== */
+
+.chart-line{
+
+    fill:none;
+
+    stroke:var(--color-primary);
+
+    stroke-width:3;
+
+    stroke-linecap:round;
+
+    stroke-linejoin:round;
+
+}
+
+
+/* ===========================================================
+   AREA
+=========================================================== */
+
+.chart-area{
+
+    opacity:.16;
+
+}
+
+
+/* ===========================================================
+   POINT
+=========================================================== */
+
+.chart-point{
+
+    fill:white;
+
+    stroke:var(--color-primary);
+
+    stroke-width:3;
+
+    transition:.25s;
+
+}
+
+.chart-point:hover{
+
+    r:7;
+
+}
+
+
+/* ===========================================================
+   BAR
+=========================================================== */
+
+.chart-bar{
+
+    fill:var(--color-primary);
+
+    rx:10;
+
+    transition:.25s;
+
+}
+
+.chart-bar:hover{
+
+    opacity:.8;
+
+}
+
+
+/* ===========================================================
+   RING
+=========================================================== */
+
+.chart-ring{
+
+    fill:none;
+
+    stroke-width:12;
+
+    stroke-linecap:round;
+
+}
+
+.chart-ring-bg{
+
+    stroke:rgba(15,23,42,.08);
+
+}
+
+.chart-ring-value{
+
+    stroke:var(--color-primary);
+
+}
+
+
+/* ===========================================================
+   GAUGE
+=========================================================== */
+
+.chart-gauge{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+/* ===========================================================
+   LEGEND
+=========================================================== */
+
+.chart-legend{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+    margin-top:18px;
+
+}
+
+.chart-legend-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.chart-legend-color{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+}
+
+
+/* ===========================================================
+   TOOLTIP
+=========================================================== */
+
+.chart-tooltip{
+
+    position:absolute;
+
+    pointer-events:none;
+
+    padding:10px 14px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.90);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:var(--shadow-md);
+
+    font-size:.76rem;
+
+    opacity:0;
+
+    transition:.20s;
+
+}
+
+.chart-tooltip.show{
+
+    opacity:1;
+
+}
+
+
+/* ===========================================================
+   EMPTY
+=========================================================== */
+
+.chart-empty{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:100%;
+
+    height:100%;
+
+    color:var(--color-text-light);
+
+}
+
+
+/* ===========================================================
+   LOADING
+=========================================================== */
+
+.chart-loading{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:100%;
+
+    height:100%;
+
+}
+
+
+/* ===========================================================
+   PERIOD SELECTOR
+=========================================================== */
+
+.chart-period{
+
+    display:flex;
+
+    gap:6px;
+
+    padding:4px;
+
+    border-radius:999px;
+
+    background:var(--color-surface-alt);
+
+}
+
+.chart-period button{
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:.75rem;
+
+    font-weight:600;
+
+}
+
+.chart-period button.active{
+
+    background:white;
+
+    color:var(--color-primary);
+
+    box-shadow:var(--shadow-xs);
+
+}
+
+
+/* ===========================================================
+   COLORS
+=========================================================== */
+
+.chart-blue{
+
+    --chart-color:#3B82F6;
+
+}
+
+.chart-green{
+
+    --chart-color:#22C55E;
+
+}
+
+.chart-orange{
+
+    --chart-color:#F59E0B;
+
+}
+
+.chart-red{
+
+    --chart-color:#EF4444;
+
+}
+
+.chart-purple{
+
+    --chart-color:#8B5CF6;
+
+}
+
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme:dark){
+
+.chart-card{
+
+    border:1px solid rgba(255,255,255,.05);
+
+}
+
+.chart-grid{
+
+    stroke:rgba(255,255,255,.05);
+
+}
+
+.chart-axis{
+
+    stroke:rgba(255,255,255,.10);
+
+}
+
+.chart-tooltip{
+
+    background:rgba(15,23,42,.92);
+
+}
+
+.chart-period button.active{
+
+    background:var(--color-surface);
+
+}
+
+}
