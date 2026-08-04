@@ -6,7 +6,7 @@
  * Version 5.0
  * ==========================================================
  */
-
+import State from "../state/index.js";
 class Store {
 
     constructor() {
@@ -35,27 +35,7 @@ class Store {
 
     reset() {
 
-        this.state = {
-
-            patient: {},
-
-            health: {},
-
-            body: {},
-
-            environment: {},
-
-            labs: {},
-
-            timeline: {},
-
-            simulation: {},
-
-            settings: {},
-
-            ui: {}
-
-        };
+        this.state = structuredClone(State);;
 
         this.pendingNotifications.clear();
 
