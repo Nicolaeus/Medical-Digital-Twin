@@ -2,7 +2,7 @@
    Medical Digital Twin
    bottomnav.css
    Floating Dock v2.0
-=========================================================== */
+   =========================================================== */
 
 /* ===========================================================
    DOCK
@@ -34,14 +34,24 @@
 
     background:var(--color-glass);
 
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
 
     border:1px solid var(--color-glass-border);
 
     box-shadow:var(--shadow-floating);
 
     z-index:var(--z-bottom-nav);
+
+    transition:
+
+        transform .35s cubic-bezier(.2,.8,.2,1),
+
+        background .25s,
+
+        border-color .25s,
+
+        box-shadow .25s;
 
 }
 
@@ -59,9 +69,9 @@
 
     align-items:center;
 
-    justify-content:space-evenly;
+    justify-content:space-between;
 
-    gap:8px;
+    gap:6px;
 
 }
 
@@ -71,17 +81,9 @@
 
 .bottom-nav-button{
 
-    flex:1;
+    flex:0 0 54px;
 
     height:54px;
-
-    border:none;
-
-    outline:none;
-
-    background:transparent;
-
-    border-radius:20px;
 
     display:flex;
 
@@ -89,13 +91,41 @@
 
     justify-content:center;
 
-    gap:8px;
+    gap:0;
+
+    overflow:hidden;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:999px;
+
+    background:transparent;
+
+    color:var(--color-text-secondary);
 
     cursor:pointer;
 
-    color:var(--color-text-light);
+    user-select:none;
 
-    transition:all .25s ease;
+    -webkit-tap-highlight-color:transparent;
+
+    transition:
+
+        flex .35s cubic-bezier(.2,.8,.2,1),
+
+        width .35s cubic-bezier(.2,.8,.2,1),
+
+        color .25s,
+
+        background .30s,
+
+        border-color .30s,
+
+        box-shadow .30s,
+
+        transform .20s;
 
 }
 
@@ -105,9 +135,25 @@
 
 .bottom-nav-icon{
 
+    width:24px;
+
+    height:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
     font-size:22px;
 
     line-height:1;
+
+    transition:
+
+        transform .30s cubic-bezier(.2,.8,.2,1);
 
 }
 
@@ -117,27 +163,64 @@
 
 .bottom-nav-label{
 
-    font-size:.80rem;
+    max-width:0;
 
-    font-weight:600;
+    overflow:hidden;
+
+    opacity:0;
+
+    margin-left:0;
 
     white-space:nowrap;
 
-}
+    font-size:.82rem;
 
+    font-weight:600;
+
+    transition:
+
+        max-width .30s ease,
+
+        opacity .20s ease,
+
+        margin-left .30s ease;
+
+}
 /* ===========================================================
    ACTIVE
 =========================================================== */
 
 .bottom-nav-button.active{
 
-    flex:1.8;
+    flex:2.2;
+
+    justify-content:center;
+
+    gap:10px;
 
     color:white;
 
     background:var(--gradient-primary);
 
-    box-shadow:var(--shadow-floating);
+    box-shadow:
+
+        0 10px 24px rgba(37,99,235,.22);
+
+}
+
+.bottom-nav-button.active .bottom-nav-icon{
+
+    transform:scale(1.08);
+
+}
+
+.bottom-nav-button.active .bottom-nav-label{
+
+    max-width:140px;
+
+    opacity:1;
+
+    margin-left:2px;
 
 }
 
@@ -149,13 +232,9 @@
 
     color:var(--color-primary);
 
-    transform:translateY(-2px);
+    transform:translateY(-3px);
 
 }
-
-/* ===========================================================
-   ACTIVE HOVER
-=========================================================== */
 
 .bottom-nav-button.active:hover{
 
@@ -169,7 +248,11 @@
 
 .bottom-nav-button:active{
 
-    transform:scale(.96);
+    transform:
+
+        translateY(-1px)
+
+        scale(.95);
 
 }
 
@@ -185,6 +268,94 @@
 
     right:6px;
 
+    min-width:16px;
+
+    height:16px;
+
+    padding:0 5px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:999px;
+
+    background:var(--color-danger);
+
+    color:white;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    box-shadow:
+
+        0 2px 8px rgba(239,68,68,.30);
+
+}
+
+/* ===========================================================
+   LIVE INDICATOR
+=========================================================== */
+
+.bottom-nav-live{
+
+    position:absolute;
+
+    top:8px;
+
+    right:8px;
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--color-success);
+
+    box-shadow:
+
+        0 0 10px rgba(34,197,94,.55);
+
+    animation:
+
+        bottom-nav-live-pulse
+
+        2s infinite;
+
+}
+
+@keyframes bottom-nav-live-pulse{
+
+    0%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        transform:scale(1.45);
+
+        opacity:.45;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
 }
 
 /* ===========================================================
@@ -197,7 +368,9 @@
 
     pointer-events:none;
 
-    transform:translate(-50%,120px);
+    transform:
+
+        translate(-50%,120px);
 
 }
 
@@ -205,12 +378,64 @@
 
     opacity:1;
 
-    transform:translate(-50%,0);
+    transform:
+
+        translate(-50%,0);
 
 }
 
 /* ===========================================================
-   DARK
+   RESPONSIVE
+=========================================================== */
+
+@media (max-width:600px){
+
+    .bottom-nav{
+
+        width:calc(100% - 16px);
+
+        height:70px;
+
+        padding:8px;
+
+    }
+
+    .bottom-nav-container{
+
+        gap:4px;
+
+    }
+
+    .bottom-nav-button{
+
+        flex:0 0 48px;
+
+        height:48px;
+
+    }
+
+    .bottom-nav-button.active{
+
+        flex:2;
+
+    }
+
+    .bottom-nav-icon{
+
+        font-size:20px;
+
+    }
+
+    .bottom-nav-label{
+
+        font-size:.74rem;
+
+    }
+
+}
+
+/* ===========================================================
+   DARK MODE
 =========================================================== */
 
 @media (prefers-color-scheme:dark){
@@ -220,6 +445,176 @@
         background:var(--color-glass-dark);
 
         border-color:var(--color-glass-border-dark);
+
+        box-shadow:var(--shadow-floating);
+
+    }
+
+    .bottom-nav-button{
+
+        color:var(--color-text-secondary);
+
+    }
+
+    .bottom-nav-button.active{
+
+        color:white;
+
+    }
+
+}
+
+/* ===========================================================
+   GLASS EFFECT
+=========================================================== */
+
+.bottom-nav::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:inherit;
+
+    pointer-events:none;
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.25),
+
+            rgba(255,255,255,0)
+
+        );
+
+    opacity:.75;
+
+}
+
+.bottom-nav::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:1px;
+
+    border-radius:inherit;
+
+    pointer-events:none;
+
+    border:1px solid rgba(255,255,255,.18);
+
+    opacity:.55;
+
+}
+
+/* ===========================================================
+   FLOATING EFFECT
+=========================================================== */
+
+.bottom-nav{
+
+    animation:
+
+        bottom-nav-float
+
+        5s ease-in-out infinite;
+
+}
+
+@keyframes bottom-nav-float{
+
+    0%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(-2px);
+
+    }
+
+    100%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(0);
+
+    }
+
+}
+
+/* ===========================================================
+   FOCUS
+=========================================================== */
+
+.bottom-nav-button:focus-visible{
+
+    outline:none;
+
+    box-shadow:
+
+        0 0 0 3px rgba(59,130,246,.25),
+
+        0 10px 24px rgba(37,99,235,.18);
+
+}
+
+/* ===========================================================
+   TRANSITIONS
+=========================================================== */
+
+.bottom-nav,
+
+.bottom-nav *{
+
+    transition:
+
+        color .25s ease,
+
+        background .25s ease,
+
+        border-color .25s ease,
+
+        box-shadow .25s ease,
+
+        opacity .25s ease,
+
+        transform .25s ease;
+
+}
+
+/* ===========================================================
+   ACCESSIBILITY
+=========================================================== */
+
+@media (prefers-reduced-motion:reduce){
+
+    .bottom-nav,
+
+    .bottom-nav *{
+
+        animation:none !important;
+
+        transition:none !important;
 
     }
 
