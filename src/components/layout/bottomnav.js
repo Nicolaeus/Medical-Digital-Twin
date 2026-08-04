@@ -9,6 +9,8 @@
 import BaseComponent from "../base/BaseComponent.js";
 import Store from "../../core/store.js";
 import Router from "../../core/router.js";
+import Navigation from "../../config/navigation.js";
+
 
 export default class BottomNav extends BaseComponent {
 
@@ -20,39 +22,7 @@ export default class BottomNav extends BaseComponent {
 
         });
 
-        this.items = [
-
-            {
-                id: "dashboard",
-                icon: "🏠",
-                label: "Home"
-            },
-
-            {
-                id: "body",
-                icon: "🫀",
-                label: "Body"
-            },
-
-            {
-                id: "timeline",
-                icon: "📅",
-                label: "Timeline"
-            },
-
-            {
-                id: "insights",
-                icon: "🧠",
-                label: "Insights"
-            },
-
-            {
-                id: "profile",
-                icon: "👤",
-                label: "Profile"
-            }
-
-        ];
+        this.items = Navigation;
 
     }
 
