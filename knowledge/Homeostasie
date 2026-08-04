@@ -1,0 +1,341 @@
+# Homeostasis
+
+Version : 1.0.0
+
+Status : Living Specification
+
+---
+
+# Définition
+
+L'homéostasie est la capacité de Homo sapiens à maintenir un équilibre interne malgré les variations permanentes de son environnement.
+
+Elle constitue l'une des propriétés fondamentales du vivant.
+
+Le Human Knowledge Model considère l'homéostasie comme le principe organisateur de la physiologie.
+
+---
+
+# Objectif
+
+Le maintien de la vie repose sur la stabilité dynamique de nombreuses variables biologiques.
+
+Cette stabilité n'est jamais absolue.
+
+Elle résulte d'ajustements continus.
+
+---
+
+# Principe fondamental
+
+L'homéostasie n'est pas un état fixe.
+
+C'est un équilibre dynamique.
+
+Le Human Knowledge Model considère qu'un organisme vivant oscille continuellement autour de valeurs cibles.
+
+---
+
+# Les niveaux d'homéostasie
+
+Molécule
+
+↓
+
+Cellule
+
+↓
+
+Tissu
+
+↓
+
+Organe
+
+↓
+
+Système
+
+↓
+
+Organisme
+
+Chaque niveau influence les autres.
+
+---
+
+# Les grandes variables régulées
+
+## Température corporelle
+
+---
+
+## Pression artérielle
+
+---
+
+## Glycémie
+
+---
+
+## pH sanguin
+
+---
+
+## Pression partielle en oxygène
+
+---
+
+## Pression partielle en dioxyde de carbone
+
+---
+
+## Osmolarité
+
+---
+
+## Équilibre hydro-électrolytique
+
+---
+
+## Volume sanguin
+
+---
+
+## Calcium
+
+---
+
+## Potassium
+
+---
+
+## Sodium
+
+---
+
+## Hormones
+
+---
+
+## Métabolisme énergétique
+
+---
+
+# Les mécanismes de régulation
+
+Feedback négatif
+
+↓
+
+Compensation
+
+↓
+
+Adaptation
+
+↓
+
+Retour vers l'équilibre
+
+---
+
+Certaines situations utilisent un feedback positif.
+
+Exemple :
+
+Coagulation
+
+Accouchement
+
+---
+
+# Les principaux régulateurs
+
+## Système nerveux
+
+Réponse rapide
+
+---
+
+## Système endocrinien
+
+Réponse prolongée
+
+---
+
+## Reins
+
+Régulation hydrique
+
+Régulation ionique
+
+Régulation acido-basique
+
+---
+
+## Poumons
+
+Échanges gazeux
+
+Équilibre acido-basique
+
+---
+
+## Foie
+
+Métabolisme
+
+Stockage
+
+Détoxification
+
+---
+
+## Cœur
+
+Perfusion
+
+Distribution
+
+---
+
+# Les perturbations
+
+Une perturbation peut être :
+
+Interne
+
+ou
+
+Externe
+
+Exemples :
+
+Effort
+
+Traumatisme
+
+Radiations
+
+Infection
+
+Déshydratation
+
+Altitude
+
+Température
+
+Stress
+
+Médicaments
+
+Polluants
+
+---
+
+# Réponse adaptative
+
+Toute perturbation déclenche :
+
+Détection
+
+↓
+
+Analyse
+
+↓
+
+Réponse
+
+↓
+
+Compensation
+
+↓
+
+Nouvel équilibre
+
+---
+
+# Les limites
+
+L'homéostasie possède des limites.
+
+Lorsque les capacités d'adaptation sont dépassées :
+
+↓
+
+Décompensation
+
+↓
+
+Maladie
+
+↓
+
+Défaillance d'organe
+
+↓
+
+Décès
+
+---
+
+# Vieillissement
+
+Les capacités homéostatiques diminuent progressivement avec l'âge.
+
+Cette diminution constitue une caractéristique normale du vieillissement.
+
+---
+
+# Observations
+
+L'état homéostatique peut être évalué par :
+
+Signes cliniques
+
+Biologie
+
+Imagerie
+
+Constantes physiologiques
+
+Capteurs
+
+Objets connectés
+
+---
+
+# Simulation
+
+Le MDT doit être capable de simuler :
+
+Une perturbation
+
+↓
+
+La réponse physiologique
+
+↓
+
+Le retour à l'équilibre
+
+ou
+
+↓
+
+La décompensation
+
+---
+
+# Philosophie
+
+La maladie n'est pas toujours une anomalie anatomique.
+
+Très souvent, elle correspond à une rupture de l'homéostasie.
+
+Le Human Knowledge Model considère que la compréhension de l'homéostasie est indispensable pour comprendre la santé, la maladie et les traitements.
+
+Le Medical Digital Twin doit être capable de représenter, mesurer et simuler les mécanismes homéostatiques de Homo sapiens.
