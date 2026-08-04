@@ -13,14 +13,14 @@ import API from "./api.js";
 import Header from "../components/layout/Header.js";
 import BottomNav from "../components/layout/BottomNav.js";
 
-import Dashboard from "../modules/dashboard/DashboardModule.js";
-import Body from "../modules/body/BodyModule.js";
-import Imaging from "../modules/imaging/ImagingModule.js";
-import Timeline from "../modules/timeline/TimelineModule.js";
-import Insights from "../modules/insights/InsightsModule.js";
-import Profile from "../modules/profile/ProfileModule.js";
-import Simulation from "../modules/simulation/SimulationModule.js";
-import Settings from "../modules/settings/SettingsModule.js";
+import DashboardModule from "../modules/dashboard/DashboardModule.js";
+import BodyModule from "../modules/body/BodyModule.js";
+import ImagingModule from "../modules/imaging/ImagingModule.js";
+import TimelineModule from "../modules/timeline/TimelineModule.js";
+import InsightsModule from "../modules/insights/InsightsModule.js";
+import ProfileModule from "../modules/profile/ProfileModule.js";
+import SimulationModule from "../modules/simulation/SimulationModule.js";
+import SettingsModule from "../modules/settings/SettingsModule.js";
 
 class App {
 
