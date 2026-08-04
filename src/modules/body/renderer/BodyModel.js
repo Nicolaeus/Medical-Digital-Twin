@@ -6,9 +6,6 @@
  * ==========================================================
  */
 
-import * as BABYLON from "@babylonjs/core";
-import "@babylonjs/loaders/glTF";
-
 export default class BodyModel {
 
     constructor(scene) {
