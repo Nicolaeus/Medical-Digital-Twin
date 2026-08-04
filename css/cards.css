@@ -1,0 +1,505 @@
+/* ===========================================================
+   Medical Digital Twin
+   cards.css
+   Card System v1.0
+=========================================================== */
+
+/* ===========================================================
+   GRID
+=========================================================== */
+
+.cards {
+
+    display: grid;
+
+    gap: var(--space-lg);
+
+    margin-bottom: var(--space-xl);
+
+}
+
+.cards-2 {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: var(--space-md);
+
+}
+
+.cards-3 {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: var(--space-md);
+
+}
+
+/* ===========================================================
+   CARD
+=========================================================== */
+
+.card {
+
+    position: relative;
+
+    background: var(--color-surface);
+
+    border-radius: var(--radius-xl);
+
+    padding: var(--card-padding);
+
+    border: 1px solid rgba(255,255,255,.75);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+
+}
+
+/* ===========================================================
+   HOVER
+=========================================================== */
+
+.card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+
+}
+
+.card:active {
+
+    transform: scale(.985);
+
+}
+
+/* ===========================================================
+   SHINE EFFECT
+=========================================================== */
+
+.card::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.18),
+            transparent
+        );
+
+    opacity: 0;
+
+    transition: .35s;
+
+    pointer-events: none;
+
+}
+
+.card:hover::before {
+
+    opacity: 1;
+
+}
+
+/* ===========================================================
+   TITLE
+=========================================================== */
+
+.card-title {
+
+    font-size: var(--font-sm);
+
+    font-weight: var(--weight-semibold);
+
+    color: var(--color-text-secondary);
+
+    margin-bottom: var(--space-sm);
+
+}
+
+/* ===========================================================
+   BIG VALUE
+=========================================================== */
+
+.card-value {
+
+    font-size: var(--font-3xl);
+
+    font-weight: var(--weight-bold);
+
+    color: var(--color-text);
+
+    line-height: 1;
+
+}
+
+/* ===========================================================
+   LABEL
+=========================================================== */
+
+.card-label {
+
+    margin-top: var(--space-xs);
+
+    color: var(--color-text-light);
+
+    font-size: var(--font-xs);
+
+}
+
+/* ===========================================================
+   DESCRIPTION
+=========================================================== */
+
+.card-description {
+
+    margin-top: var(--space-md);
+
+    color: var(--color-text-secondary);
+
+    line-height: 1.6;
+
+    font-size: var(--font-sm);
+
+}
+
+/* ===========================================================
+   ICON
+=========================================================== */
+
+.card-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(59,130,246,.08);
+
+    font-size: 24px;
+
+    margin-bottom: var(--space-md);
+
+}
+
+/* ===========================================================
+   HEADER
+=========================================================== */
+
+.card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: var(--space-lg);
+
+}
+
+/* ===========================================================
+   FOOTER
+=========================================================== */
+
+.card-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: var(--space-lg);
+
+}
+
+/* ===========================================================
+   STATUS
+=========================================================== */
+
+.status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: var(--radius-pill);
+
+    font-size: var(--font-xs);
+
+    font-weight: var(--weight-semibold);
+
+}
+
+.status::before {
+
+    content: "";
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+}
+
+/* ===========================================================
+   SUCCESS
+=========================================================== */
+
+.status-success {
+
+    background: rgba(34,197,94,.12);
+
+    color: var(--color-success);
+
+}
+
+.status-success::before {
+
+    background: var(--color-success);
+
+}
+
+/* ===========================================================
+   WARNING
+=========================================================== */
+
+.status-warning {
+
+    background: rgba(245,158,11,.12);
+
+    color: var(--color-warning);
+
+}
+
+.status-warning::before {
+
+    background: var(--color-warning);
+
+}
+
+/* ===========================================================
+   DANGER
+=========================================================== */
+
+.status-danger {
+
+    background: rgba(239,68,68,.12);
+
+    color: var(--color-danger);
+
+}
+
+.status-danger::before {
+
+    background: var(--color-danger);
+
+}
+
+/* ===========================================================
+   PRIMARY
+=========================================================== */
+
+.card-primary {
+
+    background: var(--gradient-primary);
+
+    color: white;
+
+}
+
+.card-primary .card-title,
+.card-primary .card-label,
+.card-primary .card-description {
+
+    color: rgba(255,255,255,.88);
+
+}
+
+.card-primary .card-value {
+
+    color: white;
+
+}
+
+/* ===========================================================
+   METRIC
+=========================================================== */
+
+.metric {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: var(--space-md);
+
+}
+
+.metric-label {
+
+    color: var(--color-text-secondary);
+
+    font-size: var(--font-sm);
+
+}
+
+.metric-value {
+
+    font-weight: var(--weight-bold);
+
+}
+
+/* ===========================================================
+   PROGRESS BAR
+=========================================================== */
+
+.progress {
+
+    width: 100%;
+
+    height: 10px;
+
+    margin-top: var(--space-md);
+
+    border-radius: var(--radius-pill);
+
+    background: rgba(15,23,42,.08);
+
+    overflow: hidden;
+
+}
+
+.progress-bar {
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--gradient-primary);
+
+    transition: width .45s ease;
+
+}
+
+/* ===========================================================
+   BADGE
+=========================================================== */
+
+.badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 6px 12px;
+
+    border-radius: var(--radius-pill);
+
+    background: rgba(59,130,246,.08);
+
+    color: var(--color-primary);
+
+    font-size: var(--font-xs);
+
+    font-weight: var(--weight-semibold);
+
+}
+
+/* ===========================================================
+   GLASS
+=========================================================== */
+
+.card-glass {
+
+    background: rgba(255,255,255,.65);
+
+    backdrop-filter: blur(22px);
+
+    -webkit-backdrop-filter: blur(22px);
+
+}
+
+/* ===========================================================
+   COMPACT
+=========================================================== */
+
+.card-compact {
+
+    padding: var(--space-md);
+
+}
+
+/* ===========================================================
+   LARGE
+=========================================================== */
+
+.card-large {
+
+    min-height: 220px;
+
+}
+
+/* ===========================================================
+   FULL WIDTH
+=========================================================== */
+
+.card-full {
+
+    width: 100%;
+
+}
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme: dark) {
+
+.card {
+
+    border: 1px solid rgba(255,255,255,.04);
+
+}
+
+.card-glass {
+
+    background: rgba(15,23,42,.55);
+
+}
+
+}
