@@ -247,6 +247,15 @@ class Router {
 
         }
 
+
+        Store.set(
+
+            "ui.navigation.current",
+        
+            route
+        
+        );
+        
         /**
          * Save current state
          */
