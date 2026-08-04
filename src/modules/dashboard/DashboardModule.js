@@ -2,26 +2,22 @@
  * ==========================================================
  * Medical Digital Twin
  * DashboardModule.js
- * Main Dashboard
+ * Dashboard Module
  * ==========================================================
  */
 
 import Header from "../../components/layout/Header.js";
 import BottomNav from "../../components/layout/BottomNav.js";
 
-import LayerToolbar from "../../components/body/LayerToolbar.js";
-import OrganWidget from "../../components/body/OrganWidget.js";
-import LegendWidget from "../../components/body/LegendWidget.js";
+import LayerToolbar from "../body/widgets/LayerToolbar.js";
+import OrganWidget from "../body/widgets/OrganWidget.js";
+import LegendWidget from "../body/widgets/LegendWidget.js";
 
 import BodyModule from "../body/BodyModule.js";
 
 export default class DashboardModule {
 
-    constructor(container) {
-
-        this.container = container;
-
-        this.layout = null;
+    constructor() {
 
         this.header = null;
 
@@ -38,12 +34,34 @@ export default class DashboardModule {
     }
 
     /* ======================================================
-     * Initialize
+     * Render
      * ====================================================== */
 
-    async init() {
+    async render(root) {
 
-        this.createLayout();
+        this.root = root;
+
+        this.root.innerHTML = `
+
+<div class="dashboard">
+
+    <header class="dashboard-header"></header>
+
+    <main class="dashboard-body"></main>
+
+    <aside class="dashboard-toolbar"></aside>
+
+    <aside class="dashboard-organ"></aside>
+
+    <aside class="dashboard-legend"></aside>
+
+    <footer class="dashboard-bottomnav"></footer>
+
+</div>
+
+`;
+
+        this.cacheDOM();
 
         await this.createHeader();
 
@@ -53,35 +71,45 @@ export default class DashboardModule {
 
         await this.createWidgets();
 
-        await this.createBottomNavigation();
+        await this.createBottomNav();
 
     }
 
     /* ======================================================
-     * Layout
+     * Cache DOM
      * ====================================================== */
 
-    createLayout() {
+    cacheDOM() {
 
-        this.container.innerHTML = `
+        this.headerRoot =
+            this.root.querySelector(
+                ".dashboard-header"
+            );
 
-<div id="dashboard">
+        this.bodyRoot =
+            this.root.querySelector(
+                ".dashboard-body"
+            );
 
-    <header id="dashboard-header"></header>
+        this.toolbarRoot =
+            this.root.querySelector(
+                ".dashboard-toolbar"
+            );
 
-    <main id="dashboard-body"></main>
+        this.organRoot =
+            this.root.querySelector(
+                ".dashboard-organ"
+            );
 
-    <aside id="dashboard-toolbar"></aside>
+        this.legendRoot =
+            this.root.querySelector(
+                ".dashboard-legend"
+            );
 
-    <aside id="dashboard-organ"></aside>
-
-    <aside id="dashboard-legend"></aside>
-
-    <footer id="dashboard-bottomnav"></footer>
-
-</div>
-
-`;
+        this.bottomRoot =
+            this.root.querySelector(
+                ".dashboard-bottomnav"
+            );
 
     }
 
@@ -95,19 +123,9 @@ export default class DashboardModule {
 
         await this.header.render();
 
-        document
-
-            .getElementById(
-
-                "dashboard-header"
-
-            )
-
-            .appendChild(
-
-                this.header.element
-
-            );
+        this.headerRoot.appendChild(
+            this.header.element
+        );
 
     }
 
@@ -119,14 +137,8 @@ export default class DashboardModule {
 
         this.body = new BodyModule();
 
-        await this.body.init(
-
-            document.getElementById(
-
-                "dashboard-body"
-
-            )
-
+        await this.body.render(
+            this.bodyRoot
         );
 
     }
@@ -140,26 +152,14 @@ export default class DashboardModule {
         this.toolbar = new LayerToolbar();
 
         this.toolbar.setControls(
-
             this.body.controls
-
         );
 
         await this.toolbar.render();
 
-        document
-
-            .getElementById(
-
-                "dashboard-toolbar"
-
-            )
-
-            .appendChild(
-
-                this.toolbar.element
-
-            );
+        this.toolbarRoot.appendChild(
+            this.toolbar.element
+        );
 
     }
 
@@ -169,75 +169,71 @@ export default class DashboardModule {
 
     async createWidgets() {
 
-        this.organWidget =
-
-            new OrganWidget();
-
-        await this.organWidget.init();
+        this.organWidget = new OrganWidget();
 
         await this.organWidget.render();
 
-        document
+        this.organRoot.appendChild(
+            this.organWidget.element
+        );
 
-            .getElementById(
-
-                "dashboard-organ"
-
-            )
-
-            .appendChild(
-
-                this.organWidget.element
-
-            );
-
-        this.legendWidget =
-
-            new LegendWidget();
+        this.legendWidget = new LegendWidget();
 
         await this.legendWidget.render();
 
-        document
-
-            .getElementById(
-
-                "dashboard-legend"
-
-            )
-
-            .appendChild(
-
-                this.legendWidget.element
-
-            );
+        this.legendRoot.appendChild(
+            this.legendWidget.element
+        );
 
     }
 
     /* ======================================================
-     * Navigation
+     * Bottom Navigation
      * ====================================================== */
 
-    async createBottomNavigation() {
+    async createBottomNav() {
 
-        this.bottomNav =
-
-            new BottomNav();
+        this.bottomNav = new BottomNav();
 
         await this.bottomNav.render();
 
-        document
+        this.bottomRoot.appendChild(
+            this.bottomNav.element
+        );
 
-            .getElementById(
+    }
 
-                "dashboard-bottomnav"
+    /* ======================================================
+     * Router Hooks
+     * ====================================================== */
 
-            )
+    bindEvents() {
 
-            .appendChild(
+        //
+        // Dashboard events
+        //
 
-                this.bottomNav.element
+    }
 
-            );
+    async beforeEnter() {}
+
+    async afterEnter() {}
+
+    async beforeLeave() {}
+
+    async destroy() {
+
+        this.header?.destroy?.();
+
+        this.body?.destroy?.();
+
+        this.toolbar?.destroy?.();
+
+        this.organWidget?.destroy?.();
+
+        this.legendWidget?.destroy?.();
+
+        this.bottomNav?.destroy?.();
 
     }
 
