@@ -2,7 +2,7 @@
  * ==========================================================
  * Medical Digital Twin
  * app.js
- * Main Application Bootstrap
+ * Application Bootstrap
  * ==========================================================
  */
 
@@ -50,7 +50,9 @@ class App {
 
             await API.init();
 
-            await this.createLayout();
+            this.createApplicationLayout();
+
+            await this.createOverlay();
 
             Router.init();
 
@@ -93,16 +95,38 @@ class App {
     }
 
     /* ======================================================
-     * Global UI
+     * Application Layout
      * ====================================================== */
 
-    async createLayout(){
+    createApplicationLayout(){
+
+        document.body.innerHTML += `
+
+            <div id="overlay-root"></div>
+
+        `;
+
+        this.overlayRoot =
+
+            document.getElementById(
+
+                "overlay-root"
+
+            );
+
+    }
+
+    /* ======================================================
+     * Overlay
+     * ====================================================== */
+
+    async createOverlay(){
 
         this.header = new Header();
 
         await this.header.render();
 
-        document.body.appendChild(
+        this.overlayRoot.appendChild(
 
             this.header.element
 
@@ -112,7 +136,7 @@ class App {
 
         await this.bottomNav.render();
 
-        document.body.appendChild(
+        this.overlayRoot.appendChild(
 
             this.bottomNav.element
 
