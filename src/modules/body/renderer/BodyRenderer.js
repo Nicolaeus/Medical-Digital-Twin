@@ -24,13 +24,15 @@ export default class BodyRenderer {
 
         this.initialized = false;
 
+        this.onResize = null;
+
     }
 
     /* ======================================================
      * Initialize
      * ====================================================== */
 
-    async init(container) {
+    async render(container) {
 
         if (this.initialized) {
 
@@ -54,18 +56,18 @@ export default class BodyRenderer {
 
         await this.scene.init();
 
-        this.engine.runRenderLoop(() => {
-
-            this.scene.render();
+        this.startRenderLoop();
 
         });
 
+        this.onResize = this.resize.bind(this);
+
         window.addEventListener(
-
+        
             "resize",
-
-            () => this.resize()
-
+        
+            this.onResize
+        
         );
 
         this.initialized = true;
@@ -87,6 +89,8 @@ export default class BodyRenderer {
         this.canvas.className =
 
             "body-canvas";
+
+        this.canvas.tabIndex = 1;
 
         this.container.appendChild(
 
@@ -122,6 +126,21 @@ export default class BodyRenderer {
 
     }
 
+
+    /* ======================================================
+     * Render Loop
+     * ====================================================== */
+    
+    startRenderLoop() {
+    
+        this.engine.runRenderLoop(() => {
+    
+            this.scene?.render();
+    
+        });
+    
+    }
+    
     /* ======================================================
      * Refresh
      * ====================================================== */
@@ -148,13 +167,13 @@ export default class BodyRenderer {
 
     show() {
 
-        this.canvas.hidden = false;
+        this.canvas.style.display = "";
 
     }
 
     hide() {
 
-        this.canvas.hidden = true;
+        this.canvas.style.display = "none";
 
     }
 
@@ -163,6 +182,20 @@ export default class BodyRenderer {
      * ====================================================== */
 
     destroy() {
+
+        this.engine?.stopRenderLoop();
+        
+        if (this.onResize) {
+        
+            window.removeEventListener(
+        
+                "resize",
+        
+                this.onResize
+        
+            );
+        
+        }
 
         this.scene?.destroy();
 
@@ -177,6 +210,10 @@ export default class BodyRenderer {
         this.canvas = null;
 
         this.initialized = false;
+
+        this.container = null;
+
+        this.onResize = null;
 
     }
 
