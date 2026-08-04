@@ -1,0 +1,504 @@
+/* ===========================================================
+   Medical Digital Twin
+   app.css
+   Global Application Styles
+   Version 1.0
+=========================================================== */
+
+/* ===========================================================
+   BODY
+=========================================================== */
+
+body{
+
+    background:var(--gradient-background);
+
+    color:var(--color-text);
+
+    font-family:var(--font-family);
+
+}
+
+
+/* ===========================================================
+   APP
+=========================================================== */
+
+#app{
+
+    background:transparent;
+
+}
+
+
+/* ===========================================================
+   MAIN CONTENT
+=========================================================== */
+
+#content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:var(--space-lg);
+
+}
+
+
+/* ===========================================================
+   SECTION
+=========================================================== */
+
+section{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:var(--space-md);
+
+    margin-bottom:var(--space-xl);
+
+}
+
+
+/* ===========================================================
+   TITLES
+=========================================================== */
+
+h1{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    line-height:1.1;
+
+}
+
+h2{
+
+    font-size:1.45rem;
+
+    font-weight:700;
+
+}
+
+h3{
+
+    font-size:1.1rem;
+
+    font-weight:600;
+
+}
+
+
+/* ===========================================================
+   TEXT
+=========================================================== */
+
+p{
+
+    color:var(--color-text-secondary);
+
+    line-height:1.6;
+
+}
+
+
+/* ===========================================================
+   SMALL LABEL
+=========================================================== */
+
+.label{
+
+    font-size:.78rem;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    color:var(--color-text-light);
+
+    font-weight:600;
+
+}
+
+
+/* ===========================================================
+   VALUE
+=========================================================== */
+
+.value{
+
+    font-size:2.4rem;
+
+    font-weight:700;
+
+    line-height:1;
+
+}
+
+
+/* ===========================================================
+   SUBVALUE
+=========================================================== */
+
+.subvalue{
+
+    font-size:1rem;
+
+    color:var(--color-text-secondary);
+
+}
+
+
+/* ===========================================================
+   ROW
+=========================================================== */
+
+.row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:var(--space-md);
+
+}
+
+
+/* ===========================================================
+   COLUMN
+=========================================================== */
+
+.column{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:var(--space-md);
+
+}
+
+
+/* ===========================================================
+   CENTER
+=========================================================== */
+
+.center{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+/* ===========================================================
+   GAP
+=========================================================== */
+
+.gap-xs{gap:var(--space-xs);}
+.gap-sm{gap:var(--space-sm);}
+.gap-md{gap:var(--space-md);}
+.gap-lg{gap:var(--space-lg);}
+.gap-xl{gap:var(--space-xl);}
+
+
+/* ===========================================================
+   MARGIN
+=========================================================== */
+
+.mt-xs{margin-top:var(--space-xs);}
+.mt-sm{margin-top:var(--space-sm);}
+.mt-md{margin-top:var(--space-md);}
+.mt-lg{margin-top:var(--space-lg);}
+.mt-xl{margin-top:var(--space-xl);}
+
+.mb-xs{margin-bottom:var(--space-xs);}
+.mb-sm{margin-bottom:var(--space-sm);}
+.mb-md{margin-bottom:var(--space-md);}
+.mb-lg{margin-bottom:var(--space-lg);}
+.mb-xl{margin-bottom:var(--space-xl);}
+
+
+/* ===========================================================
+   FLEX
+=========================================================== */
+
+.flex{
+
+    display:flex;
+
+}
+
+.flex-1{
+
+    flex:1;
+
+}
+
+
+/* ===========================================================
+   ALIGNMENTS
+=========================================================== */
+
+.align-center{
+
+    align-items:center;
+
+}
+
+.justify-center{
+
+    justify-content:center;
+
+}
+
+.justify-between{
+
+    justify-content:space-between;
+
+}
+
+
+/* ===========================================================
+   DIVIDER
+=========================================================== */
+
+.divider{
+
+    width:100%;
+
+    height:1px;
+
+    background:var(--color-border);
+
+}
+
+
+/* ===========================================================
+   AVATAR
+=========================================================== */
+
+.avatar{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:var(--gradient-primary);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:700;
+
+}
+
+
+/* ===========================================================
+   ICON CONTAINER
+=========================================================== */
+
+.icon-circle{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:rgba(59,130,246,.10);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+/* ===========================================================
+   BADGE DOT
+=========================================================== */
+
+.dot{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:var(--color-success);
+
+}
+
+
+/* ===========================================================
+   HIDDEN
+=========================================================== */
+
+.hidden{
+
+    display:none !important;
+
+}
+
+
+/* ===========================================================
+   SCROLL SHADOW
+=========================================================== */
+
+.scroll-shadow{
+
+    position:sticky;
+
+    top:0;
+
+    height:18px;
+
+    margin-top:-18px;
+
+    background:
+
+        linear-gradient(
+
+            rgba(246,248,252,.95),
+
+            rgba(246,248,252,0)
+
+        );
+
+    pointer-events:none;
+
+}
+
+
+/* ===========================================================
+   GLASS PANEL
+=========================================================== */
+
+.glass{
+
+    background:rgba(255,255,255,.60);
+
+    backdrop-filter:blur(20px);
+
+    -webkit-backdrop-filter:blur(20px);
+
+}
+
+
+/* ===========================================================
+   IMAGE
+=========================================================== */
+
+img{
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+
+/* ===========================================================
+   LOADER
+=========================================================== */
+
+#loading-screen{
+
+    transition:opacity .45s;
+
+}
+
+#loading-screen.hidden{
+
+    opacity:0;
+
+    pointer-events:none;
+
+}
+
+
+/* ===========================================================
+   TOAST
+=========================================================== */
+
+#toast.show{
+
+    opacity:1;
+
+    animation:toastIn .30s;
+
+}
+
+
+/* ===========================================================
+   OVERLAY
+=========================================================== */
+
+#overlay.show{
+
+    display:block;
+
+}
+
+
+/* ===========================================================
+   SELECTION
+=========================================================== */
+
+::selection{
+
+    background:rgba(59,130,246,.18);
+
+}
+
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme:dark){
+
+.scroll-shadow{
+
+    background:
+
+        linear-gradient(
+
+            rgba(8,17,29,.95),
+
+            rgba(8,17,29,0)
+
+        );
+
+}
+
+.glass{
+
+    background:rgba(15,23,42,.45);
+
+}
+
+}
