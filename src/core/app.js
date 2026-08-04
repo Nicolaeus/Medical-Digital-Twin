@@ -24,15 +24,19 @@ import SettingsModule from "../modules/settings/SettingsModule.js";
 
 class App {
 
-    constructor(){
+    constructor() {
 
         this.initialized = false;
 
+        this.header = null;
+
+        this.bottomNav = null;
+
     }
 
-    async init(){
+    async init() {
 
-        if(this.initialized){
+        if (this.initialized) {
 
             return;
 
@@ -40,11 +44,13 @@ class App {
 
         console.log("🧬 Medical Digital Twin");
 
-        try{
+        try {
 
             await Store.init();
 
             await API.init();
+
+            await this.createLayout();
 
             Router.init();
 
@@ -70,9 +76,11 @@ class App {
 
             await Router.handleRoute();
 
-            this.initialized = true;
+            document
+                .getElementById("loading-screen")
+                ?.remove();
 
-            document.getElementById("loading-screen")?.remove();
+            this.initialized = true;
 
         }
 
@@ -81,6 +89,34 @@ class App {
             console.error(error);
 
         }
+
+    }
+
+    /* ======================================================
+     * Global UI
+     * ====================================================== */
+
+    async createLayout(){
+
+        this.header = new Header();
+
+        await this.header.render();
+
+        document.body.appendChild(
+
+            this.header.element
+
+        );
+
+        this.bottomNav = new BottomNav();
+
+        await this.bottomNav.render();
+
+        document.body.appendChild(
+
+            this.bottomNav.element
+
+        );
 
     }
 
