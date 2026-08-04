@@ -35,7 +35,7 @@ class Store {
 
     reset() {
 
-        this.state = structuredClone(State);;
+        this.state = structuredClone(State);
 
         this.pendingNotifications.clear();
 
@@ -95,7 +95,7 @@ class Store {
 
         }
 
-        current[last] = value;
+        current[last] = structuredClone(value);
 
         this.notify(path);
 
@@ -135,60 +135,52 @@ class Store {
 
         }
 
-        this.deepMerge(target, values);
+        this.#deepMerge(target, values);
 
         this.notify(path);
 
     }
 
     /* ====================================================== */
-
-    deepMerge(target, source) {
-
+    
+    #deepMerge(target, source) {
+    
+        const isPlainObject = value =>
+    
+            value !== null &&
+    
+            value.constructor === Object;
+    
         Object.keys(source).forEach(key => {
-
+    
             const value = source[key];
-
-            if (
-
-                value &&
-
-                typeof value === "object" &&
-
-                !Array.isArray(value)
-
-            ) {
-
-                if (
-
-                    !target[key] ||
-
-                    typeof target[key] !== "object"
-
-                ) {
-
+    
+            if (isPlainObject(value)) {
+    
+                if (!isPlainObject(target[key])) {
+    
                     target[key] = {};
-
+    
                 }
-
-                this.deepMerge(
-
+    
+                this.#deepMerge(
+    
                     target[key],
-
+    
                     value
-
+    
                 );
-
+    
             }
-
+    
             else {
-
-                target[key] = value;
-
+    
+                target[key] = structuredClone(value);
+    
             }
-
+    
         });
-
+    
     }
 
     /* ====================================================== */
@@ -399,10 +391,14 @@ class Store {
 
                 watcher.path === path ||
 
-                path.startsWith(
-
-                    watcher.path + "."
-
+                if (
+                
+                    watcher.path === "*" ||
+                
+                    watcher.path === path ||
+                
+                    (path && path.startsWith(watcher.path + "."))
+                
                 )
 
             ) {
@@ -473,31 +469,11 @@ class Store {
 
         this.state = structuredClone(snapshot);
 
-        [
+        Object.keys(this.state).forEach(path => {
 
-            "patient",
-
-            "health",
-
-            "body",
-
-            "environment",
-
-            "labs",
-
-            "timeline",
-
-            "simulation",
-
-            "settings",
-
-            "ui"
-
-        ].forEach(
-
-            path => this.dispatch(path)
-
-        );
+            this.dispatch(path);
+        
+        });
 
     }
 
