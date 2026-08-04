@@ -240,7 +240,7 @@ export default class Header extends BaseComponent {
 
             </div>
 
-        ";
+        `;
 
     }
 
@@ -274,7 +274,7 @@ export default class Header extends BaseComponent {
 
             </div>
 
-        ";
+        `;
 
     }
 
@@ -314,7 +314,7 @@ export default class Header extends BaseComponent {
 
             </div>
 
-        ";
+        `;
 
     }
 
