@@ -100,21 +100,15 @@ class App {
 
     createApplicationLayout(){
 
-        document.body.innerHTML += `
+    this.overlayRoot =
 
-            <div id="overlay-root"></div>
+        document.getElementById(
 
-        `;
+            "overlay-root"
 
-        this.overlayRoot =
+        );
 
-            document.getElementById(
-
-                "overlay-root"
-
-            );
-
-    }
+}
 
     /* ======================================================
      * Overlay
