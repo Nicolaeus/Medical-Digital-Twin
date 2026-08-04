@@ -6,7 +6,6 @@
  * ==========================================================
  */
 
-import * as BABYLON from "@babylonjs/core";
 
 export default class BodyCamera {
 
