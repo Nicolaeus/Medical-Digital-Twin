@@ -89,7 +89,7 @@ export default class BottomNav extends BaseComponent {
 
                 Router.navigate(
 
-                    button.dataset.route
+                    button.dataset.id
 
                 );
 
@@ -152,8 +152,6 @@ export default class BottomNav extends BaseComponent {
                 class="bottom-nav-button ${active ? "active" : ""}"
 
                 data-id="${item.id}"
-
-                data-route="${item.route}"
 
                 aria-label="${item.label}"
 
