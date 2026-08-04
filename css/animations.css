@@ -1,0 +1,532 @@
+/* ===========================================================
+   Medical Digital Twin
+   animations.css
+   Motion System v1.0
+=========================================================== */
+
+/* ===========================================================
+   TIMING
+=========================================================== */
+
+:root {
+
+    --ease-standard: cubic-bezier(.2,.8,.2,1);
+    --ease-bounce: cubic-bezier(.34,1.56,.64,1);
+
+}
+
+/* ===========================================================
+   FADE
+=========================================================== */
+
+@keyframes fadeIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+/* ===========================================================
+   SLIDE UP
+=========================================================== */
+
+@keyframes slideUp {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(26px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+/* ===========================================================
+   SLIDE DOWN
+=========================================================== */
+
+@keyframes slideDown {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(-20px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+/* ===========================================================
+   SLIDE LEFT
+=========================================================== */
+
+@keyframes slideLeft {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateX(24px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateX(0);
+
+    }
+
+}
+
+/* ===========================================================
+   SCALE
+=========================================================== */
+
+@keyframes scaleIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.92);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   FLOAT
+=========================================================== */
+
+@keyframes floating {
+
+    0% {
+
+        transform:
+            translateY(0px);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-6px);
+
+    }
+
+    100% {
+
+        transform:
+            translateY(0px);
+
+    }
+
+}
+
+/* ===========================================================
+   PULSE
+=========================================================== */
+
+@keyframes pulse {
+
+    0% {
+
+        transform: scale(1);
+
+    }
+
+    50% {
+
+        transform: scale(1.04);
+
+    }
+
+    100% {
+
+        transform: scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   HEARTBEAT
+=========================================================== */
+
+@keyframes heartbeat {
+
+    0% {
+
+        transform: scale(1);
+
+    }
+
+    18% {
+
+        transform: scale(1.08);
+
+    }
+
+    34% {
+
+        transform: scale(.96);
+
+    }
+
+    55% {
+
+        transform: scale(1.04);
+
+    }
+
+    100% {
+
+        transform: scale(1);
+
+    }
+
+}
+
+/* ===========================================================
+   SPIN
+=========================================================== */
+
+@keyframes spin {
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+/* ===========================================================
+   SHIMMER
+=========================================================== */
+
+@keyframes shimmer {
+
+    from {
+
+        background-position: -300px 0;
+
+    }
+
+    to {
+
+        background-position: 300px 0;
+
+    }
+
+}
+
+/* ===========================================================
+   PROGRESS
+=========================================================== */
+
+@keyframes progressGrow {
+
+    from {
+
+        width: 0;
+
+    }
+
+}
+
+/* ===========================================================
+   RING
+=========================================================== */
+
+@keyframes ringAppear {
+
+    from {
+
+        stroke-dashoffset: 1000;
+
+    }
+
+}
+
+/* ===========================================================
+   TOAST
+=========================================================== */
+
+@keyframes toastIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%,20px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%,0);
+
+    }
+
+}
+
+@keyframes toastOut {
+
+    to {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%,20px);
+
+    }
+
+}
+
+/* ===========================================================
+   CARD STAGGER
+=========================================================== */
+
+.cards > * {
+
+    opacity: 0;
+
+    animation:
+
+        slideUp
+
+        .55s
+
+        var(--ease-standard)
+
+        forwards;
+
+}
+
+.cards > *:nth-child(1){animation-delay:.05s;}
+.cards > *:nth-child(2){animation-delay:.10s;}
+.cards > *:nth-child(3){animation-delay:.15s;}
+.cards > *:nth-child(4){animation-delay:.20s;}
+.cards > *:nth-child(5){animation-delay:.25s;}
+.cards > *:nth-child(6){animation-delay:.30s;}
+.cards > *:nth-child(7){animation-delay:.35s;}
+.cards > *:nth-child(8){animation-delay:.40s;}
+
+/* ===========================================================
+   UTILITIES
+=========================================================== */
+
+.fade-in{
+
+    animation:
+        fadeIn
+        .35s
+        var(--ease-standard);
+
+}
+
+.slide-up{
+
+    animation:
+        slideUp
+        .45s
+        var(--ease-standard);
+
+}
+
+.slide-down{
+
+    animation:
+        slideDown
+        .45s
+        var(--ease-standard);
+
+}
+
+.slide-left{
+
+    animation:
+        slideLeft
+        .45s
+        var(--ease-standard);
+
+}
+
+.scale-in{
+
+    animation:
+        scaleIn
+        .35s
+        var(--ease-bounce);
+
+}
+
+.float{
+
+    animation:
+        floating
+        4s
+        ease-in-out
+        infinite;
+
+}
+
+.pulse{
+
+    animation:
+        pulse
+        2.2s
+        infinite;
+
+}
+
+.heartbeat{
+
+    animation:
+        heartbeat
+        1.8s
+        infinite;
+
+}
+
+/* ===========================================================
+   SKELETON
+=========================================================== */
+
+.skeleton{
+
+    color: transparent !important;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.30),
+            rgba(255,255,255,.08)
+        );
+
+    background-size: 300px 100%;
+
+    animation:
+
+        shimmer
+
+        1.4s
+
+        linear
+
+        infinite;
+
+}
+
+/* ===========================================================
+   PROGRESS
+=========================================================== */
+
+.progress-bar{
+
+    animation:
+
+        progressGrow
+
+        .8s
+
+        var(--ease-standard);
+
+}
+
+/* ===========================================================
+   HOVER
+=========================================================== */
+
+.card,
+button{
+
+    transition:
+
+        transform .25s,
+
+        box-shadow .25s,
+
+        background .25s,
+
+        opacity .25s;
+
+}
+
+button:hover{
+
+    transform:
+
+        translateY(-1px);
+
+}
+
+button:active{
+
+    transform:
+
+        scale(.97);
+
+}
+
+/* ===========================================================
+   REDUCED MOTION
+=========================================================== */
+
+@media (prefers-reduced-motion: reduce){
+
+*{
+
+    animation:none !important;
+
+    transition:none !important;
+
+}
+
+}
