@@ -10,53 +10,29 @@ import BodyRenderer from "./renderer/BodyRenderer.js";
 
 export default class BodyModule {
 
-    constructor(container = null) {
+    constructor() {
 
-        this.container = container;
+        this.root = null;
 
         this.renderer = null;
-
-        this.initialized = false;
 
     }
 
     /* ======================================================
-     * Initialize
+     * Render
      * ====================================================== */
 
-    async init(container = null) {
+    async render(root) {
 
-        if (this.initialized) {
-
-            return;
-
-        }
-
-        if (container) {
-
-            this.container = container;
-
-        }
-
-        if (!this.container) {
-
-            throw new Error(
-
-                "BodyModule requires a container."
-
-            );
-
-        }
+        this.root = root;
 
         this.renderer = new BodyRenderer();
 
-        await this.renderer.init(
+        await this.renderer.render(
 
-            this.container
+            this.root
 
         );
-
-        this.initialized = true;
 
     }
 
@@ -104,13 +80,13 @@ export default class BodyModule {
      * Destroy
      * ====================================================== */
 
-    destroy() {
+    async destroy() {
 
-        this.renderer?.destroy();
+        await this.renderer?.destroy?.();
 
         this.renderer = null;
 
-        this.initialized = false;
+        this.root = null;
 
     }
 
