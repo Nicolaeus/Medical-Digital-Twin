@@ -6,8 +6,6 @@
  * ==========================================================
  */
 
-import * as BABYLON from "@babylonjs/core";
-
 import BodyScene from "./BodyScene.js";
 
 export default class BodyRenderer {
