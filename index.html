@@ -54,26 +54,23 @@
 
     <div id="app">
 
-        <!-- Main Content -->
-    
-        <main id="content">
-    
-            <!-- Dashboard injecté ici -->
-    
-        </main>
-    
-        <!-- Overlay Root -->
-    
+        <!-- Viewport -->
+        <!-- Le Router injecte DashboardModule ici -->
+
+        <main id="content"></main>
+
+        <!-- Floating UI -->
+        <!-- Header, BottomNav, Dock, Panels, Widgets -->
+
         <div id="overlay-root"></div>
-    
+
     </div>
 
-   
-    <!-- Toast -->
+    <!-- Toasts -->
 
     <div id="toast"></div>
 
-    <!-- Loading -->
+    <!-- Loading Screen -->
 
     <div id="loading-screen">
 
@@ -85,12 +82,15 @@
 
     </div>
 
-    <!-- Scripts -->
+    <!-- Babylon -->
+
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
+
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    
+
+    <!-- Application -->
+
     <script type="module" src="src/core/app.js"></script>
 
 </body>
-
 </html>
