@@ -2,7 +2,7 @@
  * ==========================================================
  * Medical Digital Twin
  * Header.js
- * Floating Hero Header
+ * V3
  * ==========================================================
  */
 
@@ -19,13 +19,13 @@ export default class Header extends BaseComponent {
 
         });
 
-        this.expanded = true;
-
         this.patient = {};
 
         this.health = {};
 
         this.environment = {};
+
+        this.expanded = true;
 
     }
 
@@ -37,11 +37,17 @@ export default class Header extends BaseComponent {
 
         this.element = document.createElement("header");
 
-        this.element.className = "hero-header";
+        this.element.className = "mdt-header";
+
+        this.watchStore();
 
         this.refresh();
 
     }
+
+    /* ======================================================
+     * Store
+     * ====================================================== */
 
     watchStore() {
 
@@ -89,17 +95,23 @@ export default class Header extends BaseComponent {
 
     refresh() {
 
-        this.patient = Store.clone("patient");
+        this.patient =
 
-        this.health = Store.clone("health");
+            Store.clone("patient") || {};
 
-        this.environment = Store.clone("environment");
+        this.health =
+
+            Store.clone("health") || {};
+
+        this.environment =
+
+            Store.clone("environment") || {};
 
         this.element.innerHTML = `
 
-            ${this.#renderTop()}
+            ${this.#renderEnvironmentBar()}
 
-            ${this.#renderMetrics()}
+            ${this.#renderHealthBar()}
 
         `;
 
@@ -117,7 +129,7 @@ export default class Header extends BaseComponent {
 
         this.element.classList.remove(
 
-            "collapsed"
+            "compact"
 
         );
 
@@ -129,7 +141,7 @@ export default class Header extends BaseComponent {
 
         this.element.classList.add(
 
-            "collapsed"
+            "compact"
 
         );
 
@@ -137,339 +149,238 @@ export default class Header extends BaseComponent {
 
     toggle() {
 
-        this.expanded ?
+        this.expanded
 
-            this.collapse()
+            ? this.collapse()
 
-            :
-
-            this.expand();
+            : this.expand();
 
     }
 
     /* ======================================================
-     * Top
+     * Environment Bar
      * ====================================================== */
 
-    #renderTop() {
+    #renderEnvironmentBar() {
 
-        return `
+        const weather =
+            this.environment.weather ?? {};
 
-            <div class="hero-content">
+        const moon =
+            this.environment.moon ?? {};
 
-                ${this.#renderHeader()}
+        const sun =
+            this.environment.sun ?? {};
 
-                ${this.#renderForecast()}
+        const air =
+            this.environment.air ?? {};
 
-            </div>
-
-        `;
-
-    }
-
-    /* ======================================================
-     * Header
-     * ====================================================== */
-
-    #renderHeader() {
-
-        const greeting = this.#getGreeting();
-
-        const name =
-            this.patient.firstName ||
-            this.patient.displayName ||
-            "Guest";
+        const location =
+            this.environment.location ?? {};
 
         const avatar =
-            this.patient.avatar ||
+            this.patient.avatar ??
             "assets/avatars/default.png";
 
         return `
 
-            <div class="hero-top">
+            <div class="mdt-header-top">
 
-                <div class="hero-left">
+                <div class="mdt-weather">
 
-                    <div class="hero-greeting">
+                    <span class="mdt-weather-icon">
 
-                        ${greeting}
+                        ${weather.icon ?? "☀️"}
+
+                    </span>
+
+                    <div class="mdt-weather-data">
+
+                        <div class="mdt-weather-main">
+
+                            ${weather.temperature ?? "--"}°C
+
+                            •
+
+                            ${location.city ?? "Unknown"}
+
+                        </div>
+
+                        <div class="mdt-weather-city">
+
+                            🌙 ${moon.phase ?? "--"}
+
+                            •
+
+                            ↑ ${sun.sunrise ?? "--:--"}
+
+                            ↓ ${sun.sunset ?? "--:--"}
+
+                            •
+
+                            AQI ${air.index ?? "--"}
+
+                        </div>
 
                     </div>
-
-                    <div class="hero-title">
-
-                        ${name}
-
-                    </div>
-
-                    ${this.#renderWeather()}
 
                 </div>
 
-                <div class="hero-avatar">
+                <div class="mdt-avatar">
 
                     <img
+
                         src="${avatar}"
-                        alt="${name}"
+
+                        alt="Avatar"
+
                     >
 
                 </div>
 
             </div>
 
-        `;
+        ";
 
     }
 
     /* ======================================================
-     * Outdoor Weather
+     * Health Bar
      * ====================================================== */
 
-    #renderWeather() {
-
-        const weather = this.environment.weather || {};
-
-        const icon =
-            weather.icon || "☀️";
-
-        const temperature =
-            weather.temperature ?? "--";
-
-        const city =
-            this.environment.location?.city || "";
+    #renderHealthBar() {
 
         return `
 
-            <div class="hero-subtitle">
+            <div class="mdt-header-bottom">
 
-                ${icon}
-                ${temperature}°C
+                <div class="mdt-body-weather">
 
-                ${city ? `• ${city}` : ""}
+                    <span class="mdt-body-weather-icon">
+
+                        ${this.#recoveryIcon()}
+
+                    </span>
+
+                    <span class="mdt-body-weather-text">
+
+                        ${this.#recoveryText()}
+
+                    </span>
+
+                </div>
+
+                ${this.#renderVitals()}
 
             </div>
 
-        `;
+        ";
 
     }
 
     /* ======================================================
-     * Body Forecast
+     * Vitals
      * ====================================================== */
 
-    #renderForecast() {
-
-        const forecast =
-            this.#getBodyForecast();
+    #renderVitals() {
 
         return `
 
-            <div class="hero-forecast">
+            <div class="mdt-vitals">
 
-                <div class="hero-forecast-title">
+                <span>
 
-                    ${forecast.icon}
+                    ❤️ ${this.health.heartRate ?? "--"}
 
-                    ${forecast.title}
+                </span>
 
-                </div>
+                <span>
 
-                <div class="hero-forecast-text">
+                    HRV ${this.health.hrv ?? "--"}
 
-                    ${forecast.message}
+                </span>
 
-                </div>
+                <span>
+
+                    😴 ${this.health.sleep?.duration ?? "--"}
+
+                </span>
+
+                <span>
+
+                    ⚡ ${this.health.energy ?? "--"}
+
+                </span>
 
             </div>
 
-        `;
+        ";
 
     }
 
-    /* ======================================================
-     * Greeting
+        /* ======================================================
+     * Recovery
      * ====================================================== */
 
-    #getGreeting() {
-
-        const hour = new Date().getHours();
-
-        if (hour < 12) {
-
-            return "Good Morning";
-
-        }
-
-        if (hour < 18) {
-
-            return "Good Afternoon";
-
-        }
-
-        return "Good Evening";
-
-    }
-
-    /* ======================================================
-     * Body Forecast
-     * ====================================================== */
-
-    #getBodyForecast() {
+    #recoveryText() {
 
         const recovery =
+
             this.health.recovery ?? 0;
 
         if (recovery >= 90) {
 
-            return {
-
-                icon: "☀️",
-
-                title: "Body Forecast",
-
-                message:
-                    "Excellent recovery. Today is ideal for demanding activities."
-
-            };
+            return "Excellent Recovery";
 
         }
 
         if (recovery >= 75) {
 
-            return {
-
-                icon: "🌤️",
-
-                title: "Body Forecast",
-
-                message:
-                    "Good balance. Your body is ready for a productive day."
-
-            };
+            return "Good Recovery";
 
         }
 
         if (recovery >= 50) {
 
-            return {
-
-                icon: "⛅",
-
-                title: "Body Forecast",
-
-                message:
-                    "Moderate recovery. Consider pacing your effort."
-
-            };
+            return "Moderate Recovery";
 
         }
 
-        return {
+        if (recovery >= 25) {
 
-            icon: "🌧️",
+            return "Low Recovery";
 
-            title: "Body Forecast",
+        }
 
-            message:
-                "Recovery recommended. Prioritize sleep and hydration."
-
-        };
+        return "Recovery Recommended";
 
     }
 
-    /* ======================================================
-     * Metrics
-     * ====================================================== */
-
-    #renderMetrics() {
+    #recoveryIcon() {
 
         const recovery =
-            this.health.recovery ?? "--";
 
-        const energy =
-            this.health.energy ?? "--";
+            this.health.recovery ?? 0;
 
-        const sleep =
-            this.health.sleep?.duration ?? "--";
+        if (recovery >= 90) {
 
-        const steps =
-            this.health.steps ?? "--";
+            return "🟢";
 
-        return `
+        }
 
-            <div class="hero-bottom">
+        if (recovery >= 75) {
 
-                ${this.#metric(
+            return "🟡";
 
-                    "❤️",
+        }
 
-                    "Recovery",
+        if (recovery >= 50) {
 
-                    recovery
+            return "🟠";
 
-                )}
+        }
 
-                ${this.#metric(
-
-                    "⚡",
-
-                    "Energy",
-
-                    energy
-
-                )}
-
-                ${this.#metric(
-
-                    "😴",
-
-                    "Sleep",
-
-                    sleep
-
-                )}
-
-                ${this.#metric(
-
-                    "🚶",
-
-                    "Steps",
-
-                    steps
-
-                )}
-
-            </div>
-
-        `;
-
-    }
-
-    /* ======================================================
-     * Metric Card
-     * ====================================================== */
-
-    #metric(icon, label, value) {
-
-        return `
-
-            <div class="hero-metric">
-
-                <div class="hero-metric-label">
-
-                    ${label}
-
-                </div>
-
-                <div class="hero-metric-value">
-
-                    ${icon} ${value}
-
-                </div>
-
-            </div>
-
-        `;
+        return "🔴";
 
     }
 
@@ -487,68 +398,51 @@ export default class Header extends BaseComponent {
 
             "warning",
 
-            "danger",
-
-            "morning",
-
-            "afternoon",
-
-            "evening",
-
-            "night"
+            "danger"
 
         );
 
         const recovery =
+
             this.health.recovery ?? 0;
 
         if (recovery >= 90) {
 
-            this.element.classList.add("excellent");
+            this.element.classList.add(
+
+                "excellent"
+
+            );
 
         }
 
         else if (recovery >= 75) {
 
-            this.element.classList.add("good");
+            this.element.classList.add(
+
+                "good"
+
+            );
 
         }
 
         else if (recovery >= 50) {
 
-            this.element.classList.add("warning");
+            this.element.classList.add(
+
+                "warning"
+
+            );
 
         }
 
         else {
 
-            this.element.classList.add("danger");
+            this.element.classList.add(
 
-        }
+                "danger"
 
-        const hour = new Date().getHours();
-
-        if (hour >= 6 && hour < 12) {
-
-            this.element.classList.add("morning");
-
-        }
-
-        else if (hour < 18) {
-
-            this.element.classList.add("afternoon");
-
-        }
-
-        else if (hour < 22) {
-
-            this.element.classList.add("evening");
-
-        }
-
-        else {
-
-            this.element.classList.add("night");
+            );
 
         }
 
