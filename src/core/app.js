@@ -14,9 +14,9 @@ import Header from "../components/layout/Header.js";
 import BottomNav from "../components/layout/BottomNav.js";
 
 import Dashboard from "../modules/dashboard/DashboardModule.js";
-import Body from "../modules/body/Body.js";
+import Body from "../modules/body/BodyModule.js";
 import Timeline from "../modules/timeline/Timeline.js";
-import Insights from "../modules/insights/Insights.js";
+/**import Insights from "../modules/insights/Insights.js";**/
 import Profile from "../modules/profile/Profile.js";
 import Simulation from "../modules/simulation/Simulation.js";
 
