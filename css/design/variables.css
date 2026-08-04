@@ -196,62 +196,7 @@
 
     --phone-width: 430px;
 
-}
-
-/* ===========================================================
-   DARK MODE
-=========================================================== */
-
-@media (prefers-color-scheme: dark){
-
-:root{
-
-    --color-background:#08111D;
-
-    --color-surface:#0F172A;
-
-    --color-surface-alt:#172234;
-
-    --color-text:#F8FAFC;
-
-    --color-text-secondary:#CBD5E1;
-
-    --color-text-light:#94A3B8;
-
-    --color-border:#243244;
-
-    --color-shadow:rgba(0,0,0,.45);
-
-    --gradient-background:
-        linear-gradient(
-            180deg,
-            #08111D 0%,
-            #111C2C 100%
-        );
-
-}
-
-}
-
-/* ===========================================================
-   GLOBAL TOKENS
-=========================================================== */
-
-body{
-
-    font-family:var(--font-family);
-
-    font-size:var(--font-md);
-
-    line-height:var(--line-height);
-
-    color:var(--color-text);
-
-    background:var(--gradient-background);
-
-}
-
-/* =======================================================
+   /* =======================================================
    GLASS
 ======================================================= */
 
@@ -377,3 +322,60 @@ body{
 
 --shadow-dialog:
     var(--shadow-xl);
+
+}
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme: dark){
+
+:root{
+
+    --color-background:#08111D;
+
+    --color-surface:#0F172A;
+
+    --color-surface-alt:#172234;
+
+    --color-text:#F8FAFC;
+
+    --color-text-secondary:#CBD5E1;
+
+    --color-text-light:#94A3B8;
+
+    --color-border:#243244;
+
+    --color-shadow:rgba(0,0,0,.45);
+
+    --gradient-background:
+        linear-gradient(
+            180deg,
+            #08111D 0%,
+            #111C2C 100%
+        );
+
+}
+
+}
+
+/* ===========================================================
+   GLOBAL TOKENS
+=========================================================== */
+
+body{
+
+    font-family:var(--font-family);
+
+    font-size:var(--font-md);
+
+    line-height:var(--line-height);
+
+    color:var(--color-text);
+
+    background:var(--gradient-background);
+
+}
+
+
