@@ -1,0 +1,354 @@
+/* ===========================================================
+   Medical Digital Twin
+   header.css
+   Hero Header v1.0
+=========================================================== */
+
+/* ===========================================================
+   HERO
+=========================================================== */
+
+.hero-header {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    min-height: 240px;
+
+    padding: 32px 28px;
+
+    margin-bottom: 28px;
+
+    border-radius: 34px;
+
+    overflow: hidden;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            145deg,
+            #60A5FA 0%,
+            #3B82F6 45%,
+            #2563EB 100%
+        );
+
+    box-shadow:
+        0 24px 60px rgba(37,99,235,.28);
+
+}
+
+
+/* ===========================================================
+   BACKGROUND LIGHT
+=========================================================== */
+
+.hero-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:340px;
+    height:340px;
+
+    right:-120px;
+    top:-140px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(255,255,255,.22),
+
+            transparent 70%
+
+        );
+
+}
+
+.hero-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    left:-80px;
+    bottom:-120px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(255,255,255,.12),
+
+            transparent 70%
+
+        );
+
+}
+
+
+/* ===========================================================
+   CONTENT
+=========================================================== */
+
+.hero-content{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/* ===========================================================
+   GREETING
+=========================================================== */
+
+.hero-greeting{
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+    letter-spacing:.08em;
+
+    opacity:.85;
+
+    text-transform:uppercase;
+
+}
+
+
+/* ===========================================================
+   TITLE
+=========================================================== */
+
+.hero-title{
+
+    margin-top:10px;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    line-height:1.1;
+
+}
+
+.hero-subtitle{
+
+    margin-top:8px;
+
+    font-size:.95rem;
+
+    opacity:.82;
+
+}
+
+
+/* ===========================================================
+   SCORE
+=========================================================== */
+
+.hero-score{
+
+    margin-top:34px;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:14px;
+
+}
+
+.hero-score-value{
+
+    font-size:4rem;
+
+    font-weight:700;
+
+    line-height:.9;
+
+}
+
+.hero-score-unit{
+
+    font-size:1.2rem;
+
+    margin-bottom:8px;
+
+    opacity:.9;
+
+}
+
+.hero-score-label{
+
+    margin-top:8px;
+
+    font-size:.9rem;
+
+    opacity:.82;
+
+}
+
+
+/* ===========================================================
+   BOTTOM
+=========================================================== */
+
+.hero-bottom{
+
+    position:relative;
+
+    z-index:2;
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+
+    margin-top:30px;
+
+}
+
+
+/* ===========================================================
+   METRIC
+=========================================================== */
+
+.hero-metric{
+
+    background:
+
+        rgba(255,255,255,.12);
+
+    backdrop-filter:blur(14px);
+
+    -webkit-backdrop-filter:blur(14px);
+
+    border-radius:20px;
+
+    padding:18px;
+
+}
+
+.hero-metric-label{
+
+    font-size:.75rem;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    opacity:.82;
+
+}
+
+.hero-metric-value{
+
+    margin-top:10px;
+
+    font-size:1.6rem;
+
+    font-weight:700;
+
+}
+
+.hero-metric-status{
+
+    margin-top:6px;
+
+    font-size:.82rem;
+
+    opacity:.88;
+
+}
+
+
+/* ===========================================================
+   BADGE
+=========================================================== */
+
+.hero-badge{
+
+    position:absolute;
+
+    top:24px;
+
+    right:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:54px;
+
+    height:54px;
+
+    border-radius:50%;
+
+    background:
+
+        rgba(255,255,255,.18);
+
+    backdrop-filter:blur(12px);
+
+}
+
+
+/* ===========================================================
+   FLOATING
+=========================================================== */
+
+.hero-header{
+
+    animation:
+
+        floating
+
+        7s
+
+        ease-in-out
+
+        infinite;
+
+}
+
+
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+
+@media (max-width:360px){
+
+.hero-title{
+
+    font-size:1.7rem;
+
+}
+
+.hero-score-value{
+
+    font-size:3.2rem;
+
+}
+
+}
