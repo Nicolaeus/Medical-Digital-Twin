@@ -1,353 +1,322 @@
 /* ===========================================================
    Medical Digital Twin
    header.css
-   Hero Header v1.0
+   Floating Header v2.0
 =========================================================== */
 
 /* ===========================================================
-   HERO
+   HEADER
 =========================================================== */
 
-.hero-header {
+.mdt-header{
 
-    position: relative;
+    position:fixed;
 
-    display: flex;
+    top:calc(env(safe-area-inset-top) + 14px);
 
-    flex-direction: column;
+    left:50%;
 
-    justify-content: space-between;
+    transform:translateX(-50%);
 
-    min-height: 240px;
+    width:calc(100% - 24px);
 
-    padding: 32px 28px;
+    max-width:420px;
 
-    margin-bottom: 28px;
+    height:104px;
 
-    border-radius: 34px;
-
-    overflow: hidden;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            145deg,
-            #60A5FA 0%,
-            #3B82F6 45%,
-            #2563EB 100%
-        );
-
-    box-shadow:
-        0 24px 60px rgba(37,99,235,.28);
-
-}
-
-
-/* ===========================================================
-   BACKGROUND LIGHT
-=========================================================== */
-
-.hero-header::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:340px;
-    height:340px;
-
-    right:-120px;
-    top:-140px;
-
-    border-radius:50%;
-
-    background:
-
-        radial-gradient(
-
-            rgba(255,255,255,.22),
-
-            transparent 70%
-
-        );
-
-}
-
-.hero-header::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:220px;
-    height:220px;
-
-    left:-80px;
-    bottom:-120px;
-
-    border-radius:50%;
-
-    background:
-
-        radial-gradient(
-
-            rgba(255,255,255,.12),
-
-            transparent 70%
-
-        );
-
-}
-
-
-/* ===========================================================
-   CONTENT
-=========================================================== */
-
-.hero-content{
-
-    position:relative;
-
-    z-index:2;
-
-}
-
-
-/* ===========================================================
-   GREETING
-=========================================================== */
-
-.hero-greeting{
-
-    font-size:.82rem;
-
-    font-weight:600;
-
-    letter-spacing:.08em;
-
-    opacity:.85;
-
-    text-transform:uppercase;
-
-}
-
-
-/* ===========================================================
-   TITLE
-=========================================================== */
-
-.hero-title{
-
-    margin-top:10px;
-
-    font-size:2rem;
-
-    font-weight:700;
-
-    line-height:1.1;
-
-}
-
-.hero-subtitle{
-
-    margin-top:8px;
-
-    font-size:.95rem;
-
-    opacity:.82;
-
-}
-
-
-/* ===========================================================
-   SCORE
-=========================================================== */
-
-.hero-score{
-
-    margin-top:34px;
+    padding:16px 18px;
 
     display:flex;
 
-    align-items:flex-end;
+    flex-direction:column;
 
-    gap:14px;
+    justify-content:space-between;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,.72);
+
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+
+    border:1px solid rgba(255,255,255,.55);
+
+    box-shadow:
+        0 10px 32px rgba(15,23,42,.08);
+
+    z-index:1000;
+
+    transition:
+        height .35s cubic-bezier(.2,.8,.2,1),
+        transform .35s cubic-bezier(.2,.8,.2,1),
+        background .25s;
 
 }
 
-.hero-score-value{
+/* ===========================================================
+   TOP ROW
+=========================================================== */
 
-    font-size:4rem;
+.mdt-header-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+/* ===========================================================
+   USER
+=========================================================== */
+
+.mdt-user{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.mdt-greeting{
+
+    font-size:.74rem;
+
+    font-weight:600;
+
+    color:var(--color-text-light);
+
+}
+
+.mdt-name{
+
+    margin-top:2px;
+
+    font-size:1.12rem;
 
     font-weight:700;
 
-    line-height:.9;
+    color:var(--color-text);
 
 }
-
-.hero-score-unit{
-
-    font-size:1.2rem;
-
-    margin-bottom:8px;
-
-    opacity:.9;
-
-}
-
-.hero-score-label{
-
-    margin-top:8px;
-
-    font-size:.9rem;
-
-    opacity:.82;
-
-}
-
 
 /* ===========================================================
-   BOTTOM
+   AVATAR
 =========================================================== */
 
-.hero-bottom{
+.mdt-avatar{
 
-    position:relative;
+    width:48px;
 
-    z-index:2;
+    height:48px;
 
-    display:grid;
+    border-radius:50%;
 
-    grid-template-columns:1fr 1fr;
+    overflow:hidden;
 
-    gap:18px;
+    flex-shrink:0;
 
-    margin-top:30px;
+    background:linear-gradient(
+        135deg,
+        #60A5FA,
+        #2563EB
+    );
+
+    box-shadow:
+        0 6px 18px rgba(37,99,235,.18);
 
 }
 
+.mdt-avatar img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
 
 /* ===========================================================
-   METRIC
+   BOTTOM ROW
 =========================================================== */
 
-.hero-metric{
+.mdt-header-bottom{
 
-    background:
+    display:flex;
 
-        rgba(255,255,255,.12);
+    justify-content:space-between;
 
-    backdrop-filter:blur(14px);
+    align-items:center;
 
-    -webkit-backdrop-filter:blur(14px);
-
-    border-radius:20px;
-
-    padding:18px;
+    gap:12px;
 
 }
-
-.hero-metric-label{
-
-    font-size:.75rem;
-
-    text-transform:uppercase;
-
-    letter-spacing:.08em;
-
-    opacity:.82;
-
-}
-
-.hero-metric-value{
-
-    margin-top:10px;
-
-    font-size:1.6rem;
-
-    font-weight:700;
-
-}
-
-.hero-metric-status{
-
-    margin-top:6px;
-
-    font-size:.82rem;
-
-    opacity:.88;
-
-}
-
 
 /* ===========================================================
-   BADGE
+   WEATHER
 =========================================================== */
 
-.hero-badge{
-
-    position:absolute;
-
-    top:24px;
-
-    right:24px;
+.mdt-weather{
 
     display:flex;
 
     align-items:center;
 
-    justify-content:center;
+    gap:10px;
 
-    width:54px;
+}
 
-    height:54px;
+.mdt-weather-icon{
+
+    font-size:1.35rem;
+
+}
+
+.mdt-weather-data{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.mdt-weather-main{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:.88rem;
+
+    font-weight:700;
+
+}
+
+.mdt-weather-city{
+
+    font-size:.72rem;
+
+    color:var(--color-text-light);
+
+}
+
+/* ===========================================================
+   BODY WEATHER
+=========================================================== */
+
+.mdt-body-weather{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    background:rgba(34,197,94,.10);
+
+}
+
+.mdt-body-weather-icon{
+
+    font-size:1rem;
+
+}
+
+.mdt-body-weather-text{
+
+    font-size:.78rem;
+
+    font-weight:600;
+
+    color:#16A34A;
+
+    white-space:nowrap;
+
+}
+
+/* ===========================================================
+   LIVE DOT
+=========================================================== */
+
+.mdt-live{
+
+    width:8px;
+
+    height:8px;
 
     border-radius:50%;
 
-    background:
+    background:#22C55E;
 
-        rgba(255,255,255,.18);
+    box-shadow:
 
-    backdrop-filter:blur(12px);
+        0 0 8px
+
+        rgba(34,197,94,.7);
 
 }
-
 
 /* ===========================================================
-   FLOATING
+   COMPACT MODE
 =========================================================== */
 
-.hero-header{
+.mdt-header.compact{
 
-    animation:
-
-        floating
-
-        7s
-
-        ease-in-out
-
-        infinite;
+    height:72px;
 
 }
 
+.mdt-header.compact .mdt-header-bottom{
+
+    opacity:0;
+
+    transform:translateY(-8px);
+
+    pointer-events:none;
+
+    transition:.25s;
+
+}
+
+.mdt-header.compact .mdt-avatar{
+
+    width:40px;
+
+    height:40px;
+
+}
+
+.mdt-header.compact .mdt-name{
+
+    font-size:1rem;
+
+}
 
 /* ===========================================================
-   RESPONSIVE
+   DARK MODE
 =========================================================== */
 
-@media (max-width:360px){
+@media (prefers-color-scheme:dark){
 
-.hero-title{
+.mdt-header{
 
-    font-size:1.7rem;
+    background:rgba(15,23,42,.72);
+
+    border:1px solid rgba(255,255,255,.05);
 
 }
 
-.hero-score-value{
+.mdt-body-weather{
 
-    font-size:3.2rem;
+    background:rgba(34,197,94,.18);
 
 }
 
