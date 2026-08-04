@@ -2,7 +2,7 @@
  * ==========================================================
  * Medical Digital Twin
  * BottomNav.js
- * Floating Bottom Navigation
+ * Floating Dock
  * ==========================================================
  */
 
@@ -10,7 +10,6 @@ import BaseComponent from "../base/BaseComponent.js";
 import Store from "../../core/store.js";
 import Router from "../../core/router.js";
 import Navigation from "../../config/navigation.js";
-
 
 export default class BottomNav extends BaseComponent {
 
@@ -36,9 +35,17 @@ export default class BottomNav extends BaseComponent {
 
         this.element.className = "bottom-nav";
 
+        this.watchStore();
+
+        this.bindEvents();
+
         this.refresh();
 
     }
+
+    /* ======================================================
+     * Store
+     * ====================================================== */
 
     watchStore() {
 
@@ -56,6 +63,10 @@ export default class BottomNav extends BaseComponent {
 
     }
 
+    /* ======================================================
+     * Events
+     * ====================================================== */
+
     bindEvents() {
 
         this.element.addEventListener(
@@ -66,7 +77,7 @@ export default class BottomNav extends BaseComponent {
 
                 const button = event.target.closest(
 
-                    ".bottom-nav-item"
+                    ".bottom-nav-button"
 
                 );
 
@@ -76,11 +87,11 @@ export default class BottomNav extends BaseComponent {
 
                 }
 
-                const page =
+                Router.navigate(
 
-                    button.dataset.page;
+                    button.dataset.route
 
-                Router.navigate(page);
+                );
 
             }
 
@@ -108,7 +119,7 @@ export default class BottomNav extends BaseComponent {
 
                 ${this.items.map(item =>
 
-                    this.#createItem(
+                    this.#createButton(
 
                         item,
 
@@ -125,28 +136,26 @@ export default class BottomNav extends BaseComponent {
     }
 
     /* ======================================================
-     * Navigation Item
+     * Button
      * ====================================================== */
 
-    #createItem(item, current) {
+    #createButton(item, current) {
 
         const active =
 
-            item.id === current ?
-
-            "active"
-
-            :
-
-            "";
+            item.id === current;
 
         return `
 
             <button
 
-                class="bottom-nav-item ${active}"
+                class="bottom-nav-button ${active ? "active" : ""}"
 
-                data-page="${item.id}"
+                data-id="${item.id}"
+
+                data-route="${item.route}"
+
+                aria-label="${item.label}"
 
             >
 
@@ -156,15 +165,55 @@ export default class BottomNav extends BaseComponent {
 
                 </div>
 
-                <div class="bottom-nav-label">
+                ${active ? `
 
-                    ${item.label}
+                    <div class="bottom-nav-label">
 
-                </div>
+                        ${item.label}
+
+                    </div>
+
+                ` : ""}
 
             </button>
 
         `;
+
+    }
+
+    /* ======================================================
+     * Visibility
+     * ====================================================== */
+
+    show() {
+
+        this.element.classList.remove(
+
+            "hidden"
+
+        );
+
+        this.element.classList.add(
+
+            "show"
+
+        );
+
+    }
+
+    hide() {
+
+        this.element.classList.remove(
+
+            "show"
+
+        );
+
+        this.element.classList.add(
+
+            "hidden"
+
+        );
 
     }
 
