@@ -1,350 +1,135 @@
 /* ===========================================================
    Medical Digital Twin
    layout.css
-   Layout System v1.0
+   UI Architecture v2
 =========================================================== */
 
 /* ===========================================================
    BODY
 =========================================================== */
 
-body {
+html,
+body{
 
-    display: flex;
-    justify-content: center;
+    margin:0;
 
-    background: var(--gradient-background);
+    width:100%;
 
-    overflow: hidden;
-}
+    height:100%;
 
-/* ===========================================================
-   BACKGROUND
-=========================================================== */
+    overflow:hidden;
 
-#background {
+    background:var(--gradient-background);
 
-    z-index: var(--z-background);
-
-    background:
-        radial-gradient(circle at top,
-            rgba(59,130,246,.08),
-            transparent 45%),
-
-        radial-gradient(circle at bottom right,
-            rgba(34,197,94,.05),
-            transparent 40%),
-
-        var(--gradient-background);
 }
 
 /* ===========================================================
    APPLICATION
 =========================================================== */
 
-#app {
+#app{
 
-    position: relative;
+    position:relative;
 
-    width: 100%;
-    max-width: var(--phone-width);
+    width:100%;
 
-    height: 100dvh;
+    height:100dvh;
 
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-
-    z-index: var(--z-content);
-}
-
-/* ===========================================================
-   HEADER
-=========================================================== */
-
-#header {
-
-    position: fixed;
-
-    top: 0;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 100%;
-    max-width: var(--phone-width);
-
-    height: var(--header-height);
-
-    padding:
-        calc(env(safe-area-inset-top) + 12px)
-        var(--space-lg)
-        12px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
-
-    background: rgba(255,255,255,.72);
-
-    border-bottom: 1px solid rgba(255,255,255,.35);
-
-    z-index: var(--z-header);
-}
-
-/* ===========================================================
-   CONTENT
-=========================================================== */
-
-#content {
-
-    flex: 1;
-
-    overflow-y: auto;
-
-    overflow-x: hidden;
-
-    padding-top:
-        calc(var(--header-height) + 28px);
-
-    padding-left: var(--space-lg);
-    padding-right: var(--space-lg);
-
-    padding-bottom:
-        calc(var(--bottom-nav-height) + 40px);
-
-    scroll-behavior: smooth;
+    overflow:hidden;
 
 }
 
 /* ===========================================================
-   CONTENT SCROLLBAR
+   VIEWPORT
 =========================================================== */
 
-#content::-webkit-scrollbar {
+#content{
 
-    display: none;
+    position:absolute;
+
+    inset:0;
+
+    overflow:hidden;
+
+    z-index:var(--z-content);
 
 }
 
 /* ===========================================================
-   BOTTOM NAV
+   OVERLAY ROOT
 =========================================================== */
 
-#bottom-nav {
+#overlay-root{
 
-    position: fixed;
+    position:absolute;
 
-    left: 50%;
-    transform: translateX(-50%);
+    inset:0;
 
-    bottom:
-        calc(
-            env(safe-area-inset-bottom)
-            + 16px
-        );
+    overflow:hidden;
 
-    width:
-        calc(100% - 32px);
+    pointer-events:none;
 
-    max-width:
-        calc(var(--phone-width) - 32px);
-
-    height: var(--bottom-nav-height);
-
-    border-radius: 28px;
-
-    background:
-        rgba(255,255,255,.82);
-
-    backdrop-filter: blur(26px);
-    -webkit-backdrop-filter: blur(26px);
-
-    box-shadow: var(--shadow-lg);
-
-    border:
-        1px solid
-        rgba(255,255,255,.55);
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-around;
-
-    z-index: var(--z-bottom-nav);
-}
-
-/* ===========================================================
-   OVERLAY
-=========================================================== */
-
-#overlay {
-
-    display: none;
-
-    background:
-        var(--color-overlay);
-
-    backdrop-filter: blur(5px);
-
-    z-index: var(--z-overlay);
+    z-index:var(--z-overlay);
 
 }
 
 /* ===========================================================
-   TOAST
+   OVERLAY COMPONENTS
 =========================================================== */
 
-#toast {
+#overlay-root>*{
 
-    position: fixed;
-
-    left: 50%;
-
-    bottom:
-        calc(
-            var(--bottom-nav-height)
-            + 36px
-        );
-
-    transform:
-        translateX(-50%);
-
-    min-width: 220px;
-
-    max-width: 90%;
-
-    padding:
-        14px 20px;
-
-    border-radius:
-        var(--radius-pill);
-
-    background:
-        rgba(15,23,42,.92);
-
-    color: white;
-
-    text-align: center;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition:
-        var(--transition);
-
-    z-index: var(--z-toast);
+    pointer-events:auto;
 
 }
 
 /* ===========================================================
-   LOADING SCREEN
+   LOADING
 =========================================================== */
 
-#loading-screen {
+#loading-screen{
 
-    display: flex;
+    position:absolute;
 
-    flex-direction: column;
+    inset:0;
 
-    align-items: center;
+    display:flex;
 
-    justify-content: center;
+    flex-direction:column;
 
-    gap: var(--space-lg);
+    justify-content:center;
 
-    background:
-        var(--gradient-background);
+    align-items:center;
 
-    z-index: var(--z-loader);
+    gap:var(--space-lg);
 
-}
+    background:var(--gradient-background);
 
-#loading-screen h1 {
-
-    font-size: var(--font-xl);
-
-    font-weight: var(--weight-bold);
+    z-index:var(--z-loader);
 
 }
 
-#loading-screen p {
+.loader{
 
-    color:
-        var(--color-text-secondary);
+    width:58px;
 
-    font-size:
-        var(--font-sm);
+    height:58px;
 
-}
+    border-radius:50%;
 
-/* ===========================================================
-   LOADER
-=========================================================== */
+    border:5px solid rgba(59,130,246,.15);
 
-.loader {
+    border-top-color:var(--color-primary);
 
-    width: 58px;
-
-    height: 58px;
-
-    border-radius: 50%;
-
-    border: 5px solid
-        rgba(59,130,246,.15);
-
-    border-top-color:
-        var(--color-primary);
-
-    animation:
-        spin 1s linear infinite;
+    animation:spin 1s linear infinite;
 
 }
 
-/* ===========================================================
-   RESPONSIVE
-=========================================================== */
+@keyframes spin{
 
-@media (min-width:768px){
+    to{
 
-    #app{
-
-        margin:20px auto;
-
-        height:
-            calc(100dvh - 40px);
-
-        border-radius:32px;
-
-        overflow:hidden;
-
-        box-shadow:
-            var(--shadow-xl);
-
-        border:
-            1px solid
-            rgba(255,255,255,.6);
-
-    }
-
-}
-
-/* ===========================================================
-   LANDSCAPE
-=========================================================== */
-
-@media (orientation:landscape){
-
-    #content{
-
-        padding-left:32px;
-        padding-right:32px;
+        transform:rotate(360deg);
 
     }
 
