@@ -15,10 +15,12 @@ import BottomNav from "../components/layout/BottomNav.js";
 
 import Dashboard from "../modules/dashboard/DashboardModule.js";
 import Body from "../modules/body/BodyModule.js";
+import Imaging from "../modules/body/ImagingModule.js";
 import Timeline from "../modules/timeline/TimelineModule.js";
 import Insights from "../modules/insights/InsightsModule.js";
 import Profile from "../modules/profile/ProfileModule.js";
 import Simulation from "../modules/simulation/SimulationModule.js";
+import Settings from "../modules/settings/SettingsModule.js";
 
 class App {
 
@@ -48,17 +50,21 @@ class App {
 
             Router.registerRoutes({
 
-                dashboard : Dashboard,
+                dashboard : DashboardModule,
 
-                body : Body,
+                body : BodyModule,
 
-                timeline : Timeline,
+                imaging : ImagingModule,
 
-                insights : Insights,
+                timeline : TimelineModule,
 
-                profile : Profile,
+                insights : InsightsModule,
 
-                simulation : Simulation
+                profile : ProfileModule,
+
+                simulation : SimulationModule,
+
+                settings : SettingsModule,
 
             });
 
