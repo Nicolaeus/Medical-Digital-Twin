@@ -10,10 +10,10 @@ import Store from "./store.js";
 import Router from "./router.js";
 import API from "./api.js";
 
-import Header from "../components/Header.js";
-import BottomNav from "../components/BottomNav.js";
+import Header from "../components/layout/Header.js";
+import BottomNav from "../components/layout/BottomNav.js";
 
-import Dashboard from "../modules/dashboard/Dashboard.js";
+import Dashboard from "../modules/dashboard/DashboardModule.js";
 import Body from "../modules/body/Body.js";
 import Timeline from "../modules/timeline/Timeline.js";
 import Insights from "../modules/insights/Insights.js";
