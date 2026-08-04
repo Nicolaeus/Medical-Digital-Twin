@@ -58,8 +58,6 @@ export default class BodyRenderer {
 
         this.startRenderLoop();
 
-        });
-
         this.onResize = this.resize.bind(this);
 
         window.addEventListener(
