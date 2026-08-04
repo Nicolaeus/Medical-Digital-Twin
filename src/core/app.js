@@ -13,6 +13,13 @@ import API from "./api.js";
 import Header from "../components/Header.js";
 import BottomNav from "../components/BottomNav.js";
 
+import Dashboard from "../modules/dashboard/Dashboard.js";
+import Body from "../modules/body/Body.js";
+import Timeline from "../modules/timeline/Timeline.js";
+import Insights from "../modules/insights/Insights.js";
+import Profile from "../modules/profile/Profile.js";
+import Simulation from "../modules/simulation/Simulation.js";
+
 class App {
 
     constructor(){
@@ -33,15 +40,35 @@ class App {
 
         try{
 
-            await this.initializeCore();
+            await Store.init();
 
-            await this.initializeUI();
+            await API.init();
 
-            await this.start();
+            Router.init();
+
+            Router.registerRoutes({
+
+                dashboard : Dashboard,
+
+                body : Body,
+
+                timeline : Timeline,
+
+                insights : Insights,
+
+                profile : Profile,
+
+                simulation : Simulation
+
+            });
+
+            Header.init();
+
+            BottomNav.init();
+
+            Router.handleRoute();
 
             this.initialized = true;
-
-            console.log("✅ Application ready");
 
         }
 
@@ -49,51 +76,7 @@ class App {
 
             console.error(error);
 
-            this.showFatalError(error);
-
         }
-
-    }
-
-    async initializeCore(){
-
-        await Store.init();
-
-        await API.init();
-
-        Router.init();
-
-    }
-
-    async initializeUI(){
-
-        Header.init();
-
-        BottomNav.init();
-
-    }
-
-    async start(){
-
-        Router.navigate("dashboard");
-
-    }
-
-    showFatalError(error){
-
-        document.body.innerHTML = `
-
-            <div class="fatal-error">
-
-                <h1>Medical Digital Twin</h1>
-
-                <p>Unable to start application.</p>
-
-                <pre>${error}</pre>
-
-            </div>
-
-        `;
 
     }
 
