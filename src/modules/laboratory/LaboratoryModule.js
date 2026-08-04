@@ -1,0 +1,44 @@
+/**
+ * ==========================================================
+ * Medical Digital Twin
+ * LaboratoryModule.js
+ * ==========================================================
+ */
+
+export default class LaboratoryModule {
+
+    constructor() {
+
+        this.root = null;
+
+    }
+
+    async render(root) {
+
+        this.root = root;
+
+        this.root.innerHTML = `
+
+            <div class="module-placeholder">
+
+                <h1>🧪 Laboratory</h1>
+
+                <p>Module en cours de développement.</p>
+
+            </div>
+
+        `;
+
+    }
+
+    bindEvents() {}
+
+    async beforeEnter() {}
+
+    async afterEnter() {}
+
+    async beforeLeave() {}
+
+    async destroy() {}
+
+}
