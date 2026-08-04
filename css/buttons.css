@@ -1,0 +1,477 @@
+/* ===========================================================
+   Medical Digital Twin
+   buttons.css
+   Button System v1.0
+=========================================================== */
+
+
+/* ===========================================================
+   BASE BUTTON
+=========================================================== */
+
+.btn {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: fit-content;
+    min-width: 120px;
+    height: var(--button-height);
+
+    padding: 0 22px;
+
+    border: none;
+    border-radius: var(--radius-pill);
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: var(--font-md);
+    font-weight: var(--weight-semibold);
+
+    transition:
+        background .25s,
+        color .25s,
+        transform .20s,
+        box-shadow .25s,
+        opacity .25s;
+
+    overflow: hidden;
+
+}
+
+
+/* ===========================================================
+   RIPPLE
+=========================================================== */
+
+.btn::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        radial-gradient(circle,
+        rgba(255,255,255,.35) 10%,
+        transparent 60%);
+
+    opacity:0;
+
+    transition:.35s;
+
+}
+
+.btn:active::after{
+
+    opacity:1;
+
+}
+
+
+/* ===========================================================
+   PRIMARY
+=========================================================== */
+
+.btn-primary{
+
+    color:white;
+
+    background:
+        var(--gradient-primary);
+
+    box-shadow:
+        0 10px 24px rgba(37,99,235,.25);
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 16px 34px rgba(37,99,235,.32);
+
+}
+
+
+/* ===========================================================
+   SECONDARY
+=========================================================== */
+
+.btn-secondary{
+
+    background:
+        var(--color-surface);
+
+    color:
+        var(--color-text);
+
+    border:
+        1px solid var(--color-border);
+
+}
+
+.btn-secondary:hover{
+
+    background:
+        var(--color-surface-alt);
+
+}
+
+
+/* ===========================================================
+   GHOST
+=========================================================== */
+
+.btn-ghost{
+
+    background:transparent;
+
+    color:var(--color-primary);
+
+}
+
+.btn-ghost:hover{
+
+    background:
+        rgba(59,130,246,.08);
+
+}
+
+
+/* ===========================================================
+   SUCCESS
+=========================================================== */
+
+.btn-success{
+
+    background:
+        var(--gradient-success);
+
+    color:white;
+
+}
+
+
+/* ===========================================================
+   WARNING
+=========================================================== */
+
+.btn-warning{
+
+    background:
+        var(--color-warning);
+
+    color:white;
+
+}
+
+
+/* ===========================================================
+   DANGER
+=========================================================== */
+
+.btn-danger{
+
+    background:
+        var(--color-danger);
+
+    color:white;
+
+}
+
+
+/* ===========================================================
+   ICON BUTTON
+=========================================================== */
+
+.btn-icon{
+
+    width:52px;
+
+    min-width:52px;
+
+    height:52px;
+
+    padding:0;
+
+    border-radius:50%;
+
+}
+
+
+/* ===========================================================
+   SMALL
+=========================================================== */
+
+.btn-sm{
+
+    height:40px;
+
+    font-size:var(--font-sm);
+
+    padding:0 16px;
+
+}
+
+
+/* ===========================================================
+   LARGE
+=========================================================== */
+
+.btn-lg{
+
+    height:60px;
+
+    padding:0 28px;
+
+    font-size:1.05rem;
+
+}
+
+
+/* ===========================================================
+   FULL WIDTH
+=========================================================== */
+
+.btn-block{
+
+    width:100%;
+
+}
+
+
+/* ===========================================================
+   DISABLED
+=========================================================== */
+
+.btn:disabled{
+
+    opacity:.45;
+
+    cursor:default;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+
+
+/* ===========================================================
+   FAB
+=========================================================== */
+
+.fab{
+
+    position:fixed;
+
+    right:24px;
+
+    bottom:130px;
+
+    width:64px;
+
+    height:64px;
+
+    border-radius:50%;
+
+    background:
+        var(--gradient-primary);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:28px;
+
+    box-shadow:
+        var(--shadow-lg);
+
+    z-index:200;
+
+}
+
+
+/* ===========================================================
+   CHIP
+=========================================================== */
+
+.chip{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 16px;
+
+    border-radius:
+        var(--radius-pill);
+
+    background:
+        var(--color-surface-alt);
+
+    color:
+        var(--color-text-secondary);
+
+    font-size:
+        var(--font-sm);
+
+    font-weight:
+        var(--weight-medium);
+
+}
+
+
+/* ===========================================================
+   SEGMENTED CONTROL
+=========================================================== */
+
+.segmented{
+
+    display:flex;
+
+    gap:6px;
+
+    padding:6px;
+
+    border-radius:
+        var(--radius-pill);
+
+    background:
+        var(--color-surface-alt);
+
+}
+
+.segmented button{
+
+    flex:1;
+
+    height:42px;
+
+    border-radius:
+        var(--radius-pill);
+
+    font-weight:
+        var(--weight-semibold);
+
+    color:
+        var(--color-text-secondary);
+
+}
+
+.segmented button.active{
+
+    background:
+        white;
+
+    color:
+        var(--color-primary);
+
+    box-shadow:
+        var(--shadow-sm);
+
+}
+
+
+/* ===========================================================
+   SWITCH
+=========================================================== */
+
+.switch{
+
+    position:relative;
+
+    width:56px;
+
+    height:32px;
+
+    border-radius:999px;
+
+    background:#D1D5DB;
+
+    transition:.25s;
+
+}
+
+.switch::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:3px;
+
+    left:3px;
+
+    width:26px;
+
+    height:26px;
+
+    border-radius:50%;
+
+    background:white;
+
+    transition:.25s;
+
+    box-shadow:
+        var(--shadow-xs);
+
+}
+
+.switch.active{
+
+    background:
+        var(--color-primary);
+
+}
+
+.switch.active::before{
+
+    left:27px;
+
+}
+
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme:dark){
+
+.segmented button.active{
+
+    background:
+        var(--color-surface);
+
+}
+
+.btn-secondary{
+
+    background:
+        var(--color-surface);
+
+}
+
+.chip{
+
+    background:
+        rgba(255,255,255,.05);
+
+}
+
+}
