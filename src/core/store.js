@@ -6,7 +6,7 @@
  * Version 5.0
  * ==========================================================
  */
-import State from "../state/index.js";
+import State from "../states/index.js";
 class Store {
 
     constructor() {
