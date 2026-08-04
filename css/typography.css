@@ -1,0 +1,519 @@
+/* ===========================================================
+   Medical Digital Twin
+   typography.css
+   Typography System v1.0
+=========================================================== */
+
+/* ===========================================================
+   FONT
+=========================================================== */
+
+body{
+
+    font-family:var(--font-family);
+
+    font-size:var(--font-md);
+
+    color:var(--color-text);
+
+    line-height:1.45;
+
+    text-rendering:optimizeLegibility;
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+}
+
+/* ===========================================================
+   DISPLAY
+=========================================================== */
+
+.display-xl{
+
+    font-size:3.4rem;
+
+    font-weight:700;
+
+    line-height:1;
+
+    letter-spacing:-0.06em;
+
+}
+
+.display-lg{
+
+    font-size:2.8rem;
+
+    font-weight:700;
+
+    line-height:1;
+
+    letter-spacing:-0.05em;
+
+}
+
+.display-md{
+
+    font-size:2.3rem;
+
+    font-weight:700;
+
+    line-height:1.05;
+
+    letter-spacing:-0.04em;
+
+}
+
+/* ===========================================================
+   HEADINGS
+=========================================================== */
+
+h1{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    line-height:1.1;
+
+    letter-spacing:-0.04em;
+
+}
+
+h2{
+
+    font-size:1.55rem;
+
+    font-weight:700;
+
+    line-height:1.15;
+
+    letter-spacing:-0.03em;
+
+}
+
+h3{
+
+    font-size:1.25rem;
+
+    font-weight:600;
+
+    line-height:1.2;
+
+}
+
+h4{
+
+    font-size:1.05rem;
+
+    font-weight:600;
+
+}
+
+h5{
+
+    font-size:.95rem;
+
+    font-weight:600;
+
+}
+
+h6{
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+}
+
+/* ===========================================================
+   PARAGRAPH
+=========================================================== */
+
+p{
+
+    color:var(--color-text-secondary);
+
+    line-height:1.65;
+
+}
+
+/* ===========================================================
+   SMALL
+=========================================================== */
+
+.small{
+
+    font-size:.82rem;
+
+}
+
+.tiny{
+
+    font-size:.72rem;
+
+}
+
+/* ===========================================================
+   LABELS
+=========================================================== */
+
+.label{
+
+    font-size:.72rem;
+
+    font-weight:600;
+
+    letter-spacing:.10em;
+
+    text-transform:uppercase;
+
+    color:var(--color-text-light);
+
+}
+
+.label-primary{
+
+    color:var(--color-primary);
+
+}
+
+/* ===========================================================
+   VALUES
+=========================================================== */
+
+.value-xl{
+
+    font-size:4rem;
+
+    font-weight:700;
+
+    line-height:.95;
+
+    letter-spacing:-0.05em;
+
+}
+
+.value-lg{
+
+    font-size:2.8rem;
+
+    font-weight:700;
+
+    line-height:1;
+
+}
+
+.value{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+}
+
+.value-sm{
+
+    font-size:1.25rem;
+
+    font-weight:600;
+
+}
+
+/* ===========================================================
+   BODY
+=========================================================== */
+
+.text{
+
+    font-size:1rem;
+
+}
+
+.text-lg{
+
+    font-size:1.1rem;
+
+}
+
+.text-sm{
+
+    font-size:.88rem;
+
+}
+
+.text-xs{
+
+    font-size:.76rem;
+
+}
+
+/* ===========================================================
+   COLORS
+=========================================================== */
+
+.text-primary{
+
+    color:var(--color-primary);
+
+}
+
+.text-success{
+
+    color:var(--color-success);
+
+}
+
+.text-warning{
+
+    color:var(--color-warning);
+
+}
+
+.text-danger{
+
+    color:var(--color-danger);
+
+}
+
+.text-muted{
+
+    color:var(--color-text-light);
+
+}
+
+.text-secondary{
+
+    color:var(--color-text-secondary);
+
+}
+
+/* ===========================================================
+   WEIGHTS
+=========================================================== */
+
+.light{
+
+    font-weight:300;
+
+}
+
+.normal{
+
+    font-weight:400;
+
+}
+
+.medium{
+
+    font-weight:500;
+
+}
+
+.semibold{
+
+    font-weight:600;
+
+}
+
+.bold{
+
+    font-weight:700;
+
+}
+
+/* ===========================================================
+   ALIGNMENTS
+=========================================================== */
+
+.text-center{
+
+    text-align:center;
+
+}
+
+.text-right{
+
+    text-align:right;
+
+}
+
+.text-left{
+
+    text-align:left;
+
+}
+
+/* ===========================================================
+   TRUNCATE
+=========================================================== */
+
+.truncate{
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+
+}
+
+/* ===========================================================
+   MULTILINE
+=========================================================== */
+
+.line-2{
+
+    display:-webkit-box;
+
+    -webkit-line-clamp:2;
+
+    -webkit-box-orient:vertical;
+
+    overflow:hidden;
+
+}
+
+.line-3{
+
+    display:-webkit-box;
+
+    -webkit-line-clamp:3;
+
+    -webkit-box-orient:vertical;
+
+    overflow:hidden;
+
+}
+
+/* ===========================================================
+   NUMBERS
+=========================================================== */
+
+.numeric{
+
+    font-variant-numeric:
+
+        tabular-nums;
+
+}
+
+/* ===========================================================
+   HEADER
+=========================================================== */
+
+.header-greeting{
+
+    font-size:.72rem;
+
+    font-weight:600;
+
+    color:var(--color-text-light);
+
+}
+
+.header-name{
+
+    font-size:1.15rem;
+
+    font-weight:700;
+
+    color:var(--color-text);
+
+}
+
+/* ===========================================================
+   WEATHER
+=========================================================== */
+
+.weather-temp{
+
+    font-size:1rem;
+
+    font-weight:700;
+
+}
+
+.weather-city{
+
+    font-size:.72rem;
+
+    color:var(--color-text-light);
+
+}
+
+.health-weather{
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+}
+
+/* ===========================================================
+   CARDS
+=========================================================== */
+
+.card-title{
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+    color:var(--color-text-secondary);
+
+}
+
+.card-value{
+
+    font-size:2.6rem;
+
+    font-weight:700;
+
+    letter-spacing:-0.03em;
+
+}
+
+.card-caption{
+
+    font-size:.75rem;
+
+    color:var(--color-text-light);
+
+}
+
+/* ===========================================================
+   LINKS
+=========================================================== */
+
+a{
+
+    color:inherit;
+
+    transition:.2s;
+
+}
+
+a:hover{
+
+    color:var(--color-primary);
+
+}
+
+/* ===========================================================
+   SELECTION
+=========================================================== */
+
+::selection{
+
+    background:
+
+        rgba(59,130,246,.18);
+
+}
