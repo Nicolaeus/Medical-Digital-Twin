@@ -221,3 +221,379 @@
     transition:.25s;
 
 }
+
+/* ===========================================================
+   ACTIVE
+=========================================================== */
+
+.bottom-nav-button.active{
+
+    background:var(--gradient-primary);
+
+    color:white;
+
+    box-shadow:
+
+        0 8px 18px rgba(37,99,235,.18);
+
+}
+
+.bottom-nav-button.active::before{
+
+    opacity:1;
+
+    background:
+
+        radial-gradient(
+
+            circle,
+
+            rgba(59,130,246,.26) 0%,
+
+            rgba(59,130,246,.10) 60%,
+
+            transparent 90%
+
+        );
+
+}
+
+.bottom-nav-button.active .bottom-nav-icon{
+
+    transform:scale(1.05);
+
+}
+
+/* ===========================================================
+   HOVER
+=========================================================== */
+
+.bottom-nav-button:hover{
+
+    color:var(--color-primary);
+
+    transform:translateY(-2px);
+
+}
+
+.bottom-nav-button.active:hover{
+
+    color:white;
+
+}
+
+/* ===========================================================
+   PRESS
+=========================================================== */
+
+.bottom-nav-button:active{
+
+    transform:scale(.94);
+
+}
+
+/* ===========================================================
+   BADGE
+=========================================================== */
+
+.bottom-nav-badge{
+
+    position:absolute;
+
+    top:-2px;
+
+    right:-2px;
+
+    min-width:16px;
+
+    height:16px;
+
+    padding:0 5px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:999px;
+
+    background:var(--color-danger);
+
+    color:white;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    box-shadow:
+
+        0 2px 8px rgba(239,68,68,.30);
+
+}
+
+/* ===========================================================
+   LIVE
+=========================================================== */
+
+.bottom-nav-live{
+
+    position:absolute;
+
+    top:2px;
+
+    right:2px;
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--color-success);
+
+    box-shadow:
+
+        0 0 10px rgba(34,197,94,.55);
+
+    animation:
+
+        bottom-nav-live-pulse
+
+        2s infinite;
+
+}
+
+@keyframes bottom-nav-live-pulse{
+
+    0%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        transform:scale(1.35);
+
+        opacity:.45;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+/* ===========================================================
+   VISIBILITY
+=========================================================== */
+
+.bottom-nav.hidden{
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transform:
+
+        translate(-50%,100px);
+
+}
+
+.bottom-nav.show{
+
+    opacity:1;
+
+    transform:
+
+        translate(-50%,0);
+
+}
+
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+
+@media (max-width:600px){
+
+    .bottom-nav{
+
+        width:calc(100% - 20px);
+
+        max-width:390px;
+
+        height:56px;
+
+        padding:6px 10px;
+
+    }
+
+    .bottom-nav-container{
+
+        gap:12px;
+
+    }
+
+    .bottom-nav-button{
+
+        width:40px;
+
+        height:40px;
+
+        flex:0 0 40px;
+
+    }
+
+    .bottom-nav-icon{
+
+        font-size:19px;
+
+    }
+
+}
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme:dark){
+
+    .bottom-nav{
+
+        background:var(--color-glass-dark);
+
+        border-color:var(--color-glass-border-dark);
+
+        box-shadow:
+
+            0 12px 30px rgba(0,0,0,.35);
+
+    }
+
+    .bottom-nav-button{
+
+        color:var(--color-text-secondary);
+
+    }
+
+    .bottom-nav-button.active{
+
+        color:white;
+
+    }
+
+}
+
+/* ===========================================================
+   FLOATING ANIMATION
+=========================================================== */
+
+.bottom-nav{
+
+    animation:
+
+        bottom-nav-float
+
+        6s ease-in-out infinite;
+
+}
+
+@keyframes bottom-nav-float{
+
+    0%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(-1px);
+
+    }
+
+    100%{
+
+        transform:
+
+            translateX(-50%)
+
+            translateY(0);
+
+    }
+
+}
+
+/* ===========================================================
+   FOCUS
+=========================================================== */
+
+.bottom-nav-button:focus-visible{
+
+    outline:none;
+
+    box-shadow:
+
+        0 0 0 3px rgba(59,130,246,.22);
+
+}
+
+/* ===========================================================
+   TRANSITIONS
+=========================================================== */
+
+.bottom-nav,
+
+.bottom-nav *{
+
+    transition:
+
+        color .25s ease,
+
+        background .25s ease,
+
+        border-color .25s ease,
+
+        box-shadow .25s ease,
+
+        opacity .25s ease,
+
+        transform .25s ease;
+
+}
+
+/* ===========================================================
+   ACCESSIBILITY
+=========================================================== */
+
+@media (prefers-reduced-motion:reduce){
+
+    .bottom-nav,
+
+    .bottom-nav *{
+
+        animation:none !important;
+
+        transition:none !important;
+
+    }
+
+}
