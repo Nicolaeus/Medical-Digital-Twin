@@ -87,11 +87,63 @@ export default class BottomNav extends BaseComponent {
 
                 }
 
-                Router.navigate(
+                const route = button.dataset.id;
 
-                    button.dataset.id
+                if (
+                
+                    route === Store.get(
+                
+                        "ui.navigation.current"
+                
+                    )
+                
+                ){
+                
+                    return;
+                
+                }
 
+                button.animate(
+                
+                    [
+                
+                        {
+                
+                            transform:"scale(1)"
+                
+                        },
+                
+                        {
+                
+                            transform:"scale(.92)"
+                
+                        },
+                
+                        {
+                
+                            transform:"scale(1.05)"
+                
+                        },
+                
+                        {
+                
+                            transform:"scale(1)"
+                
+                        }
+                
+                    ],
+                
+                    {
+                
+                        duration:220,
+                
+                        easing:"ease-out"
+                
+                    }
+                
                 );
+                
+                Router.navigate(route);
 
             }
 
