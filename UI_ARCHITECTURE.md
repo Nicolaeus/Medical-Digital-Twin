@@ -1366,3 +1366,601 @@ Data do not own the patient.
 The Digital Twin owns the representation.
 
 Everything else is only another way of observing it.
+
+# 5. Digital Twin Runtime
+
+The Twin Runtime is the core orchestration engine of Medical Digital Twin.
+
+It is responsible for transforming heterogeneous medical information into a coherent Digital Twin representation.
+
+The Twin Runtime does not own medical data.
+
+The Twin Runtime does not render graphics.
+
+The Twin Runtime does not implement user interface.
+
+Its only responsibility is orchestration.
+
+---
+
+## Responsibilities
+
+The Twin Runtime
+
+- aggregates data from modules
+
+- synchronizes the Store
+
+- creates Digital Twin entities
+
+- builds visualization layers
+
+- manages active lenses
+
+- exposes the active scene graph
+
+- maintains global application context
+
+---
+
+## Data Sources
+
+The Runtime never communicates directly with external systems.
+
+All external data must pass through dedicated modules.
+
+Example
+
+FHIR
+
+↓
+
+Laboratory Module
+
+↓
+
+Twin Runtime
+
+↓
+
+Laboratory Layer
+
+↓
+
+Renderer
+
+---
+
+## Runtime Context
+
+The Runtime always knows
+
+Current Patient
+
+Current Time
+
+Current Lens
+
+Current Selection
+
+Visible Layers
+
+Active Simulation
+
+Current Environment
+
+Current Camera State
+
+This context is exposed through the Store.
+
+---
+
+## Responsibilities excluded
+
+The Runtime never
+
+imports DICOM
+
+calculates radiation dose
+
+stores laboratory values
+
+renders Babylon meshes
+
+creates user interface
+
+These responsibilities belong to dedicated modules.
+
+---
+
+## Principle
+
+The Runtime connects the entire ecosystem.
+
+It owns relationships.
+
+It never owns data.
+
+# 6. Scene Graph
+
+The Scene Graph represents the active Digital Twin.
+
+It is independent from Babylon.
+
+Babylon is only one possible renderer.
+
+The Scene Graph describes biological objects.
+
+---
+
+Digital Twin
+
+↓
+
+Scene Graph
+
+↓
+
+Layers
+
+↓
+
+Entities
+
+↓
+
+Visual Components
+
+↓
+
+Renderer
+
+---
+
+Every visible object belongs to the Scene Graph.
+
+Nothing is rendered outside the Scene Graph.
+
+---
+
+The Scene Graph provides
+
+visibility
+
+selection
+
+hierarchy
+
+transformations
+
+metadata
+
+relationships
+
+---
+
+The Scene Graph does not contain business logic.
+
+It only represents the Digital Twin.
+
+# 7. Layer System
+
+Everything visible belongs to a Layer.
+
+Layers organize the Digital Twin.
+
+Layers never own medical data.
+
+Layers own visualization.
+
+---
+
+Examples
+
+Anatomy
+
+Physiology
+
+Imaging
+
+Laboratory
+
+Medication
+
+Devices
+
+Knowledge
+
+Simulation
+
+Timeline
+
+Environment
+
+Annotations
+
+AI
+
+---
+
+Every Layer contains Entities.
+
+Layers may contain child Layers.
+
+Visibility is controlled independently.
+
+Opacity is controlled independently.
+
+Rendering order is controlled independently.
+
+---
+
+Layers are synchronized through the Store.
+
+No Layer communicates directly with another Layer.
+
+# 8. Entity System
+
+Entities are the smallest interactive objects of the Digital Twin.
+
+Every Entity belongs to exactly one Layer.
+
+Examples
+
+Heart
+
+Brain
+
+Left Kidney
+
+Tumor
+
+Pacemaker
+
+Coronary Stent
+
+Blood Vessel
+
+Lymph Node
+
+Medical Device
+
+Dose Volume
+
+Annotation
+
+---
+
+Each Entity contains
+
+Identifier
+
+Name
+
+Type
+
+Layer
+
+Metadata
+
+Relationships
+
+Visual Representation
+
+Interaction State
+
+---
+
+Entities never store medical records.
+
+They reference information owned by modules.
+
+Example
+
+Heart Entity
+
+↓
+
+Imaging Module
+
+Laboratory Module
+
+Medication Module
+
+Timeline Module
+
+Simulation Module
+
+---
+
+An Entity represents
+
+one biological object
+
+not its data.
+
+# 9. Lens System
+
+A Lens is a visualization preset.
+
+A Lens never owns data.
+
+A Lens configures the Digital Twin.
+
+---
+
+A Lens may activate
+
+Layers
+
+Camera
+
+Widgets
+
+Floating Panels
+
+Interaction Modes
+
+Rendering Options
+
+Animations
+
+---
+
+Example
+
+Cardiology Lens
+
+activates
+
+Heart Layer
+
+Coronary Layer
+
+ECG Widget
+
+Medication Panel
+
+Laboratory Panel
+
+Timeline Panel
+
+Cardiology Camera
+
+---
+
+Another example
+
+Radiotherapy Lens
+
+activates
+
+Dose Layer
+
+Structures
+
+Beam Geometry
+
+DVH Panel
+
+Simulation Panel
+
+Timeline
+
+---
+
+Multiple Lenses may coexist.
+
+The Runtime resolves conflicts.
+
+# 10. Scene Manager
+
+The Scene Manager is responsible for rendering orchestration.
+
+The Scene Manager controls
+
+Layers
+
+Entities
+
+Visibility
+
+Selection
+
+Camera
+
+Effects
+
+Transparency
+
+Animations
+
+Clipping
+
+Rendering Order
+
+---
+
+The Scene Manager never accesses medical modules.
+
+It communicates only with
+
+Twin Runtime
+
+Store
+
+Renderer
+
+---
+
+Responsibilities
+
+show
+
+hide
+
+focus
+
+highlight
+
+animate
+
+filter
+
+refresh
+
+The Scene Manager owns rendering behavior.
+
+It never owns medical information.
+
+# 11. Data Flow
+
+Medical Digital Twin follows a unidirectional architecture.
+
+Everything flows in one direction.
+
+External Sources
+
+↓
+
+Modules
+
+↓
+
+Twin Runtime
+
+↓
+
+Store
+
+↓
+
+Scene Manager
+
+↓
+
+Scene Graph
+
+↓
+
+Renderer
+
+↓
+
+Overlays
+
+↓
+
+User
+
+---
+
+Modules never communicate directly.
+
+Renderer never communicates with modules.
+
+Widgets never communicate with Babylon.
+
+Every interaction returns through the Store.
+
+This guarantees predictable behavior.
+
+# 12. Source System
+
+Medical Digital Twin separates Sources from Modules.
+
+Sources produce information.
+
+Modules interpret information.
+
+---
+
+Examples of Sources
+
+FHIR
+
+DICOM
+
+PACS
+
+Apple Health
+
+Health Connect
+
+Garmin
+
+Polar
+
+Withings
+
+CSV
+
+REST APIs
+
+Hospital Databases
+
+Cloud Services
+
+Manual Input
+
+---
+
+Sources never modify the Digital Twin.
+
+They only provide raw information.
+
+Modules transform source data into medical knowledge.
+
+The Twin Runtime integrates this knowledge.
+
+# Golden Rule
+
+When developing Medical Digital Twin, always think in this order.
+
+Source
+
+↓
+
+Module
+
+↓
+
+Twin Runtime
+
+↓
+
+Store
+
+↓
+
+Scene Graph
+
+↓
+
+Layer
+
+↓
+
+Entity
+
+↓
+
+Renderer
+
+↓
+
+Overlay
+
+↓
+
+User
+
+Never reverse this architecture.
+
+Every new feature must integrate into this pipeline.
+
+The architecture is considered frozen.
+
+New ideas improve the implementation.
+
+They do not redefine the architecture.
