@@ -378,43 +378,35 @@ class Store {
     }
 
     /* ====================================================== */
-
+    
     dispatch(path) {
-
+    
         const value = this.get(path);
-
+    
         this.watchers.forEach(watcher => {
-
+    
             if (
-
+    
                 watcher.path === "*" ||
-
+    
                 watcher.path === path ||
-
-                if (
-                
-                    watcher.path === "*" ||
-                
-                    watcher.path === path ||
-                
-                    (path && path.startsWith(watcher.path + "."))
-                
-                )
-
+    
+                (path && path.startsWith(watcher.path + "."))
+    
             ) {
-
+    
                 watcher.callback(
-
+    
                     value,
-
+    
                     path
-
+    
                 );
-
+    
             }
-
+    
         });
-
+    
     }
 
     /* ====================================================== */
