@@ -9,22 +9,29 @@ export default [
 
     {
         id: "dashboard",
-        label: "Home",
+        label: "Overview",
         icon: "🏠",
         route: "/"
     },
 
     {
         id: "body",
-        label: "Body",
+        label: "Anatomy",
         icon: "🫀",
         route: "/body"
     },
 
     {
+        id: "imaging",
+        label: "Imaging",
+        icon: "🩻",
+        route: "/imaging"
+    },
+
+    {
         id: "timeline",
         label: "Timeline",
-        icon: "📅",
+        icon: "📈",
         route: "/timeline"
     },
 
@@ -36,10 +43,17 @@ export default [
     },
 
     {
-        id: "profile",
-        label: "Profile",
-        icon: "👤",
-        route: "/profile"
+        id: "simulation",
+        label: "Simulation",
+        icon: "🧪",
+        route: "/simulation"
+    },
+
+    {
+        id: "settings",
+        label: "Settings",
+        icon: "⚙️",
+        route: "/settings"
     }
 
 ];
