@@ -150,29 +150,21 @@ export default class BottomNav extends BaseComponent {
             <button
 
                 class="bottom-nav-button ${active ? "active" : ""}"
-
+            
                 data-id="${item.id}"
-
+            
+                title="${item.label}"
+            
                 aria-label="${item.label}"
-
+            
             >
-
+            
                 <div class="bottom-nav-icon">
-
+            
                     ${item.icon}
-
+            
                 </div>
-
-                ${active ? `
-
-                    <div class="bottom-nav-label">
-
-                        ${item.label}
-
-                    </div>
-
-                ` : ""}
-
+            
             </button>
 
         `;
