@@ -68,10 +68,6 @@ class App {
 
             });
 
-            Header.init();
-
-            BottomNav.init();
-
             Router.handleRoute();
 
             this.initialized = true;
