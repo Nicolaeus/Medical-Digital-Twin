@@ -68,9 +68,11 @@ class App {
 
             });
 
-            Router.handleRoute();
+            await Router.handleRoute();
 
             this.initialized = true;
+
+            document.getElementById("loading-screen")?.remove();
 
         }
 
