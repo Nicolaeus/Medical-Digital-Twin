@@ -9,9 +9,9 @@
 import Header from "../../components/layout/Header.js";
 import BottomNav from "../../components/layout/BottomNav.js";
 
-import LayerToolbar from "../body/widgets/LayerToolbar.js";
-import OrganWidget from "../body/widgets/OrganWidget.js";
-import LegendWidget from "../body/widgets/LegendWidget.js";
+import LayerToolbar from "../../components/body/LayerToolbar.js";
+import OrganWidget from "../../components/body/OrganWidget.js";
+import LegendWidget from "../../components/body/LegendWidget.js";
 
 import BodyModule from "../body/BodyModule.js";
 
