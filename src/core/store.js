@@ -1,9 +1,9 @@
 /**
  * ==========================================================
  * Medical Digital Twin
- * store.js
- * Global Store
- * Version 4.0
+ * core/store.js
+ * Global Reactive Store
+ * Version 5.0
  * ==========================================================
  */
 
@@ -39,19 +39,17 @@ class Store {
 
             patient: {},
 
-            environment: {},
-
             health: {},
 
             body: {},
 
-            timeline: {},
+            environment: {},
 
             labs: {},
 
-            simulation: {},
+            timeline: {},
 
-            devices: {},
+            simulation: {},
 
             settings: {},
 
@@ -89,6 +87,14 @@ class Store {
 
     /* ====================================================== */
 
+    has(path) {
+
+        return this.get(path) !== undefined;
+
+    }
+
+    /* ====================================================== */
+
     set(path, value) {
 
         const keys = path.split(".");
@@ -99,7 +105,7 @@ class Store {
 
         for (const key of keys) {
 
-            if (!(key in current)) {
+            if (!(key in current) || typeof current[key] !== "object") {
 
                 current[key] = {};
 
@@ -130,6 +136,180 @@ class Store {
         }
 
         Object.assign(object, values);
+
+        this.notify(path);
+
+    }
+
+    /* ====================================================== */
+
+    merge(path, values) {
+
+        const target = this.get(path);
+
+        if (!target) {
+
+            this.set(path, structuredClone(values));
+
+            return;
+
+        }
+
+        this.deepMerge(target, values);
+
+        this.notify(path);
+
+    }
+
+    /* ====================================================== */
+
+    deepMerge(target, source) {
+
+        Object.keys(source).forEach(key => {
+
+            const value = source[key];
+
+            if (
+
+                value &&
+
+                typeof value === "object" &&
+
+                !Array.isArray(value)
+
+            ) {
+
+                if (
+
+                    !target[key] ||
+
+                    typeof target[key] !== "object"
+
+                ) {
+
+                    target[key] = {};
+
+                }
+
+                this.deepMerge(
+
+                    target[key],
+
+                    value
+
+                );
+
+            }
+
+            else {
+
+                target[key] = value;
+
+            }
+
+        });
+
+    }
+
+    /* ====================================================== */
+
+    delete(path) {
+
+        const keys = path.split(".");
+
+        const last = keys.pop();
+
+        let object = this.state;
+
+        for (const key of keys) {
+
+            object = object?.[key];
+
+        }
+
+        if (
+
+            object &&
+
+            last in object
+
+        ) {
+
+            delete object[last];
+
+            this.notify(path);
+
+        }
+
+    }
+
+    /* ====================================================== */
+
+    clear(path) {
+
+        const value = this.get(path);
+
+        if (Array.isArray(value)) {
+
+            value.length = 0;
+
+        }
+
+        else if (
+
+            value &&
+
+            typeof value === "object"
+
+        ) {
+
+            Object.keys(value).forEach(
+
+                key => delete value[key]
+
+            );
+
+        }
+
+        this.notify(path);
+
+    }
+
+    /* ====================================================== */
+
+    push(path, item) {
+
+        const array = this.get(path);
+
+        if (!Array.isArray(array)) {
+
+            throw new Error(
+
+                `${path} is not an array.`
+
+            );
+
+        }
+
+        array.push(item);
+
+        this.notify(path);
+
+    }
+
+    /* ====================================================== */
+
+    remove(path, index) {
+
+        const array = this.get(path);
+
+        if (!Array.isArray(array)) {
+
+            return;
+
+        }
+
+        array.splice(index, 1);
 
         this.notify(path);
 
@@ -177,7 +357,11 @@ class Store {
 
             this.transactionDepth--;
 
-            if (this.transactionDepth === 0) {
+            if (
+
+                this.transactionDepth === 0
+
+            ) {
 
                 this.flushNotifications();
 
@@ -191,7 +375,11 @@ class Store {
 
     notify(path) {
 
-        if (this.transactionDepth > 0) {
+        if (
+
+            this.transactionDepth > 0
+
+        ) {
 
             this.pendingNotifications.add(path);
 
@@ -207,11 +395,11 @@ class Store {
 
     flushNotifications() {
 
-        for (const path of this.pendingNotifications) {
+        this.pendingNotifications.forEach(
 
-            this.dispatch(path);
+            path => this.dispatch(path)
 
-        }
+        );
 
         this.pendingNotifications.clear();
 
@@ -227,13 +415,25 @@ class Store {
 
             if (
 
+                watcher.path === "*" ||
+
                 watcher.path === path ||
 
-                path.startsWith(watcher.path + ".")
+                path.startsWith(
+
+                    watcher.path + "."
+
+                )
 
             ) {
 
-                watcher.callback(value, path);
+                watcher.callback(
+
+                    value,
+
+                    path
+
+                );
 
             }
 
@@ -243,9 +443,47 @@ class Store {
 
     /* ====================================================== */
 
+    keys(path = "") {
+
+        const object = this.get(path);
+
+        if (
+
+            !object ||
+
+            typeof object !== "object"
+
+        ) {
+
+            return [];
+
+        }
+
+        return Object.keys(object);
+
+    }
+
+    /* ====================================================== */
+
+    clone(path = "") {
+
+        return structuredClone(
+
+            this.get(path)
+
+        );
+
+    }
+
+    /* ====================================================== */
+
     snapshot() {
 
-        return structuredClone(this.state);
+        return structuredClone(
+
+            this.state
+
+        );
 
     }
 
@@ -255,7 +493,31 @@ class Store {
 
         this.state = structuredClone(snapshot);
 
-        this.dispatch("");
+        [
+
+            "patient",
+
+            "health",
+
+            "body",
+
+            "environment",
+
+            "labs",
+
+            "timeline",
+
+            "simulation",
+
+            "settings",
+
+            "ui"
+
+        ].forEach(
+
+            path => this.dispatch(path)
+
+        );
 
     }
 
