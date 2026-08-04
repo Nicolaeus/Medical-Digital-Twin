@@ -6,7 +6,7 @@
  * Version 2.0
  * ==========================================================
  */
-
+import Store from "./store.js";
 class Router {
 
     constructor() {
