@@ -1,0 +1,447 @@
+/* ===========================================================
+   Medical Digital Twin
+   icons.css
+   Icon System v1.0
+=========================================================== */
+
+/* ===========================================================
+   BASE
+=========================================================== */
+
+.icon{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    line-height:1;
+
+    user-select:none;
+
+    transition:
+        transform .25s,
+        background .25s,
+        color .25s,
+        box-shadow .25s;
+
+}
+
+/* ===========================================================
+   SIZES
+=========================================================== */
+
+.icon-xs{
+
+    width:18px;
+    height:18px;
+    font-size:14px;
+
+}
+
+.icon-sm{
+
+    width:24px;
+    height:24px;
+    font-size:18px;
+
+}
+
+.icon-md{
+
+    width:32px;
+    height:32px;
+    font-size:22px;
+
+}
+
+.icon-lg{
+
+    width:42px;
+    height:42px;
+    font-size:28px;
+
+}
+
+.icon-xl{
+
+    width:56px;
+    height:56px;
+    font-size:34px;
+
+}
+
+/* ===========================================================
+   CIRCLE
+=========================================================== */
+
+.icon-circle{
+
+    border-radius:50%;
+
+}
+
+/* ===========================================================
+   ROUNDED
+=========================================================== */
+
+.icon-rounded{
+
+    border-radius:16px;
+
+}
+
+/* ===========================================================
+   FILLED
+=========================================================== */
+
+.icon-filled{
+
+    background:var(--color-surface-alt);
+
+}
+
+/* ===========================================================
+   GLASS
+=========================================================== */
+
+.icon-glass{
+
+    background:rgba(255,255,255,.55);
+
+    backdrop-filter:blur(16px);
+
+    -webkit-backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,.45);
+
+}
+
+/* ===========================================================
+   COLORS
+=========================================================== */
+
+.icon-primary{
+
+    color:var(--color-primary);
+
+}
+
+.icon-success{
+
+    color:var(--color-success);
+
+}
+
+.icon-warning{
+
+    color:var(--color-warning);
+
+}
+
+.icon-danger{
+
+    color:var(--color-danger);
+
+}
+
+.icon-muted{
+
+    color:var(--color-text-light);
+
+}
+
+.icon-white{
+
+    color:white;
+
+}
+
+/* ===========================================================
+   BACKGROUNDS
+=========================================================== */
+
+.icon-bg-primary{
+
+    background:rgba(59,130,246,.12);
+
+}
+
+.icon-bg-success{
+
+    background:rgba(34,197,94,.12);
+
+}
+
+.icon-bg-warning{
+
+    background:rgba(245,158,11,.12);
+
+}
+
+.icon-bg-danger{
+
+    background:rgba(239,68,68,.12);
+
+}
+
+/* ===========================================================
+   SHADOW
+=========================================================== */
+
+.icon-shadow{
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* ===========================================================
+   ACTIVE
+=========================================================== */
+
+.icon-active{
+
+    color:white;
+
+    background:var(--gradient-primary);
+
+    box-shadow:
+
+        0 8px 18px
+
+        rgba(37,99,235,.28);
+
+}
+
+/* ===========================================================
+   HOVER
+=========================================================== */
+
+.icon-hover:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.icon-hover:active{
+
+    transform:scale(.95);
+
+}
+
+/* ===========================================================
+   BADGE
+=========================================================== */
+
+.icon-badge{
+
+    position:relative;
+
+}
+
+.icon-badge::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:2px;
+
+    right:2px;
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--color-danger);
+
+    border:2px solid white;
+
+}
+
+/* ===========================================================
+   LIVE
+=========================================================== */
+
+.icon-live{
+
+    position:relative;
+
+}
+
+.icon-live::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:4px;
+
+    bottom:4px;
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#22C55E;
+
+    box-shadow:
+
+        0 0 8px
+
+        rgba(34,197,94,.65);
+
+}
+
+/* ===========================================================
+   PULSE
+=========================================================== */
+
+.icon-pulse{
+
+    animation:
+
+        pulse
+
+        2s
+
+        infinite;
+
+}
+
+/* ===========================================================
+   HEART
+=========================================================== */
+
+.icon-heart{
+
+    animation:
+
+        heartbeat
+
+        1.8s
+
+        infinite;
+
+}
+
+/* ===========================================================
+   FLOAT
+=========================================================== */
+
+.icon-float{
+
+    animation:
+
+        floating
+
+        5s
+
+        ease-in-out
+
+        infinite;
+
+}
+
+/* ===========================================================
+   WEATHER
+=========================================================== */
+
+.icon-weather{
+
+    font-size:24px;
+
+}
+
+/* ===========================================================
+   HEALTH
+=========================================================== */
+
+.icon-health{
+
+    font-size:20px;
+
+}
+
+/* ===========================================================
+   AVATAR
+=========================================================== */
+
+.icon-avatar{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #60A5FA,
+            #2563EB
+        );
+
+    color:white;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+/* ===========================================================
+   SVG
+=========================================================== */
+
+.icon svg{
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+    fill:currentColor;
+
+    stroke:currentColor;
+
+}
+
+/* ===========================================================
+   DARK MODE
+=========================================================== */
+
+@media (prefers-color-scheme:dark){
+
+.icon-glass{
+
+    background:rgba(15,23,42,.45);
+
+    border:1px solid rgba(255,255,255,.05);
+
+}
+
+.icon-filled{
+
+    background:rgba(255,255,255,.05);
+
+}
+
+.icon-badge::after{
+
+    border-color:var(--color-surface);
+
+}
+
+}
