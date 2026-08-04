@@ -6,8 +6,6 @@
  * ==========================================================
  */
 
-import * as BABYLON from "@babylonjs/core";
-
 import BodyCamera from "./BodyCamera.js";
 import BodyLights from "./BodyLights.js";
 
