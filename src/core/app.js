@@ -15,7 +15,7 @@ import BottomNav from "../components/layout/BottomNav.js";
 
 import Dashboard from "../modules/dashboard/DashboardModule.js";
 import Body from "../modules/body/BodyModule.js";
-import Imaging from "../modules/body/ImagingModule.js";
+import Imaging from "../modules/imaging/ImagingModule.js";
 import Timeline from "../modules/timeline/TimelineModule.js";
 import Insights from "../modules/insights/InsightsModule.js";
 import Profile from "../modules/profile/ProfileModule.js";
