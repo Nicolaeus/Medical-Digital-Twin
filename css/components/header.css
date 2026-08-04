@@ -1,7 +1,7 @@
 /* ===========================================================
    Medical Digital Twin
-   header.css
-   Floating Header v2.0
+   Header.css
+   Status Header v3.0
 =========================================================== */
 
 /* ===========================================================
@@ -12,7 +12,7 @@
 
     position:fixed;
 
-    top:calc(env(safe-area-inset-top) + 14px);
+    top:calc(env(safe-area-inset-top) + 12px);
 
     left:50%;
 
@@ -20,84 +20,134 @@
 
     width:calc(100% - 24px);
 
-    max-width:420px;
-
-    height:104px;
-
-    padding:16px 18px;
+    max-width:560px;
 
     display:flex;
 
     flex-direction:column;
 
-    justify-content:space-between;
+    gap:8px;
 
-    border-radius:28px;
+    padding:12px 16px;
 
-    background:rgba(255,255,255,.72);
+    border-radius:18px;
 
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
+    background:rgba(255,255,255,.82);
 
-    border:1px solid rgba(255,255,255,.55);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+
+    border:1px solid rgba(255,255,255,.45);
 
     box-shadow:
-        0 10px 32px rgba(15,23,42,.08);
+
+        0 8px 28px rgba(15,23,42,.08);
 
     z-index:1000;
 
     transition:
-        height .35s cubic-bezier(.2,.8,.2,1),
-        transform .35s cubic-bezier(.2,.8,.2,1),
-        background .25s;
+
+        background .25s,
+
+        border-color .25s,
+
+        box-shadow .25s,
+
+        transform .25s;
 
 }
 
 /* ===========================================================
-   TOP ROW
+   ROWS
 =========================================================== */
 
-.mdt-header-top{
+.mdt-header-top,
+
+.mdt-header-bottom{
 
     display:flex;
 
+    align-items:center;
+
     justify-content:space-between;
 
-    align-items:center;
+    gap:16px;
+
+    width:100%;
 
 }
 
 /* ===========================================================
-   USER
+   WEATHER
 =========================================================== */
 
-.mdt-user{
+.mdt-weather{
+
+    flex:1;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    min-width:0;
+
+}
+
+.mdt-weather-icon{
+
+    font-size:1.35rem;
+
+    line-height:1;
+
+    flex-shrink:0;
+
+}
+
+.mdt-weather-data{
 
     display:flex;
 
     flex-direction:column;
 
-}
+    justify-content:center;
 
-.mdt-greeting{
-
-    font-size:.74rem;
-
-    font-weight:600;
-
-    color:var(--color-text-light);
+    min-width:0;
 
 }
 
-.mdt-name{
+.mdt-weather-main{
 
-    margin-top:2px;
+    display:flex;
 
-    font-size:1.12rem;
+    align-items:center;
+
+    gap:8px;
+
+    font-size:.88rem;
 
     font-weight:700;
 
     color:var(--color-text);
+
+    white-space:nowrap;
+
+}
+
+.mdt-weather-city{
+
+    margin-top:2px;
+
+    font-size:.72rem;
+
+    color:var(--color-text-light);
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
 
 }
 
@@ -107,24 +157,23 @@
 
 .mdt-avatar{
 
-    width:48px;
+    width:42px;
 
-    height:48px;
-
-    border-radius:50%;
-
-    overflow:hidden;
+    height:42px;
 
     flex-shrink:0;
 
-    background:linear-gradient(
-        135deg,
-        #60A5FA,
-        #2563EB
-    );
+    overflow:hidden;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.75);
+
+    background:#E5E7EB;
 
     box-shadow:
-        0 6px 18px rgba(37,99,235,.18);
+
+        0 4px 14px rgba(15,23,42,.10);
 
 }
 
@@ -136,71 +185,7 @@
 
     object-fit:cover;
 
-}
-
-/* ===========================================================
-   BOTTOM ROW
-=========================================================== */
-
-.mdt-header-bottom{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:12px;
-
-}
-
-/* ===========================================================
-   WEATHER
-=========================================================== */
-
-.mdt-weather{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-}
-
-.mdt-weather-icon{
-
-    font-size:1.35rem;
-
-}
-
-.mdt-weather-data{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-.mdt-weather-main{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    font-size:.88rem;
-
-    font-weight:700;
-
-}
-
-.mdt-weather-city{
-
-    font-size:.72rem;
-
-    color:var(--color-text-light);
+    display:block;
 
 }
 
@@ -216,23 +201,29 @@
 
     gap:8px;
 
-    padding:7px 12px;
+    flex-shrink:0;
+
+    padding:6px 12px;
 
     border-radius:999px;
 
     background:rgba(34,197,94,.10);
 
+    border:1px solid rgba(34,197,94,.15);
+
 }
 
 .mdt-body-weather-icon{
 
-    font-size:1rem;
+    font-size:.95rem;
+
+    line-height:1;
 
 }
 
 .mdt-body-weather-text{
 
-    font-size:.78rem;
+    font-size:.76rem;
 
     font-weight:600;
 
@@ -243,7 +234,45 @@
 }
 
 /* ===========================================================
-   LIVE DOT
+   VITALS
+=========================================================== */
+
+.mdt-vitals{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:16px;
+
+    min-width:0;
+
+}
+
+.mdt-vitals span{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    font-size:.76rem;
+
+    font-weight:600;
+
+    color:var(--color-text);
+
+    white-space:nowrap;
+
+}
+
+/* ===========================================================
+   LIVE INDICATOR
 =========================================================== */
 
 .mdt-live{
@@ -258,9 +287,117 @@
 
     box-shadow:
 
-        0 0 8px
+        0 0 10px rgba(34,197,94,.60);
 
-        rgba(34,197,94,.7);
+    animation:
+
+        mdt-live-pulse
+
+        2s infinite;
+
+}
+
+@keyframes mdt-live-pulse{
+
+    0%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        transform:scale(1.4);
+
+        opacity:.55;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+/* ===========================================================
+   RECOVERY STATES
+=========================================================== */
+
+.mdt-header.excellent{
+
+    border-color:rgba(34,197,94,.25);
+
+}
+
+.mdt-header.excellent .mdt-body-weather{
+
+    background:rgba(34,197,94,.10);
+
+}
+
+.mdt-header.excellent .mdt-body-weather-text{
+
+    color:#16A34A;
+
+}
+
+.mdt-header.good{
+
+    border-color:rgba(234,179,8,.25);
+
+}
+
+.mdt-header.good .mdt-body-weather{
+
+    background:rgba(250,204,21,.10);
+
+}
+
+.mdt-header.good .mdt-body-weather-text{
+
+    color:#CA8A04;
+
+}
+
+.mdt-header.warning{
+
+    border-color:rgba(249,115,22,.25);
+
+}
+
+.mdt-header.warning .mdt-body-weather{
+
+    background:rgba(249,115,22,.10);
+
+}
+
+.mdt-header.warning .mdt-body-weather-text{
+
+    color:#EA580C;
+
+}
+
+.mdt-header.danger{
+
+    border-color:rgba(239,68,68,.25);
+
+}
+
+.mdt-header.danger .mdt-body-weather{
+
+    background:rgba(239,68,68,.10);
+
+}
+
+.mdt-header.danger .mdt-body-weather-text{
+
+    color:#DC2626;
 
 }
 
@@ -270,33 +407,137 @@
 
 .mdt-header.compact{
 
-    height:72px;
+    gap:0;
+
+    padding:10px 16px;
 
 }
 
 .mdt-header.compact .mdt-header-bottom{
 
-    opacity:0;
-
-    transform:translateY(-8px);
-
-    pointer-events:none;
-
-    transition:.25s;
+    display:none;
 
 }
 
 .mdt-header.compact .mdt-avatar{
 
-    width:40px;
+    width:36px;
 
-    height:40px;
+    height:36px;
 
 }
 
-.mdt-header.compact .mdt-name{
+.mdt-header.compact .mdt-weather-main{
 
-    font-size:1rem;
+    font-size:.82rem;
+
+}
+
+.mdt-header.compact .mdt-weather-city{
+
+    display:none;
+
+}
+
+/* ===========================================================
+   REFRESH ANIMATION
+=========================================================== */
+
+.mdt-header.refresh{
+
+    animation:
+
+        mdt-header-refresh
+
+        .35s ease;
+
+}
+
+@keyframes mdt-header-refresh{
+
+    0%{
+
+        transform:
+
+            translateX(-50%)
+
+            scale(.98);
+
+        opacity:.75;
+
+    }
+
+    100%{
+
+        transform:
+
+            translateX(-50%)
+
+            scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+/* ===========================================================
+   RESPONSIVE
+=========================================================== */
+
+@media (max-width:600px){
+
+.mdt-header{
+
+    width:calc(100% - 16px);
+
+    padding:10px 12px;
+
+    gap:6px;
+
+}
+
+.mdt-weather-icon{
+
+    font-size:1.1rem;
+
+}
+
+.mdt-weather-main{
+
+    font-size:.80rem;
+
+}
+
+.mdt-weather-city{
+
+    font-size:.66rem;
+
+}
+
+.mdt-vitals{
+
+    gap:10px;
+
+}
+
+.mdt-vitals span{
+
+    font-size:.68rem;
+
+}
+
+.mdt-body-weather{
+
+    padding:5px 10px;
+
+}
+
+.mdt-body-weather-text{
+
+    font-size:.70rem;
+
+}
 
 }
 
@@ -308,16 +549,138 @@
 
 .mdt-header{
 
-    background:rgba(15,23,42,.72);
+    background:rgba(15,23,42,.82);
 
-    border:1px solid rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+
+        0 8px 30px rgba(0,0,0,.45);
+
+}
+
+.mdt-weather-main{
+
+    color:#F8FAFC;
 
 }
 
-.mdt-body-weather{
+.mdt-weather-city{
 
-    background:rgba(34,197,94,.18);
+    color:#94A3B8;
 
 }
+
+.mdt-vitals span{
+
+    color:#E2E8F0;
+
+}
+
+.mdt-avatar{
+
+    border-color:rgba(255,255,255,.15);
+
+}
+
+}
+
+/* ===========================================================
+   THEMES
+=========================================================== */
+
+.mdt-header.morning{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.88),
+
+            rgba(248,250,252,.82)
+
+        );
+
+}
+
+.mdt-header.afternoon{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.84),
+
+            rgba(240,249,255,.82)
+
+        );
+
+}
+
+.mdt-header.evening{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.82),
+
+            rgba(238,242,255,.82)
+
+        );
+
+}
+
+.mdt-header.night{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(15,23,42,.88),
+
+            rgba(30,41,59,.88)
+
+        );
+
+}
+
+/* ===========================================================
+   HOVER
+=========================================================== */
+
+.mdt-header:hover{
+
+    transform:
+
+        translateX(-50%)
+
+        translateY(-2px);
+
+}
+
+/* ===========================================================
+   TRANSITIONS
+=========================================================== */
+
+.mdt-header *{
+
+    transition:
+
+        color .25s,
+
+        background .25s,
+
+        border-color .25s,
+
+        opacity .25s;
 
 }
