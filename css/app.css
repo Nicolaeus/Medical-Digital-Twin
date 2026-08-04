@@ -11,67 +11,53 @@
 
 body{
 
-    background:var(--gradient-background);
+    font-family:var(--font-family);
 
     color:var(--color-text);
 
-    font-family:var(--font-family);
+    background:var(--gradient-background);
 
 }
 
-
 /* ===========================================================
-   APP
+   APPLICATION
 =========================================================== */
 
 #app{
+
+    position:relative;
+
+    width:100%;
+
+    height:100%;
 
     background:transparent;
 
 }
 
-
 /* ===========================================================
-   MAIN CONTENT
+   VIEWPORT
 =========================================================== */
 
 #content{
 
-    display:flex;
+    position:absolute;
 
-    flex-direction:column;
+    inset:0;
 
-    gap:var(--space-lg);
-
-}
-
-
-/* ===========================================================
-   SECTION
-=========================================================== */
-
-section{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:var(--space-md);
-
-    margin-bottom:var(--space-xl);
+    overflow:hidden;
 
 }
 
-
 /* ===========================================================
-   TITLES
+   TYPOGRAPHY
 =========================================================== */
 
 h1{
 
-    font-size:2rem;
+    font-size:var(--font-2xl);
 
-    font-weight:700;
+    font-weight:var(--weight-bold);
 
     line-height:1.1;
 
@@ -79,24 +65,19 @@ h1{
 
 h2{
 
-    font-size:1.45rem;
+    font-size:var(--font-xl);
 
-    font-weight:700;
+    font-weight:var(--weight-bold);
 
 }
 
 h3{
 
-    font-size:1.1rem;
+    font-size:var(--font-lg);
 
-    font-weight:600;
+    font-weight:var(--weight-semibold);
 
 }
-
-
-/* ===========================================================
-   TEXT
-=========================================================== */
 
 p{
 
@@ -106,89 +87,15 @@ p{
 
 }
 
-
 /* ===========================================================
-   SMALL LABEL
+   UTILITIES
 =========================================================== */
 
-.label{
+.hidden{
 
-    font-size:.78rem;
-
-    text-transform:uppercase;
-
-    letter-spacing:.08em;
-
-    color:var(--color-text-light);
-
-    font-weight:600;
+    display:none !important;
 
 }
-
-
-/* ===========================================================
-   VALUE
-=========================================================== */
-
-.value{
-
-    font-size:2.4rem;
-
-    font-weight:700;
-
-    line-height:1;
-
-}
-
-
-/* ===========================================================
-   SUBVALUE
-=========================================================== */
-
-.subvalue{
-
-    font-size:1rem;
-
-    color:var(--color-text-secondary);
-
-}
-
-
-/* ===========================================================
-   ROW
-=========================================================== */
-
-.row{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:var(--space-md);
-
-}
-
-
-/* ===========================================================
-   COLUMN
-=========================================================== */
-
-.column{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:var(--space-md);
-
-}
-
-
-/* ===========================================================
-   CENTER
-=========================================================== */
 
 .center{
 
@@ -199,39 +106,6 @@ p{
     justify-content:center;
 
 }
-
-
-/* ===========================================================
-   GAP
-=========================================================== */
-
-.gap-xs{gap:var(--space-xs);}
-.gap-sm{gap:var(--space-sm);}
-.gap-md{gap:var(--space-md);}
-.gap-lg{gap:var(--space-lg);}
-.gap-xl{gap:var(--space-xl);}
-
-
-/* ===========================================================
-   MARGIN
-=========================================================== */
-
-.mt-xs{margin-top:var(--space-xs);}
-.mt-sm{margin-top:var(--space-sm);}
-.mt-md{margin-top:var(--space-md);}
-.mt-lg{margin-top:var(--space-lg);}
-.mt-xl{margin-top:var(--space-xl);}
-
-.mb-xs{margin-bottom:var(--space-xs);}
-.mb-sm{margin-bottom:var(--space-sm);}
-.mb-md{margin-bottom:var(--space-md);}
-.mb-lg{margin-bottom:var(--space-lg);}
-.mb-xl{margin-bottom:var(--space-xl);}
-
-
-/* ===========================================================
-   FLEX
-=========================================================== */
 
 .flex{
 
@@ -245,171 +119,40 @@ p{
 
 }
 
-
-/* ===========================================================
-   ALIGNMENTS
-=========================================================== */
-
-.align-center{
-
-    align-items:center;
-
-}
-
-.justify-center{
-
-    justify-content:center;
-
-}
-
-.justify-between{
-
-    justify-content:space-between;
-
-}
-
-
-/* ===========================================================
-   DIVIDER
-=========================================================== */
-
-.divider{
-
-    width:100%;
-
-    height:1px;
-
-    background:var(--color-border);
-
-}
-
-
-/* ===========================================================
-   AVATAR
-=========================================================== */
-
-.avatar{
-
-    width:52px;
-
-    height:52px;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    background:var(--gradient-primary);
-
-    color:white;
+.row{
 
     display:flex;
 
     align-items:center;
 
-    justify-content:center;
-
-    font-weight:700;
-
 }
 
-
-/* ===========================================================
-   ICON CONTAINER
-=========================================================== */
-
-.icon-circle{
-
-    width:46px;
-
-    height:46px;
-
-    border-radius:50%;
-
-    background:rgba(59,130,246,.10);
+.column{
 
     display:flex;
 
-    align-items:center;
-
-    justify-content:center;
+    flex-direction:column;
 
 }
 
-
 /* ===========================================================
-   BADGE DOT
-=========================================================== */
-
-.dot{
-
-    width:10px;
-
-    height:10px;
-
-    border-radius:50%;
-
-    background:var(--color-success);
-
-}
-
-
-/* ===========================================================
-   HIDDEN
-=========================================================== */
-
-.hidden{
-
-    display:none !important;
-
-}
-
-
-/* ===========================================================
-   SCROLL SHADOW
-=========================================================== */
-
-.scroll-shadow{
-
-    position:sticky;
-
-    top:0;
-
-    height:18px;
-
-    margin-top:-18px;
-
-    background:
-
-        linear-gradient(
-
-            rgba(246,248,252,.95),
-
-            rgba(246,248,252,0)
-
-        );
-
-    pointer-events:none;
-
-}
-
-
-/* ===========================================================
-   GLASS PANEL
+   GLASS
 =========================================================== */
 
 .glass{
 
-    background:rgba(255,255,255,.60);
+    background:var(--color-glass);
 
     backdrop-filter:blur(20px);
 
     -webkit-backdrop-filter:blur(20px);
 
+    border:1px solid var(--color-glass-border);
+
 }
 
-
 /* ===========================================================
-   IMAGE
+   IMAGES
 =========================================================== */
 
 img{
@@ -420,14 +163,13 @@ img{
 
 }
 
-
 /* ===========================================================
-   LOADER
+   LOADING
 =========================================================== */
 
 #loading-screen{
 
-    transition:opacity .45s;
+    transition:opacity .35s;
 
 }
 
@@ -438,7 +180,6 @@ img{
     pointer-events:none;
 
 }
-
 
 /* ===========================================================
    TOAST
@@ -452,18 +193,6 @@ img{
 
 }
 
-
-/* ===========================================================
-   OVERLAY
-=========================================================== */
-
-#overlay.show{
-
-    display:block;
-
-}
-
-
 /* ===========================================================
    SELECTION
 =========================================================== */
@@ -474,31 +203,18 @@ img{
 
 }
 
-
 /* ===========================================================
    DARK MODE
 =========================================================== */
 
 @media (prefers-color-scheme:dark){
 
-.scroll-shadow{
+    .glass{
 
-    background:
+        background:var(--color-glass-dark);
 
-        linear-gradient(
+        border-color:var(--color-glass-border-dark);
 
-            rgba(8,17,29,.95),
-
-            rgba(8,17,29,0)
-
-        );
-
-}
-
-.glass{
-
-    background:rgba(15,23,42,.45);
-
-}
+    }
 
 }
