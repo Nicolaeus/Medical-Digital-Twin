@@ -2,7 +2,8 @@
  * ==========================================================
  * Medical Digital Twin
  * Header.js
- * V3
+ * Version 4.0
+ * Overlay Header
  * ==========================================================
  */
 
@@ -19,13 +20,9 @@ export default class Header extends BaseComponent {
 
         });
 
-        this.patient = {};
-
-        this.health = {};
-
-        this.environment = {};
-
         this.expanded = true;
+
+        this.header = {};
 
     }
 
@@ -35,9 +32,15 @@ export default class Header extends BaseComponent {
 
     async render() {
 
-        this.element = document.createElement("header");
+        this.element = document.createElement(
 
-        this.element.className = "mdt-header";
+            "header"
+
+        );
+
+        this.element.className =
+
+            "mdt-header";
 
         this.watchStore();
 
@@ -55,31 +58,7 @@ export default class Header extends BaseComponent {
 
             Store.watch(
 
-                "patient",
-
-                () => this.refresh()
-
-            )
-
-        );
-
-        this.addWatcher(
-
-            Store.watch(
-
-                "health",
-
-                () => this.refresh()
-
-            )
-
-        );
-
-        this.addWatcher(
-
-            Store.watch(
-
-                "environment",
+                "header",
 
                 () => this.refresh()
 
@@ -95,23 +74,15 @@ export default class Header extends BaseComponent {
 
     refresh() {
 
-        this.patient =
+        this.header =
 
-            Store.clone("patient") || {};
-
-        this.health =
-
-            Store.clone("health") || {};
-
-        this.environment =
-
-            Store.clone("environment") || {};
+            Store.clone("header") || {};
 
         this.element.innerHTML = `
 
-            ${this.#renderEnvironmentBar()}
+            ${this.#renderEnvironmentRow()}
 
-            ${this.#renderHealthBar()}
+            ${this.#renderTwinRow()}
 
         `;
 
@@ -158,71 +129,28 @@ export default class Header extends BaseComponent {
     }
 
     /* ======================================================
-     * Environment Bar
+     * Environment Row
      * ====================================================== */
 
-    #renderEnvironmentBar() {
+    #renderEnvironmentRow() {
 
-        const weather =
-            this.environment.weather ?? {};
+        const environment =
 
-        const moon =
-            this.environment.moon ?? {};
-
-        const sun =
-            this.environment.sun ?? {};
-
-        const air =
-            this.environment.air ?? {};
-
-        const location =
-            this.environment.location ?? {};
+            this.header.environment ?? {};
 
         const avatar =
-            this.patient.avatar ??
+
+            this.header.avatar ??
+
             "assets/avatars/default.png";
 
         return `
 
             <div class="mdt-header-top">
 
-                <div class="mdt-weather">
+                <div class="mdt-environment">
 
-                    <span class="mdt-weather-icon">
-
-                        ${weather.icon ?? "☀️"}
-
-                    </span>
-
-                    <div class="mdt-weather-data">
-
-                        <div class="mdt-weather-main">
-
-                            ${weather.temperature ?? "--"}°C
-
-                            •
-
-                            ${location.city ?? "Unknown"}
-
-                        </div>
-
-                        <div class="mdt-weather-city">
-
-                            🌙 ${moon.phase ?? "--"}
-
-                            •
-
-                            ↑ ${sun.sunrise ?? "--:--"}
-
-                            ↓ ${sun.sunset ?? "--:--"}
-
-                            •
-
-                            AQI ${air.index ?? "--"}
-
-                        </div>
-
-                    </div>
+                    ${this.#renderEnvironment(environment)}
 
                 </div>
 
@@ -245,32 +173,54 @@ export default class Header extends BaseComponent {
     }
 
     /* ======================================================
-     * Health Bar
+     * Environment Renderer
      * ====================================================== */
 
-    #renderHealthBar() {
+    #renderEnvironment(environment) {
 
         return `
 
-            <div class="mdt-header-bottom">
+            <div class="mdt-weather">
 
-                <div class="mdt-body-weather">
+                <span class="mdt-weather-icon">
 
-                    <span class="mdt-body-weather-icon">
+                    ${environment.weatherIcon ?? "☀️"}
 
-                        ${this.#recoveryIcon()}
+                </span>
 
-                    </span>
+                <div class="mdt-weather-data">
 
-                    <span class="mdt-body-weather-text">
+                    <div class="mdt-weather-main">
 
-                        ${this.#recoveryText()}
+                        ${environment.temperature ?? "--"}°C
 
-                    </span>
+                        •
+
+                        ${environment.city ?? "Unknown"}
+
+                    </div>
+
+                    <div class="mdt-weather-city">
+
+                        🌙 ${environment.moon ?? "--"}
+
+                        •
+
+                        ↑ ${environment.sunrise ?? "--:--"}
+
+                        ↓ ${environment.sunset ?? "--:--"}
+
+                        •
+
+                        UV ${environment.uv ?? "--"}
+
+                        •
+
+                        AQI ${environment.aqi ?? "--"}
+
+                    </div>
 
                 </div>
-
-                ${this.#renderVitals()}
 
             </div>
 
@@ -279,36 +229,48 @@ export default class Header extends BaseComponent {
     }
 
     /* ======================================================
-     * Vitals
+     * Twin Row
      * ====================================================== */
 
-    #renderVitals() {
+    #renderTwinRow() {
+
+        const twin =
+
+            this.header.twin ?? {};
 
         return `
 
-            <div class="mdt-vitals">
+            <div class="mdt-header-bottom">
 
-                <span>
+                ${this.#renderTwinStatus(twin)}
 
-                    ❤️ ${this.health.heartRate ?? "--"}
+                ${this.#renderMetrics(twin.metrics)}
+
+            </div>
+
+        `;
+
+    }
+
+    /* ======================================================
+     * Twin Status
+     * ====================================================== */
+
+    #renderTwinStatus(twin) {
+
+        return `
+
+            <div class="mdt-twin-status">
+
+                <span class="mdt-twin-icon">
+
+                    ${twin.icon ?? "🟢"}
 
                 </span>
 
-                <span>
+                <span class="mdt-twin-text">
 
-                    HRV ${this.health.hrv ?? "--"}
-
-                </span>
-
-                <span>
-
-                    😴 ${this.health.sleep?.duration ?? "--"}
-
-                </span>
-
-                <span>
-
-                    ⚡ ${this.health.energy ?? "--"}
+                    ${twin.status ?? "Digital Twin Ready"}
 
                 </span>
 
@@ -318,69 +280,77 @@ export default class Header extends BaseComponent {
 
     }
 
-        /* ======================================================
-     * Recovery
+    /* ======================================================
+     * Metrics
      * ====================================================== */
 
-    #recoveryText() {
+    #renderMetrics(metrics = []) {
 
-        const recovery =
+        if (
 
-            this.health.recovery ?? 0;
+            !Array.isArray(metrics) ||
 
-        if (recovery >= 90) {
+            metrics.length === 0
 
-            return "Excellent Recovery";
+        ) {
 
-        }
+            return `
 
-        if (recovery >= 75) {
+                <div class="mdt-vitals">
 
-            return "Good Recovery";
+                    <span>
 
-        }
+                        No metrics
 
-        if (recovery >= 50) {
+                    </span>
 
-            return "Moderate Recovery";
+                </div>
 
-        }
-
-        if (recovery >= 25) {
-
-            return "Low Recovery";
+            `;
 
         }
 
-        return "Recovery Recommended";
+        return `
+
+            <div class="mdt-vitals">
+
+                ${metrics.map(
+
+                    metric => this.#renderMetric(metric)
+
+                ).join("")}
+
+            </div>
+
+        `;
 
     }
 
-    #recoveryIcon() {
+    /* ======================================================
+     * Metric
+     * ====================================================== */
 
-        const recovery =
+    #renderMetric(metric) {
 
-            this.health.recovery ?? 0;
+        return `
 
-        if (recovery >= 90) {
+            <span
 
-            return "🟢";
+                class="mdt-metric"
 
-        }
+                title="${metric.label ?? ""}"
 
-        if (recovery >= 75) {
+            >
 
-            return "🟡";
+                ${metric.icon ?? ""}
 
-        }
+                ${metric.value ?? "--"}
 
-        if (recovery >= 50) {
+                ${metric.unit ?? ""}
 
-            return "🟠";
+            </span>
 
-        }
-
-        return "🔴";
+        `;
 
     }
 
@@ -390,61 +360,15 @@ export default class Header extends BaseComponent {
 
     #applyTheme() {
 
-        this.element.classList.remove(
+        const theme =
 
-            "excellent",
+            this.header.theme ??
 
-            "good",
+            "default";
 
-            "warning",
+        this.element.className =
 
-            "danger"
-
-        );
-
-        const recovery =
-
-            this.health.recovery ?? 0;
-
-        if (recovery >= 90) {
-
-            this.element.classList.add(
-
-                "excellent"
-
-            );
-
-        }
-
-        else if (recovery >= 75) {
-
-            this.element.classList.add(
-
-                "good"
-
-            );
-
-        }
-
-        else if (recovery >= 50) {
-
-            this.element.classList.add(
-
-                "warning"
-
-            );
-
-        }
-
-        else {
-
-            this.element.classList.add(
-
-                "danger"
-
-            );
-
-        }
+            `mdt-header ${theme}`;
 
     }
 
@@ -469,6 +393,40 @@ export default class Header extends BaseComponent {
             );
 
         });
+
+    }
+
+    /* ======================================================
+     * Visibility
+     * ====================================================== */
+
+    show() {
+
+        this.element.classList.remove(
+
+            "hidden"
+
+        );
+
+    }
+
+    hide() {
+
+        this.element.classList.add(
+
+            "hidden"
+
+        );
+
+    }
+
+    /* ======================================================
+     * Destroy
+     * ====================================================== */
+
+    destroy() {
+
+        super.destroy();
 
     }
 
