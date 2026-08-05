@@ -1,0 +1,25 @@
+{
+  "name": "Medical Digital Twin",
+  "short_name": "MDT",
+  "description": "Your lifelong digital health companion.",
+  "lang": "en",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1456C5",
+  "categories": [
+    "medical",
+    "health",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "assets/logo_128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
