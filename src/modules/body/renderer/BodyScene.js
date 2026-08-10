@@ -15,7 +15,11 @@ import BodyAnimation from "./BodyAnimation.js";
 
 export default class BodyScene {
 
-    constructor(engine, canvas, container = null) {
+    constructor(
+        engine,
+        canvas,
+        container = null
+    ) {
 
         this.engine = engine;
 
@@ -39,11 +43,32 @@ export default class BodyScene {
 
         this.pointerObserver = null;
 
+        this.cameraObserver = null;
+
         this.renderPipeline = null;
 
         this.initialized = false;
 
+        /*
+         * --------------------------------------------------
+         * Anatomical zoom state
+         * --------------------------------------------------
+         */
+
+        this.anatomicalLevel = "global";
+
+        this.initialCameraRadius = null;
+
+        this.lastCameraRadius = null;
+
+        /*
+         * Prevent unnecessary level changes.
+         */
+
+        this.levelTransitionLocked = false;
+
     }
+
 
     /* ======================================================
      * Initialize
@@ -51,21 +76,15 @@ export default class BodyScene {
 
     async init() {
 
-        this.scene = new BABYLON.Scene(
-            this.engine
-        );
+        this.scene =
+            new BABYLON.Scene(
+                this.engine
+            );
 
         /*
          * --------------------------------------------------
          * Transparent background
          * --------------------------------------------------
-         *
-         * Babylon renders only the anatomical model.
-         *
-         * The visual background is handled by CSS.
-         *
-         * This prevents ACES / exposure / post-processing
-         * from altering the application background color.
          */
 
         this.scene.clearColor =
@@ -78,10 +97,8 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Image processing
+         * Image Processing
          * --------------------------------------------------
-         *
-         * Applies to the 3D model.
          */
 
         this.configureImageProcessing();
@@ -116,9 +133,10 @@ export default class BodyScene {
          * --------------------------------------------------
          */
 
-        this.model = new BodyModel(
-            this.scene
-        );
+        this.model =
+            new BodyModel(
+                this.scene
+            );
 
         await this.model.load();
 
@@ -126,16 +144,13 @@ export default class BodyScene {
          * --------------------------------------------------
          * Appearance
          * --------------------------------------------------
-         *
-         * Appearance controls the anatomical model only.
-         *
-         * The background is deliberately NOT controlled here.
          */
 
-        this.appearance = new BodyAppearance(
-            this.scene,
-            this.model
-        );
+        this.appearance =
+            new BodyAppearance(
+                this.scene,
+                this.model
+            );
 
         this.appearance.init({
 
@@ -157,17 +172,43 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
+         * Store the initial framing radius.
+         *
+         * This is our reference point for deciding when
+         * the user has zoomed sufficiently into the body.
+         * --------------------------------------------------
+         */
+
+        this.initialCameraRadius =
+            this.camera.camera.radius;
+
+        this.lastCameraRadius =
+            this.initialCameraRadius;
+
+        /*
+         * --------------------------------------------------
+         * Start with global body view.
+         * --------------------------------------------------
+         */
+
+        this.setAnatomicalLevel(
+            "global"
+        );
+
+        /*
+         * --------------------------------------------------
          * Anatomical selection
          * --------------------------------------------------
          */
 
-        this.selection = new BodySelection({
+        this.selection =
+            new BodySelection({
 
-            model: this.model,
+                model: this.model,
 
-            camera: this.camera
+                camera: this.camera
 
-        });
+            });
 
         /*
          * --------------------------------------------------
@@ -175,13 +216,14 @@ export default class BodyScene {
          * --------------------------------------------------
          */
 
-        this.animation = new BodyAnimation({
+        this.animation =
+            new BodyAnimation({
 
-            scene: this.scene,
+                scene: this.scene,
 
-            model: this.model
+                model: this.model
 
-        });
+            });
 
         /*
          * --------------------------------------------------
@@ -191,9 +233,18 @@ export default class BodyScene {
 
         this.enablePicking();
 
+        /*
+         * --------------------------------------------------
+         * Zoom / anatomical level observer
+         * --------------------------------------------------
+         */
+
+        this.enableCameraObserver();
+
         this.initialized = true;
 
     }
+
 
     /* ======================================================
      * Image Processing
@@ -202,35 +253,27 @@ export default class BodyScene {
     configureImageProcessing() {
 
         const configuration =
-            this.scene.imageProcessingConfiguration;
+            this.scene
+                .imageProcessingConfiguration;
 
         configuration.isEnabled = true;
 
-        /*
-         * ACES tone mapping
-         *
-         * Used for the anatomical model.
-         */
-
-        configuration.toneMappingEnabled = true;
+        configuration.toneMappingEnabled =
+            true;
 
         configuration.toneMappingType =
-            BABYLON.ImageProcessingConfiguration
+            BABYLON
+                .ImageProcessingConfiguration
                 .TONEMAPPING_ACES;
 
-        /*
-         * Controlled exposure.
-         */
+        configuration.exposure =
+            0.72;
 
-        configuration.exposure = 0.72;
-
-        /*
-         * Restrained contrast.
-         */
-
-        configuration.contrast = 1.08;
+        configuration.contrast =
+            1.08;
 
     }
+
 
     /* ======================================================
      * Camera
@@ -238,17 +281,16 @@ export default class BodyScene {
 
     createCamera() {
 
-        this.camera = new BodyCamera(
-
-            this.scene,
-
-            this.canvas
-
-        );
+        this.camera =
+            new BodyCamera(
+                this.scene,
+                this.canvas
+            );
 
         this.camera.init();
 
     }
+
 
     /* ======================================================
      * Lights
@@ -256,28 +298,21 @@ export default class BodyScene {
 
     createLights() {
 
-        this.lights = new BodyLights(
-
-            this.scene
-
-        );
+        this.lights =
+            new BodyLights(
+                this.scene
+            );
 
         this.lights.init();
 
     }
+
 
     /* ======================================================
      * Rendering Pipeline
      * ====================================================== */
 
     createRenderPipeline() {
-
-        /*
-         * Keep the post-processing deliberately restrained.
-         *
-         * Medical / premium.
-         * No videogame effects.
-         */
 
         if (
             !BABYLON.DefaultRenderingPipeline
@@ -303,20 +338,18 @@ export default class BodyScene {
             );
 
         /*
-         * --------------------------------------------------
          * Anti-aliasing
-         * --------------------------------------------------
          */
 
-        this.renderPipeline.fxaaEnabled = true;
+        this.renderPipeline.fxaaEnabled =
+            true;
 
         /*
-         * --------------------------------------------------
          * Sharpening
-         * --------------------------------------------------
          */
 
-        this.renderPipeline.sharpenEnabled = true;
+        this.renderPipeline.sharpenEnabled =
+            true;
 
         this.renderPipeline.sharpen.edgeAmount =
             0.18;
@@ -325,20 +358,250 @@ export default class BodyScene {
             0.85;
 
         /*
+         * Disabled cinematic effects.
+         */
+
+        this.renderPipeline.bloomEnabled =
+            false;
+
+        this.renderPipeline.motionBlurEnabled =
+            false;
+
+        this.renderPipeline.chromaticAberrationEnabled =
+            false;
+
+        this.renderPipeline.grainEnabled =
+            false;
+
+    }
+
+
+    /* ======================================================
+     * Anatomical Zoom Observer
+     * ====================================================== */
+
+    enableCameraObserver() {
+
+        if (
+            !this.camera?.camera
+        ) {
+
+            return;
+
+        }
+
+        const camera =
+            this.camera.camera;
+
+        /*
+         * Babylon notifies us whenever the camera view
+         * changes: zoom, rotation, target movement, etc.
+         */
+
+        this.cameraObserver =
+            camera
+                .onViewMatrixChangedObservable
+                .add(
+                    () => {
+
+                        this.updateAnatomicalLevel();
+
+                    }
+                );
+
+    }
+
+
+    /* ======================================================
+     * Anatomical Zoom Logic
+     * ====================================================== */
+
+    updateAnatomicalLevel() {
+
+        if (
+            !this.model ||
+            !this.camera?.camera ||
+            !this.initialCameraRadius
+        ) {
+
+            return;
+
+        }
+
+        const radius =
+            this.camera.camera.radius;
+
+        if (
+            !Number.isFinite(radius)
+        ) {
+
+            return;
+
+        }
+
+        /*
+         * Keep the last value.
+         */
+
+        this.lastCameraRadius =
+            radius;
+
+        /*
          * --------------------------------------------------
-         * Disabled cinematic effects
+         * Zoom ratio
+         *
+         * 1.00 = original body framing
+         * 0.70 = moderately zoomed
+         * 0.40 = strong anatomical zoom
          * --------------------------------------------------
          */
 
-        this.renderPipeline.bloomEnabled = false;
+        const zoomRatio =
+            radius /
+            this.initialCameraRadius;
 
-        this.renderPipeline.motionBlurEnabled = false;
+        let level =
+            "global";
 
-        this.renderPipeline.chromaticAberrationEnabled = false;
+        /*
+         * --------------------------------------------------
+         * GLOBAL
+         *
+         * Complete patient.
+         * --------------------------------------------------
+         */
 
-        this.renderPipeline.grainEnabled = false;
+        if (
+            zoomRatio > 0.70
+        ) {
+
+            level =
+                "global";
+
+        }
+
+        /*
+         * --------------------------------------------------
+         * ORGANS
+         *
+         * Skin disappears and anatomical structures
+         * become available.
+         * --------------------------------------------------
+         */
+
+        else if (
+            zoomRatio > 0.42
+        ) {
+
+            level =
+                "organs";
+
+        }
+
+        /*
+         * --------------------------------------------------
+         * DETAIL
+         *
+         * Deep anatomical navigation.
+         * --------------------------------------------------
+         */
+
+        else {
+
+            level =
+                "detail";
+
+        }
+
+        if (
+            level ===
+            this.anatomicalLevel
+        ) {
+
+            return;
+
+        }
+
+        this.setAnatomicalLevel(
+            level
+        );
 
     }
+
+
+    /* ======================================================
+     * Set Anatomical Level
+     * ====================================================== */
+
+    setAnatomicalLevel(level) {
+
+        if (
+            !this.model
+        ) {
+
+            return;
+
+        }
+
+        if (
+            this.anatomicalLevel === level
+        ) {
+
+            return;
+
+        }
+
+        this.anatomicalLevel =
+            level;
+
+        this.model.setAnatomicalLevel(
+            level
+        );
+
+        /*
+         * Clear anatomical selection when changing
+         * presentation layers.
+         *
+         * This prevents a selected hidden mesh from
+         * remaining highlighted.
+         */
+
+        this.selection?.clear();
+
+    }
+
+
+    /* ======================================================
+     * Reset To Global
+     * ====================================================== */
+
+    resetToGlobal() {
+
+        if (
+            !this.model ||
+            !this.camera
+        ) {
+
+            return;
+
+        }
+
+        this.setAnatomicalLevel(
+            "global"
+        );
+
+        this.camera.reset(
+            this.model
+        );
+
+        this.initialCameraRadius =
+            this.camera.camera.radius;
+
+        this.lastCameraRadius =
+            this.initialCameraRadius;
+
+    }
+
 
     /* ======================================================
      * Picking
@@ -353,7 +616,9 @@ export default class BodyScene {
 
                     if (
                         pointerInfo.type !==
-                        BABYLON.PointerEventTypes.POINTERPICK
+                        BABYLON
+                            .PointerEventTypes
+                            .POINTERPICK
                     ) {
 
                         return;
@@ -363,12 +628,16 @@ export default class BodyScene {
                     const pickInfo =
                         pointerInfo.pickInfo;
 
+                    /*
+                     * Nothing picked.
+                     */
+
                     if (
                         !pickInfo?.hit ||
                         !pickInfo.pickedMesh
                     ) {
 
-                        this.selection.clear();
+                        this.selection?.clear();
 
                         return;
 
@@ -377,23 +646,60 @@ export default class BodyScene {
                     const mesh =
                         pickInfo.pickedMesh;
 
-                    const entity =
-                        this.model.getEntityForMesh(
-                            mesh
-                        );
-
                     /*
-                     * Not every presentation mesh
-                     * necessarily maps to an entity.
+                     * --------------------------------------------------
+                     * Root / body surface
+                     * --------------------------------------------------
+                     *
+                     * Clicking the global body surface returns
+                     * to the complete patient view.
+                     * --------------------------------------------------
                      */
 
-                    if (!entity) {
+                    const isSkin =
+                        this.model.skinMeshes
+                            ?.has(mesh);
 
-                        this.selection.clear();
+                    const isRoot =
+                        mesh ===
+                        this.model.getRoot();
+
+                    if (
+                        isSkin ||
+                        isRoot
+                    ) {
+
+                        this.resetToGlobal();
 
                         return;
 
                     }
+
+                    /*
+                     * --------------------------------------------------
+                     * Anatomical entity
+                     * --------------------------------------------------
+                     */
+
+                    const entity =
+                        this.model
+                            .getEntityForMesh(
+                                mesh
+                            );
+
+                    /*
+                     * Presentation / technical mesh.
+                     */
+
+                    if (!entity) {
+
+                        return;
+
+                    }
+
+                    /*
+                     * Select anatomical entity.
+                     */
 
                     this.selection.selectEntity(
                         entity.id
@@ -404,6 +710,7 @@ export default class BodyScene {
             );
 
     }
+
 
     /* ======================================================
      * Animation
@@ -417,6 +724,7 @@ export default class BodyScene {
          */
 
     }
+
 
     /* ======================================================
      * Refresh
@@ -434,13 +742,16 @@ export default class BodyScene {
 
     }
 
+
     /* ======================================================
      * Render
      * ====================================================== */
 
     render() {
 
-        if (!this.scene) {
+        if (
+            !this.scene
+        ) {
 
             return;
 
@@ -456,6 +767,7 @@ export default class BodyScene {
 
     }
 
+
     /* ======================================================
      * Destroy
      * ====================================================== */
@@ -463,18 +775,45 @@ export default class BodyScene {
     destroy() {
 
         /*
-         * Remove pointer observer first.
+         * --------------------------------------------------
+         * Camera observer
+         * --------------------------------------------------
          */
 
-        if (this.pointerObserver) {
+        if (
+            this.cameraObserver
+        ) {
 
-            this.scene?.onPointerObservable.remove(
+            this.camera
+                ?.camera
+                ?.onViewMatrixChangedObservable
+                ?.remove(
+                    this.cameraObserver
+                );
 
-                this.pointerObserver
+            this.cameraObserver =
+                null;
 
-            );
+        }
 
-            this.pointerObserver = null;
+        /*
+         * --------------------------------------------------
+         * Pointer observer
+         * --------------------------------------------------
+         */
+
+        if (
+            this.pointerObserver
+        ) {
+
+            this.scene
+                ?.onPointerObservable
+                .remove(
+                    this.pointerObserver
+                );
+
+            this.pointerObserver =
+                null;
 
         }
 
@@ -491,7 +830,7 @@ export default class BodyScene {
         this.animation?.clear();
 
         /*
-         * Anatomical model
+         * Model
          */
 
         this.model?.destroy();
@@ -509,13 +848,13 @@ export default class BodyScene {
         this.lights?.destroy();
 
         /*
-         * Post-processing
+         * Rendering pipeline
          */
 
         this.renderPipeline?.dispose();
 
         /*
-         * Babylon scene
+         * Scene
          */
 
         this.scene?.dispose();
@@ -540,7 +879,17 @@ export default class BodyScene {
 
         this.scene = null;
 
-        this.initialized = false;
+        this.initialCameraRadius =
+            null;
+
+        this.lastCameraRadius =
+            null;
+
+        this.anatomicalLevel =
+            "global";
+
+        this.initialized =
+            false;
 
     }
 
