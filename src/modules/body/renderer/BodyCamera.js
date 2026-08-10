@@ -37,9 +37,6 @@ export default class BodyCamera {
          * Anatomical zoom levels
          * --------------------------------------------------
          *
-         * These are expressed as ratios of the global
-         * model framing radius.
-         *
          * global
          *   ↓ zoom
          * organs
@@ -47,33 +44,40 @@ export default class BodyCamera {
          * detail
          */
 
-        this.anatomicalLevel = "global";
+        this.anatomicalLevel =
+            "global";
 
-        this.globalRadius = 3;
+        this.globalRadius =
+            3;
 
-        this.organThresholdRatio = 0.72;
+        this.organThresholdRatio =
+            0.72;
 
-        this.detailThresholdRatio = 0.38;
+        this.detailThresholdRatio =
+            0.38;
 
-        this.organThreshold = 2.16;
+        this.organThreshold =
+            2.16;
 
-        this.detailThreshold = 1.14;
+        this.detailThreshold =
+            1.14;
 
         /*
-         * Callback called when the anatomical zoom level
-         * changes.
+         * Called when the anatomical zoom level changes.
          *
-         * BodyScene will use this later to tell BodyModel
-         * which anatomical representation should be visible.
+         * BodyScene will use this callback to update
+         * the anatomical presentation.
          */
 
-        this.onAnatomicalLevelChanged = null;
+        this.onAnatomicalLevelChanged =
+            null;
 
         /*
          * Babylon observer.
          */
 
-        this.viewObserver = null;
+        this.viewObserver =
+            null;
 
     }
 
@@ -84,21 +88,22 @@ export default class BodyCamera {
 
     init() {
 
-        this.camera = new BABYLON.ArcRotateCamera(
+        this.camera =
+            new BABYLON.ArcRotateCamera(
 
-            "BodyCamera",
+                "BodyCamera",
 
-            Math.PI / 2,
+                Math.PI / 2,
 
-            Math.PI / 2.15,
+                Math.PI / 2.15,
 
-            3,
+                3,
 
-            BABYLON.Vector3.Zero(),
+                BABYLON.Vector3.Zero(),
 
-            this.scene
+                this.scene
 
-        );
+            );
 
         /*
          * Moderate perspective.
@@ -123,25 +128,31 @@ export default class BodyCamera {
          * Zoom limits.
          */
 
-        this.camera.lowerRadiusLimit = 0.05;
+        this.camera.lowerRadiusLimit =
+            0.05;
 
-        this.camera.upperRadiusLimit = 20;
+        this.camera.upperRadiusLimit =
+            20;
 
-        this.camera.wheelDeltaPercentage = 0.01;
+        this.camera.wheelDeltaPercentage =
+            0.01;
 
         /*
          * No panning.
          */
 
-        this.camera.panningSensibility = 0;
+        this.camera.panningSensibility =
+            0;
 
-        this.camera.panningInertia = 0;
+        this.camera.panningInertia =
+            0;
 
         /*
          * Smooth rotation.
          */
 
-        this.camera.inertia = 0.75;
+        this.camera.inertia =
+            0.75;
 
         /*
          * Detect anatomical zoom level.
@@ -172,7 +183,10 @@ export default class BodyCamera {
         const bounds =
             model?.getBounds();
 
-        if (!bounds || !this.camera) {
+        if (
+            !bounds ||
+            !this.camera
+        ) {
 
             return;
 
@@ -200,9 +214,6 @@ export default class BodyCamera {
 
         /*
          * Slightly raise the target.
-         *
-         * This keeps the complete body visually below
-         * the application header.
          */
 
         const targetOffset =
@@ -234,7 +245,7 @@ export default class BodyCamera {
             radius / tangent;
 
         /*
-         * Breathing room around the body.
+         * Breathing room.
          */
 
         requiredRadius *=
@@ -294,17 +305,14 @@ export default class BodyCamera {
             );
 
         /*
-         * Store the global framing radius.
-         *
-         * This becomes the reference used by the
-         * anatomical zoom system.
+         * Store global framing radius.
          */
 
         this.globalRadius =
             this.camera.radius;
 
         /*
-         * Calculate zoom thresholds.
+         * Calculate anatomical thresholds.
          */
 
         this.organThreshold =
@@ -334,7 +342,7 @@ export default class BodyCamera {
         /*
          * FRONT VIEW
          *
-         * Z-Anatomy model orientation:
+         * Z-Anatomy orientation:
          *
          * +PI / 2 = anterior
          * -PI / 2 = posterior
@@ -347,8 +355,7 @@ export default class BodyCamera {
             Math.PI / 2.15;
 
         /*
-         * Every model framing returns to the
-         * global anatomical level.
+         * Every model framing returns to global.
          */
 
         this.setAnatomicalLevel(
@@ -369,11 +376,6 @@ export default class BodyCamera {
             return;
 
         }
-
-        /*
-         * If the global framing has not yet been
-         * calculated, there is nothing to classify.
-         */
 
         if (
             !Number.isFinite(
@@ -424,7 +426,7 @@ export default class BodyCamera {
         }
 
         /*
-         * Fine anatomical structures.
+         * Detailed anatomy.
          */
 
         this.setAnatomicalLevel(
@@ -441,9 +443,11 @@ export default class BodyCamera {
     setAnatomicalLevel(level) {
 
         const allowedLevels = [
+
             "global",
             "organs",
             "detail"
+
         ];
 
         if (
@@ -457,7 +461,8 @@ export default class BodyCamera {
         }
 
         if (
-            this.anatomicalLevel === level
+            this.anatomicalLevel ===
+            level
         ) {
 
             return;
@@ -612,11 +617,7 @@ export default class BodyCamera {
             );
 
         /*
-         * updateAnatomicalLevel() will normally be
-         * triggered by Babylon's view observer.
-         *
-         * We also update explicitly so programmatic
-         * zooming remains deterministic.
+         * Explicit update for programmatic zoom.
          */
 
         this.updateAnatomicalLevel();
@@ -705,6 +706,43 @@ export default class BodyCamera {
 
 
     /* ======================================================
+     * Auto Rotation
+     * ====================================================== */
+
+    enableAutoRotate() {
+
+        this.autoRotate =
+            true;
+
+        this.camera.useAutoRotationBehavior =
+            true;
+
+    }
+
+
+    disableAutoRotate() {
+
+        this.autoRotate =
+            false;
+
+        this.camera.useAutoRotationBehavior =
+            false;
+
+    }
+
+
+    toggleAutoRotate() {
+
+        this.autoRotate
+
+            ? this.disableAutoRotate()
+
+            : this.enableAutoRotate();
+
+    }
+
+
+    /* ======================================================
      * Focus
      * ====================================================== */
 
@@ -756,7 +794,8 @@ export default class BodyCamera {
 
         }
 
-        this.viewObserver = null;
+        this.viewObserver =
+            null;
 
         this.onAnatomicalLevelChanged =
             null;
@@ -765,414 +804,14 @@ export default class BodyCamera {
 
         this.camera?.dispose();
 
-        this.camera = null;
+        this.camera =
+            null;
 
-        this.scene = null;
+        this.scene =
+            null;
 
-        this.canvas = null;
-
-    }
-
-}/**
- * ==========================================================
- * Medical Digital Twin
- * BodyCamera.js
- * Body Twin Camera Controller
- * ==========================================================
- */
-
-export default class BodyCamera {
-
-    constructor(scene, canvas) {
-
-        this.scene = scene;
-
-        this.canvas = canvas;
-
-        this.camera = null;
-
-        this.autoRotate = false;
-
-        /*
-         * Visual framing
-         */
-
-        this.framingMargin = 1.30;
-
-        this.headerSafeMargin = 0.06;
-
-        this.bottomSafeMargin = 0.06;
-
-        this.minimumRadius = 0.5;
-
-    }
-
-    /* ======================================================
-     * Initialize
-     * ====================================================== */
-
-    init() {
-
-        this.camera = new BABYLON.ArcRotateCamera(
-
-            "BodyCamera",
-
-            Math.PI / 2,
-
-            Math.PI / 2.15,
-
-            3,
-
-            BABYLON.Vector3.Zero(),
-
-            this.scene
-
-        );
-
-        /*
-         * Moderate perspective.
-         */
-
-        this.camera.fov =
-            BABYLON.Tools.ToRadians(42);
-
-        this.camera.mode =
-            BABYLON.Camera.PERSPECTIVE_CAMERA;
-
-        /*
-         * Controls
-         */
-
-        this.camera.attachControl(
-            this.canvas,
-            true
-        );
-
-        /*
-         * Zoom limits
-         */
-
-        this.camera.lowerRadiusLimit = 0.05;
-
-        this.camera.upperRadiusLimit = 20;
-
-        this.camera.wheelDeltaPercentage = 0.01;
-
-        /*
-         * No panning.
-         */
-
-        this.camera.panningSensibility = 0;
-
-        this.camera.panningInertia = 0;
-
-        /*
-         * Smooth rotation.
-         */
-
-        this.camera.inertia = 0.75;
-
-        this.disableAutoRotate();
-
-    }
-
-    /* ======================================================
-     * Frame Model
-     * ====================================================== */
-
-    frameModel(model) {
-
-        const bounds =
-            model?.getBounds();
-
-        if (!bounds || !this.camera) {
-
-            return;
-
-        }
-
-        const center =
-            bounds.center.clone();
-
-        const radius =
-            Math.max(
-                Number(bounds.radius) || 0,
-                0.001
-            );
-
-        const dimensions =
-            bounds.dimensions
-                ? bounds.dimensions.clone()
-                : new BABYLON.Vector3(
-                    radius * 2,
-                    radius * 2,
-                    radius * 2
-                );
-
-        /*
-         * Slightly raise the target.
-         *
-         * This keeps the complete body visually below the
-         * application header.
-         */
-
-        const targetOffset =
-            dimensions.y *
-            this.headerSafeMargin;
-
-        this.camera.target =
-            center.add(
-                new BABYLON.Vector3(
-                    0,
-                    targetOffset,
-                    0
-                )
-            );
-
-        /*
-         * Vertical fit.
-         */
-
-        const halfFov =
-            this.camera.fov / 2;
-
-        const tangent =
-            Math.tan(halfFov);
-
-        let requiredRadius =
-            radius / tangent;
-
-        /*
-         * Breathing room around the body.
-         */
-
-        requiredRadius *=
-            this.framingMargin;
-
-        /*
-         * Horizontal fit.
-         */
-
-        const width =
-            Math.max(
-                this.canvas?.clientWidth || 1,
-                1
-            );
-
-        const height =
-            Math.max(
-                this.canvas?.clientHeight || 1,
-                1
-            );
-
-        const aspect =
-            width / height;
-
-        const horizontalHalfFov =
-            Math.atan(
-                Math.tan(halfFov) *
-                aspect
-            );
-
-        const horizontalTangent =
-            Math.tan(horizontalHalfFov);
-
-        if (horizontalTangent > 0) {
-
-            requiredRadius = Math.max(
-                requiredRadius,
-                radius / horizontalTangent
-            );
-
-        }
-
-        /*
-         * Final camera distance.
-         */
-
-        this.camera.radius =
-            Math.max(
-                requiredRadius,
-                this.minimumRadius
-            );
-
-        /*
-         * Clipping planes.
-         */
-
-        this.camera.minZ =
-            Math.max(
-                radius * 0.001,
-                0.001
-            );
-
-        this.camera.maxZ =
-            Math.max(
-                radius * 100,
-                100
-            );
-
-        /*
-         * FRONT VIEW
-         *
-         * Z-Anatomy model orientation:
-         * +PI / 2 = anterior
-         * -PI / 2 = posterior
-         */
-
-        this.camera.alpha =
-            Math.PI / 2;
-
-        this.camera.beta =
-            Math.PI / 2.15;
-
-    }
-
-    /* ======================================================
-     * Views
-     * ====================================================== */
-
-    front() {
-
-        this.camera.alpha =
-            Math.PI / 2;
-
-    }
-
-    back() {
-
-        this.camera.alpha =
-            -Math.PI / 2;
-
-    }
-
-    left() {
-
-        this.camera.alpha =
-            Math.PI;
-
-    }
-
-    right() {
-
-        this.camera.alpha =
-            0;
-
-    }
-
-    top() {
-
-        this.camera.beta =
-            0.15;
-
-    }
-
-    /* ======================================================
-     * Zoom
-     * ====================================================== */
-
-    zoom(distance) {
-
-        if (!this.camera) {
-
-            return;
-
-        }
-
-        this.camera.radius =
-            Math.max(
-                this.camera.lowerRadiusLimit,
-                Math.min(
-                    distance,
-                    this.camera.upperRadiusLimit
-                )
-            );
-
-    }
-
-    /* ======================================================
-     * Reset
-     * ====================================================== */
-
-    reset(model = null) {
-
-        if (!this.camera) {
-
-            return;
-
-        }
-
-        this.camera.alpha =
-            Math.PI / 2;
-
-        this.camera.beta =
-            Math.PI / 2.15;
-
-        if (model) {
-
-            this.frameModel(model);
-
-        }
-
-    }
-
-    /* ======================================================
-     * Auto Rotation
-     * ====================================================== */
-
-    enableAutoRotate() {
-
-        this.autoRotate = true;
-
-        this.camera.useAutoRotationBehavior =
-            true;
-
-    }
-
-    disableAutoRotate() {
-
-        this.autoRotate = false;
-
-        this.camera.useAutoRotationBehavior =
-            false;
-
-    }
-
-    toggleAutoRotate() {
-
-        this.autoRotate
-
-            ? this.disableAutoRotate()
-
-            : this.enableAutoRotate();
-
-    }
-
-    /* ======================================================
-     * Focus
-     * ====================================================== */
-
-    focus(target) {
-
-        if (!target || !this.camera) {
-
-            return;
-
-        }
-
-        this.camera.setTarget(
-            target
-        );
-
-    }
-
-    /* ======================================================
-     * Access
-     * ====================================================== */
-
-    getCamera() {
-
-        return this.camera;
+        this.canvas =
+            null;
 
     }
 
