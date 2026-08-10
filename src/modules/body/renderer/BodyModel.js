@@ -351,10 +351,9 @@ export default class BodyModel {
             "integument",
             "body_surface",
             "body surface",
-            "surface",
+            
             "external",
-            "outer",
-            "body"
+            "outer"          
 
         ];
 
