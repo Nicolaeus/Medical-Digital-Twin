@@ -143,6 +143,7 @@ class App {
 const MDT = new App();
 
 window.MDT = MDT;
+window.MDT_ROUTER = Router;
 
 window.addEventListener(
     "DOMContentLoaded",
