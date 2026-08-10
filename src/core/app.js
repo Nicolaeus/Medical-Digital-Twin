@@ -142,12 +142,11 @@ class App {
 
 const MDT = new App();
 
+window.MDT = MDT;
+
 window.addEventListener(
-
     "DOMContentLoaded",
-
     () => MDT.init()
-
 );
 
 export default MDT;
