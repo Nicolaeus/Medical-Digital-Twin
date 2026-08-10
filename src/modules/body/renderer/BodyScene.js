@@ -29,8 +29,11 @@ export default class BodyScene {
 
         this.container = container;
 
+
         /*
+         * --------------------------------------------------
          * Babylon
+         * --------------------------------------------------
          */
 
         this.scene = null;
@@ -49,30 +52,49 @@ export default class BodyScene {
 
 
         /*
+         * --------------------------------------------------
          * Observers
+         * --------------------------------------------------
          */
 
         this.pointerObserver = null;
+
+
+        /*
+         * IMPORTANT
+         *
+         * BodyCamera owns the Babylon camera observer.
+         *
+         * BodyScene only receives the anatomical level
+         * callback from BodyCamera.
+         * --------------------------------------------------
+         */
 
         this.cameraObserver = null;
 
 
         /*
+         * --------------------------------------------------
          * Rendering
+         * --------------------------------------------------
          */
 
         this.renderPipeline = null;
 
 
         /*
+         * --------------------------------------------------
          * Lifecycle
+         * --------------------------------------------------
          */
 
         this.initialized = false;
 
 
         /*
+         * --------------------------------------------------
          * Anatomical navigation
+         * --------------------------------------------------
          */
 
         this.anatomicalLevel = "global";
@@ -83,22 +105,25 @@ export default class BodyScene {
 
 
         /*
-         * Hover
-         */
-
-        this.hoveredMesh = null;
-
-        this.hoveredEntity = null;
-
-
-        /*
-         * Zoom thresholds.
+         * --------------------------------------------------
+         * Anatomical zoom thresholds
+         * --------------------------------------------------
          *
-         * Expressed as a ratio of the initial camera radius.
+         * These values are relative to the initial body
+         * framing radius.
          *
-         * > 0.70  = complete body
-         * 0.42-0.70 = organs
-         * < 0.42 = detailed anatomy
+         * > 0.70
+         *     GLOBAL
+         *
+         * 0.42 - 0.70
+         *     ORGANS
+         *
+         * < 0.42
+         *     DETAIL
+         *
+         * The thresholds are currently informational here.
+         * BodyCamera performs the actual classification.
+         * --------------------------------------------------
          */
 
         this.zoomThresholds = {
@@ -109,6 +134,17 @@ export default class BodyScene {
 
         };
 
+
+        /*
+         * --------------------------------------------------
+         * Hover
+         * --------------------------------------------------
+         */
+
+        this.hoveredMesh = null;
+
+        this.hoveredEntity = null;
+
     }
 
 
@@ -118,6 +154,12 @@ export default class BodyScene {
 
     async init() {
 
+        /*
+         * --------------------------------------------------
+         * Babylon scene
+         * --------------------------------------------------
+         */
+
         this.scene =
             new BABYLON.Scene(
                 this.engine
@@ -126,7 +168,14 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Transparent background
+         * Transparent scene background
+         * --------------------------------------------------
+         *
+         * The visible application background is handled
+         * outside Babylon.
+         *
+         * Keeping the Babylon canvas transparent also avoids
+         * another independent blue/gray background layer.
          * --------------------------------------------------
          */
 
@@ -203,9 +252,11 @@ export default class BodyScene {
 
         this.appearance.init({
 
-            mode: "reference",
+            mode:
+                "reference",
 
-            skinColor: "#D8B99A"
+            skinColor:
+                "#D8B99A"
 
         });
 
@@ -221,11 +272,59 @@ export default class BodyScene {
         );
 
 
+        /*
+         * --------------------------------------------------
+         * Initial camera reference
+         * --------------------------------------------------
+         *
+         * This radius represents the complete patient view.
+         * BodyCamera also stores its own global radius.
+         * --------------------------------------------------
+         */
+
         this.initialCameraRadius =
             this.camera.camera.radius;
 
         this.lastCameraRadius =
             this.initialCameraRadius;
+
+
+        /*
+         * --------------------------------------------------
+         * Anatomical zoom callback
+         * --------------------------------------------------
+         *
+         * BodyCamera is responsible for detecting the
+         * anatomical level from the camera radius.
+         *
+         * BodyScene is responsible for applying that level
+         * to the Body Twin.
+         *
+         * IMPORTANT:
+         * This callback is registered ONCE during init().
+         *
+         * It must NOT be registered from resetToGlobal().
+         * --------------------------------------------------
+         */
+
+        this.camera.setAnatomicalLevelCallback(
+
+            (level, previous) => {
+
+                console.log(
+                    "🧬 Anatomical level:",
+                    previous,
+                    "→",
+                    level
+                );
+
+                this.setAnatomicalLevel(
+                    level
+                );
+
+            }
+
+        );
 
 
         /*
@@ -237,9 +336,11 @@ export default class BodyScene {
         this.anatomicalLevel =
             "global";
 
+
         this.model.setAnatomicalLevel(
             "global"
         );
+
 
         Store.set(
             "body.interaction.level",
@@ -249,7 +350,7 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Selection
+         * Anatomical selection
          * --------------------------------------------------
          */
 
@@ -294,14 +395,51 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Camera zoom observer
+         * Ready
          * --------------------------------------------------
          */
 
-        this.enableCameraObserver();
+        this.initialized =
+            true;
 
 
-        this.initialized = true;
+        /*
+         * --------------------------------------------------
+         * Initial diagnostic event
+         * --------------------------------------------------
+         */
+
+        if (
+            typeof window !==
+            "undefined"
+        ) {
+
+            window.dispatchEvent(
+
+                new CustomEvent(
+                    "mdt:body:ready",
+                    {
+
+                        detail: {
+
+                            level:
+                                "global",
+
+                            radius:
+                                this.initialCameraRadius,
+
+                            source:
+                                "3d"
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
 
     }
 
@@ -316,18 +454,32 @@ export default class BodyScene {
             this.scene
                 .imageProcessingConfiguration;
 
-        configuration.isEnabled = true;
+
+        configuration.isEnabled =
+            true;
+
+
+        /*
+         * ACES tone mapping.
+         */
 
         configuration.toneMappingEnabled =
             true;
+
 
         configuration.toneMappingType =
             BABYLON
                 .ImageProcessingConfiguration
                 .TONEMAPPING_ACES;
 
+
+        /*
+         * Clinical / soft exposure.
+         */
+
         configuration.exposure =
             0.72;
+
 
         configuration.contrast =
             1.08;
@@ -347,6 +499,7 @@ export default class BodyScene {
                 this.canvas
             );
 
+
         this.camera.init();
 
     }
@@ -362,6 +515,7 @@ export default class BodyScene {
             new BodyLights(
                 this.scene
             );
+
 
         this.lights.init();
 
@@ -382,6 +536,7 @@ export default class BodyScene {
 
         }
 
+
         this.renderPipeline =
             new BABYLON.DefaultRenderingPipeline(
 
@@ -399,7 +554,9 @@ export default class BodyScene {
 
 
         /*
-         * Anti-aliasing
+         * --------------------------------------------------
+         * Anti aliasing
+         * --------------------------------------------------
          */
 
         this.renderPipeline.fxaaEnabled =
@@ -407,31 +564,40 @@ export default class BodyScene {
 
 
         /*
+         * --------------------------------------------------
          * Sharpening
+         * --------------------------------------------------
          */
 
         this.renderPipeline.sharpenEnabled =
             true;
 
+
         this.renderPipeline.sharpen.edgeAmount =
             0.18;
+
 
         this.renderPipeline.sharpen.colorAmount =
             0.85;
 
 
         /*
-         * Cinematic effects disabled.
+         * --------------------------------------------------
+         * Cinematic effects disabled
+         * --------------------------------------------------
          */
 
         this.renderPipeline.bloomEnabled =
             false;
 
+
         this.renderPipeline.motionBlurEnabled =
             false;
 
+
         this.renderPipeline.chromaticAberrationEnabled =
             false;
+
 
         this.renderPipeline.grainEnabled =
             false;
@@ -440,155 +606,14 @@ export default class BodyScene {
 
 
     /* ======================================================
-     * Camera Observer
+     * Anatomical Level
      * ====================================================== */
 
-    enableCameraObserver() {
+    setAnatomicalLevel(
+        level = "global"
+    ) {
 
-        if (
-            !this.camera?.camera
-        ) {
-
-            return;
-
-        }
-
-        this.cameraObserver =
-            this.camera
-                .camera
-                .onViewMatrixChangedObservable
-                .add(
-                    () => {
-
-                        this.updateAnatomicalLevel();
-
-                    }
-                );
-
-    }
-
-
-    /* ======================================================
-     * Anatomical Zoom
-     * ====================================================== */
-
-    updateAnatomicalLevel() {
-
-        if (
-            !this.model ||
-            !this.camera?.camera ||
-            !this.initialCameraRadius
-        ) {
-
-            return;
-
-        }
-
-        const radius =
-            this.camera.camera.radius;
-
-        if (
-            !Number.isFinite(radius)
-        ) {
-
-            return;
-
-        }
-
-        this.lastCameraRadius =
-            radius;
-
-
-        const zoomRatio =
-            radius /
-            this.initialCameraRadius;
-
-
-        let level =
-            "global";
-
-
-        /*
-         * --------------------------------------------------
-         * GLOBAL
-         * --------------------------------------------------
-         */
-
-        if (
-            zoomRatio >
-            this.zoomThresholds.organs
-        ) {
-
-            level =
-                "global";
-
-        }
-
-
-        /*
-         * --------------------------------------------------
-         * ORGANS
-         * --------------------------------------------------
-         */
-
-        else if (
-            zoomRatio >
-            this.zoomThresholds.detail
-        ) {
-
-            level =
-                "organs";
-
-        }
-
-
-        /*
-         * --------------------------------------------------
-         * DETAIL
-         * --------------------------------------------------
-         */
-
-        else {
-
-            level =
-                "detail";
-
-        }
-
-
-        if (
-            level ===
-            this.anatomicalLevel
-        ) {
-
-            return;
-
-        }
-
-
-        this.setAnatomicalLevel(
-            level
-        );
-
-    }
-
-
-    /* ======================================================
-     * Set Anatomical Level
-     * ====================================================== */
-
-    setAnatomicalLevel(level) {
-
-        if (
-            !this.model
-        ) {
-
-            return;
-
-        }
-
-
-        const allowed = [
+        const allowedLevels = [
 
             "global",
 
@@ -599,8 +624,14 @@ export default class BodyScene {
         ];
 
 
+        /*
+         * Invalid level.
+         */
+
         if (
-            !allowed.includes(level)
+            !allowedLevels.includes(
+                level
+            )
         ) {
 
             level =
@@ -608,6 +639,10 @@ export default class BodyScene {
 
         }
 
+
+        /*
+         * Nothing to do.
+         */
 
         if (
             this.anatomicalLevel ===
@@ -619,21 +654,75 @@ export default class BodyScene {
         }
 
 
+        const previous =
+            this.anatomicalLevel;
+
+
         this.anatomicalLevel =
             level;
 
 
         /*
-         * Model visibility.
+         * --------------------------------------------------
+         * BodyModel
+         * --------------------------------------------------
+         *
+         * IMPORTANT:
+         *
+         * BodyModel must not destructively disable the
+         * entire anatomical model.
+         *
+         * The 3211 meshes remain available.
+         *
+         * BodyAppearance is responsible for presentation.
+         * --------------------------------------------------
          */
 
-        this.model.setAnatomicalLevel(
+        this.model?.setAnatomicalLevel(
             level
         );
 
 
         /*
-         * Store.
+         * --------------------------------------------------
+         * BodyAppearance
+         * --------------------------------------------------
+         *
+         * Optional for now.
+         *
+         * When BodyAppearance implements
+         * setAnatomicalLevel(), it will control the visual
+         * transition:
+         *
+         * GLOBAL
+         *     body surface
+         *
+         * ORGANS
+         *     surface attenuation + organs
+         *
+         * DETAIL
+         *     complete anatomical detail
+         * --------------------------------------------------
+         */
+
+        if (
+            typeof this.appearance
+                ?.setAnatomicalLevel ===
+            "function"
+        ) {
+
+            this.appearance
+                .setAnatomicalLevel(
+                    level
+                );
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Store
+         * --------------------------------------------------
          */
 
         Store.set(
@@ -643,11 +732,69 @@ export default class BodyScene {
 
 
         /*
-         * Changing anatomical presentation
-         * invalidates the previous selection.
+         * --------------------------------------------------
+         * Selection
+         * --------------------------------------------------
+         *
+         * Changing anatomical presentation invalidates
+         * the current anatomical selection.
+         * --------------------------------------------------
          */
 
         this.selection?.clear();
+
+
+        /*
+         * --------------------------------------------------
+         * Application event
+         * --------------------------------------------------
+         */
+
+        if (
+            typeof window !==
+            "undefined"
+        ) {
+
+            window.dispatchEvent(
+
+                new CustomEvent(
+                    "mdt:anatomy:levelchanged",
+                    {
+
+                        detail: {
+
+                            level:
+
+                                level,
+
+                            previous:
+
+                                previous,
+
+                            source:
+
+                                "body-camera"
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+        }
+
+    }
+
+
+    /* ======================================================
+     * Get Anatomical Level
+     * ====================================================== */
+
+    getAnatomicalLevel() {
+
+        return this.anatomicalLevel;
 
     }
 
@@ -668,6 +815,12 @@ export default class BodyScene {
         }
 
 
+        /*
+         * --------------------------------------------------
+         * Restore model presentation
+         * --------------------------------------------------
+         */
+
         this.model.setAnatomicalLevel(
             "global"
         );
@@ -683,19 +836,41 @@ export default class BodyScene {
         );
 
 
-        this.selection?.clear();
+        /*
+         * --------------------------------------------------
+         * Clear selection / hover
+         * --------------------------------------------------
+         */
 
+        this.selection?.clear();
 
         this.clearHover();
 
+
+        /*
+         * --------------------------------------------------
+         * Restore camera
+         * --------------------------------------------------
+         *
+         * BodyCamera.reset() calls frameModel(), which
+         * restores the original body framing.
+         * --------------------------------------------------
+         */
 
         this.camera.reset(
             this.model
         );
 
 
+        /*
+         * --------------------------------------------------
+         * Synchronize reference radius
+         * --------------------------------------------------
+         */
+
         this.initialCameraRadius =
             this.camera.camera.radius;
+
 
         this.lastCameraRadius =
             this.initialCameraRadius;
@@ -703,56 +878,49 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Anatomical zoom callback
+         * IMPORTANT
+         *
+         * Do NOT install the anatomical callback here.
+         *
+         * It is already installed once in init().
          * --------------------------------------------------
          */
-        
-        this.camera.setAnatomicalLevelCallback(
-            (level, previous) => {
-        
-                console.log(
-                    "🧬 Anatomical level:",
-                    previous,
-                    "→",
-                    level
-                );
-        
-                this.setAnatomicalLevel(
-                    level
-                );
-        
-            }
-        );
 
-        this.enableCameraObserver();
 
         /*
-         * Notify the clinical UI.
-         *
-         * This will later open the patient/global
-         * clinical card.
+         * --------------------------------------------------
+         * Notify clinical UI
+         * --------------------------------------------------
          */
 
-        window.dispatchEvent(
+        if (
+            typeof window !==
+            "undefined"
+        ) {
 
-            new CustomEvent(
-                "mdt:body:global",
-                {
+            window.dispatchEvent(
 
-                    detail: {
+                new CustomEvent(
+                    "mdt:body:global",
+                    {
 
-                        source:
-                            "3d",
+                        detail: {
 
-                        level:
-                            "global"
+                            source:
+                                "3d",
+
+                            level:
+                                "global"
+
+                        }
 
                     }
 
-                }
-            )
+                )
 
-        );
+            );
+
+        }
 
     }
 
@@ -763,7 +931,10 @@ export default class BodyScene {
 
     enablePicking() {
 
-        if (!this.scene) {
+        if (
+            !this.scene ||
+            this.pointerObserver
+        ) {
 
             return;
 
@@ -832,11 +1003,17 @@ export default class BodyScene {
      * Pointer Move
      * ====================================================== */
 
-    handlePointerMove(pointerInfo) {
+    handlePointerMove(
+        pointerInfo
+    ) {
 
         const pickInfo =
-            pointerInfo.pickInfo;
+            pointerInfo?.pickInfo;
 
+
+        /*
+         * Nothing under cursor.
+         */
 
         if (
             !pickInfo?.hit ||
@@ -854,6 +1031,10 @@ export default class BodyScene {
             pickInfo.pickedMesh;
 
 
+        /*
+         * Resolve anatomical entity.
+         */
+
         const entity =
             this.model
                 ?.getEntityForMesh(
@@ -861,7 +1042,13 @@ export default class BodyScene {
                 );
 
 
-        if (!entity) {
+        /*
+         * Technical / unknown mesh.
+         */
+
+        if (
+            !entity
+        ) {
 
             this.clearHover();
 
@@ -871,12 +1058,12 @@ export default class BodyScene {
 
 
         /*
-         * Avoid repeatedly emitting the same
-         * hover event every mouse movement.
+         * Avoid emitting identical hover events repeatedly.
          */
 
         if (
-            this.hoveredMesh === mesh
+            this.hoveredMesh ===
+            mesh
         ) {
 
             return;
@@ -886,6 +1073,7 @@ export default class BodyScene {
 
         this.hoveredMesh =
             mesh;
+
 
         this.hoveredEntity =
             entity;
@@ -897,41 +1085,168 @@ export default class BodyScene {
         );
 
 
-        window.dispatchEvent(
+        /*
+         * UI tooltip event.
+         */
 
-            new CustomEvent(
-                "mdt:anatomy:hovered",
-                {
+        if (
+            typeof window !==
+            "undefined"
+        ) {
 
-                    detail: {
+            window.dispatchEvent(
 
-                        entityId:
-                            entity.id,
+                new CustomEvent(
+                    "mdt:anatomy:hovered",
+                    {
 
-                        name:
-                            entity.display_name ||
-                            entity.canonical_name ||
-                            entity.name,
+                        detail: {
 
-                        category:
-                            entity.category,
+                            mesh:
 
-                        system:
-                            entity.system,
+                                mesh,
 
-                        laterality:
-                            entity.laterality,
+                            entity:
 
-                        entity,
+                                entity,
 
-                        source:
-                            "3d"
+                            name:
+
+                                entity.canonical_name ||
+                                entity.display_name ||
+                                entity.name ||
+                                mesh.name,
+
+                            source:
+
+                                "3d"
+
+                        }
 
                     }
 
-                }
-            )
+                )
 
+            );
+
+        }
+
+    }
+
+
+    /* ======================================================
+     * Pointer Pick
+     * ====================================================== */
+
+    handlePointerPick(
+        pointerInfo
+    ) {
+
+        const pickInfo =
+            pointerInfo?.pickInfo;
+
+
+        if (
+            !pickInfo?.hit ||
+            !pickInfo.pickedMesh
+        ) {
+
+            return;
+
+        }
+
+
+        const mesh =
+            pickInfo.pickedMesh;
+
+
+        /*
+         * --------------------------------------------------
+         * Root / surface
+         * --------------------------------------------------
+         *
+         * Clicking the body surface while navigating the
+         * internal anatomy returns to the global patient
+         * representation.
+         * --------------------------------------------------
+         */
+
+        const descriptor =
+            mesh
+                ?.metadata
+                ?.mdt
+                ?.anatomical;
+
+
+        const isRoot =
+            mesh.name ===
+            "__root__";
+
+
+        const isSkin =
+            descriptor?.category ===
+            "skin";
+
+
+        /*
+         * BodyModel may expose the root directly.
+         */
+
+        const modelRoot =
+            this.model
+                ?.getRoot?.();
+
+
+        const isModelRoot =
+            modelRoot &&
+            mesh === modelRoot;
+
+
+        if (
+            isRoot ||
+            isSkin ||
+            isModelRoot
+        ) {
+
+            this.resetToGlobal();
+
+            return;
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Anatomical entity
+         * --------------------------------------------------
+         */
+
+        const entity =
+            this.model
+                ?.getEntityForMesh(
+                    mesh
+                );
+
+
+        /*
+         * Unknown / technical mesh.
+         */
+
+        if (
+            !entity
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Select anatomical entity.
+         */
+
+        this.selection?.selectEntity(
+            entity.id
         );
 
     }
@@ -953,8 +1268,17 @@ export default class BodyScene {
         }
 
 
+        const previousMesh =
+            this.hoveredMesh;
+
+
+        const previousEntity =
+            this.hoveredEntity;
+
+
         this.hoveredMesh =
             null;
+
 
         this.hoveredEntity =
             null;
@@ -966,153 +1290,57 @@ export default class BodyScene {
         );
 
 
-        window.dispatchEvent(
+        /*
+         * Notify tooltip layer.
+         */
 
-            new CustomEvent(
-                "mdt:anatomy:hovered",
-                {
+        if (
+            typeof window !==
+            "undefined"
+        ) {
 
-                    detail: {
+            window.dispatchEvent(
 
-                        entityId:
-                            null,
+                new CustomEvent(
+                    "mdt:anatomy:hovercleared",
+                    {
 
-                        name:
-                            null,
+                        detail: {
 
-                        entity:
-                            null,
+                            mesh:
 
-                        source:
-                            "3d"
+                                previousMesh,
+
+                            entity:
+
+                                previousEntity,
+
+                            source:
+
+                                "3d"
+
+                        }
 
                     }
 
-                }
-            )
+                )
 
-        );
+            );
+
+        }
 
     }
 
 
     /* ======================================================
-     * Pointer Pick
-     * ====================================================== */
-
-    handlePointerPick(pointerInfo) {
-
-        const pickInfo =
-            pointerInfo.pickInfo;
-
-
-        /*
-         * Nothing picked.
-         */
-
-        if (
-            !pickInfo?.hit ||
-            !pickInfo.pickedMesh
-        ) {
-
-            this.selection?.clear();
-
-            return;
-
-        }
-
-
-        const mesh =
-            pickInfo.pickedMesh;
-
-
-        /*
-         * Root.
-         */
-
-        const isRoot =
-            mesh ===
-            this.model?.getRoot();
-
-
-        /*
-         * Anatomical descriptor.
-         */
-
-        const descriptor =
-            mesh
-                ?.metadata
-                ?.mdt
-                ?.anatomical;
-
-
-        /*
-         * External body surface.
-         *
-         * We use the anatomical descriptor rather
-         * than model.skinMeshes, because BodyModel
-         * does not need a dedicated skinMeshes Set.
-         */
-
-        const isSkin =
-            descriptor?.category ===
-            "skin";
-
-
-        /*
-         * Global body/root click.
-         */
-
-        if (
-            isRoot ||
-            isSkin
-        ) {
-
-            this.resetToGlobal();
-
-            return;
-
-        }
-
-
-        /*
-         * Anatomical entity.
-         */
-
-        const entity =
-            this.model
-                ?.getEntityForMesh(
-                    mesh
-                );
-
-
-        if (!entity) {
-
-            return;
-
-        }
-
-
-        /*
-         * Select.
-         */
-
-        this.selection?.selectEntity(
-            entity.id
-        );
-
-    }
-
-
-    /* ======================================================
-     * Animation
+     * Start Animation
      * ====================================================== */
 
     startAnimation() {
 
         /*
-         * Animations intentionally disabled
-         * for the initial interactive prototype.
+         * Animations intentionally disabled for the initial
+         * interactive prototype.
          */
 
     }
@@ -1169,28 +1397,9 @@ export default class BodyScene {
     destroy() {
 
         /*
-         * Camera observer
-         */
-
-        if (
-            this.cameraObserver
-        ) {
-
-            this.camera
-                ?.camera
-                ?.onViewMatrixChangedObservable
-                ?.remove(
-                    this.cameraObserver
-                );
-
-            this.cameraObserver =
-                null;
-
-        }
-
-
-        /*
+         * --------------------------------------------------
          * Pointer observer
+         * --------------------------------------------------
          */
 
         if (
@@ -1210,63 +1419,97 @@ export default class BodyScene {
 
 
         /*
-         * Hover state
+         * --------------------------------------------------
+         * Camera callback
+         * --------------------------------------------------
+         *
+         * BodyCamera owns its own observer.
+         * We simply detach our callback.
+         * --------------------------------------------------
+         */
+
+        this.camera
+            ?.setAnatomicalLevelCallback(
+                null
+            );
+
+
+        /*
+         * --------------------------------------------------
+         * Hover
+         * --------------------------------------------------
          */
 
         this.clearHover();
 
 
         /*
+         * --------------------------------------------------
          * Selection
+         * --------------------------------------------------
          */
 
         this.selection?.clear();
 
 
         /*
+         * --------------------------------------------------
          * Animation
+         * --------------------------------------------------
          */
 
         this.animation?.clear();
 
 
         /*
+         * --------------------------------------------------
          * Model
+         * --------------------------------------------------
          */
 
         this.model?.destroy();
 
 
         /*
+         * --------------------------------------------------
          * Appearance
+         * --------------------------------------------------
          */
 
         this.appearance?.destroy?.();
 
 
         /*
+         * --------------------------------------------------
          * Lighting
+         * --------------------------------------------------
          */
 
         this.lights?.destroy();
 
 
         /*
+         * --------------------------------------------------
          * Rendering pipeline
+         * --------------------------------------------------
          */
 
         this.renderPipeline?.dispose();
 
 
         /*
+         * --------------------------------------------------
          * Scene
+         * --------------------------------------------------
          */
 
         this.scene?.dispose();
 
 
         /*
+         * --------------------------------------------------
          * Reset
+         * --------------------------------------------------
          */
 
         this.renderPipeline =
@@ -1308,35 +1551,15 @@ export default class BodyScene {
         this.hoveredEntity =
             null;
 
+        this.pointerObserver =
+            null;
+
+        this.cameraObserver =
+            null;
+
         this.initialized =
             false;
 
     }
 
-
-    /* ======================================================
-     * Camera Observer
-     * ====================================================== */
-    
-    enableCameraObserver() {
-    
-        if (
-            this.cameraObserver ||
-            !this.camera?.camera
-        ) {
-    
-            return;
-    
-        }
-    
-        this.cameraObserver =
-            this.camera.camera
-                .onViewMatrixChangedObservable
-                .add(() => {
-    
-                    this.camera.updateAnatomicalLevel();
-    
-                });
-    
-    }
 }
