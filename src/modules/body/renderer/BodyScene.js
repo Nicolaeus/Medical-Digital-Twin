@@ -9,6 +9,7 @@
 import BodyCamera from "./BodyCamera.js";
 import BodyLights from "./BodyLights.js";
 import BodyModel from "./BodyModel.js";
+import BodyAppearance from "./BodyAppearance.js";
 import BodySelection from "./BodySelection.js";
 import BodyAnimation from "./BodyAnimation.js";
 
@@ -37,6 +38,8 @@ export default class BodyScene {
         this.pointerObserver = null;
 
         this.renderPipeline = null;
+
+        this.appearance = null;
 
         this.initialized = false;
 
@@ -120,6 +123,17 @@ export default class BodyScene {
         );
 
         await this.model.load();
+        
+        this.appearance = new BodyAppearance(
+            this.scene,
+            this.model
+        );
+        
+        this.appearance.init();
+        
+        this.camera.frameModel(
+            this.model
+        );
 
         /*
          * --------------------------------------------------
