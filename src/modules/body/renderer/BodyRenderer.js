@@ -153,7 +153,9 @@ export default class BodyRenderer {
 
                     stencil: true,
 
-                    antialias: true
+                    antialias: true,
+
+                    alpha: true
 
                 },
 
