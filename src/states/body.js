@@ -10,6 +10,51 @@ export default {
 
     /**
      * ------------------------------------------------------
+     * Anatomical Interaction
+     * ------------------------------------------------------
+     *
+     * État de navigation et d'interaction avec le Body Twin.
+     *
+     * Ces propriétés ne contiennent pas de données cliniques :
+     * elles décrivent uniquement ce que l'utilisateur regarde
+     * ou a sélectionné dans le modèle 3D.
+     */
+
+    interaction: {
+
+        /**
+         * Current anatomical presentation level.
+         *
+         * global
+         * organs
+         * detail
+         */
+
+        level: "global",
+
+        /**
+         * Current hovered anatomical entity.
+         */
+
+        hoveredEntity: null,
+
+        /**
+         * Current selected anatomical entity.
+         */
+
+        selectedEntity: null,
+
+        /**
+         * Current selected entity identifier.
+         */
+
+        selected: null
+
+    },
+
+
+    /**
+     * ------------------------------------------------------
      * Anatomical Systems
      * ------------------------------------------------------
      */
@@ -106,6 +151,7 @@ export default {
 
     },
 
+
     /**
      * ------------------------------------------------------
      * Organs
@@ -140,6 +186,7 @@ export default {
 
     },
 
+
     /**
      * ------------------------------------------------------
      * Musculoskeletal
@@ -151,6 +198,7 @@ export default {
     bones: {},
 
     joints: {},
+
 
     /**
      * ------------------------------------------------------
@@ -167,6 +215,7 @@ export default {
         capillaries: {}
 
     },
+
 
     /**
      * ------------------------------------------------------
@@ -189,6 +238,7 @@ export default {
         pulseOximeter: null
 
     },
+
 
     /**
      * ------------------------------------------------------
