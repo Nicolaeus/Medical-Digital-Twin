@@ -6,11 +6,15 @@
  * ==========================================================
  */
 
+import Store from "../store.js";
+
 export default class BaseComponent {
 
     constructor(options = {}) {
 
-        this.id = options.id || crypto.randomUUID();
+        this.id =
+            options.id ||
+            crypto.randomUUID();
 
         this.element = null;
 
@@ -49,9 +53,7 @@ export default class BaseComponent {
     async render() {
 
         throw new Error(
-
             `${this.constructor.name}.render() must be implemented.`
-
         );
 
     }
@@ -76,16 +78,17 @@ export default class BaseComponent {
 
         if (typeof parent === "string") {
 
-            parent = document.querySelector(parent);
+            parent =
+                document.querySelector(
+                    parent
+                );
 
         }
 
         if (!parent) {
 
             throw new Error(
-
                 "Parent element not found."
-
             );
 
         }
@@ -94,7 +97,9 @@ export default class BaseComponent {
 
         if (this.element) {
 
-            parent.appendChild(this.element);
+            parent.appendChild(
+                this.element
+            );
 
         }
 
@@ -130,11 +135,9 @@ export default class BaseComponent {
 
     toggle() {
 
-        this.visible ?
-
-            this.hide() :
-
-            this.show();
+        this.visible
+            ? this.hide()
+            : this.show();
 
     }
 
@@ -150,7 +153,8 @@ export default class BaseComponent {
 
         }
 
-        this.element.innerHTML = html;
+        this.element.innerHTML =
+            html;
 
     }
 
@@ -160,19 +164,27 @@ export default class BaseComponent {
 
     addClass(...classes) {
 
-        this.element?.classList.add(...classes);
+        this.element?.classList.add(
+            ...classes
+        );
 
     }
 
     removeClass(...classes) {
 
-        this.element?.classList.remove(...classes);
+        this.element?.classList.remove(
+            ...classes
+        );
 
     }
 
     hasClass(className) {
 
-        return this.element?.classList.contains(className);
+        return this.element
+            ?.classList
+            .contains(
+                className
+            );
 
     }
 
@@ -182,16 +194,20 @@ export default class BaseComponent {
 
     $(selector) {
 
-        return this.element?.querySelector(selector);
+        return this.element
+            ?.querySelector(
+                selector
+            );
 
     }
 
     $$(selector) {
 
         return [
-
-            ...(this.element?.querySelectorAll(selector) || [])
-
+            ...(this.element
+                ?.querySelectorAll(
+                    selector
+                ) || [])
         ];
 
     }
@@ -202,13 +218,34 @@ export default class BaseComponent {
 
     addWatcher(id) {
 
-        this.watchers.push(id);
+        if (
+            id === undefined ||
+            id === null
+        ) {
+
+            return;
+
+        }
+
+        this.watchers.push(
+            id
+        );
 
     }
 
     clearWatchers() {
 
-        this.watchers.length = 0;
+        this.watchers.forEach(
+            watcherId => {
+
+                Store.unwatch(
+                    watcherId
+                );
+
+            }
+        );
+
+        this.watchers = [];
 
     }
 
