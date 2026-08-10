@@ -2530,143 +2530,147 @@ export default class BodyModel {
      * Anatomical Level
      * ====================================================== */
 
-    setAnatomicalLevel(
-        level = "global"
-    ) {
+    setAnatomicalLevel(level = "global") {
 
-        const allowed = [
+    const allowed = [
+        "global",
+        "organs",
+        "detail"
+    ];
 
-            "global",
-            "organs",
-            "detail"
+    if (!allowed.includes(level)) {
+        level = "global";
+    }
 
-        ];
+    this.anatomicalLevel = level;
 
+    /*
+     * --------------------------------------------------
+     * GLOBAL
+     * --------------------------------------------------
+     *
+     * Représentation complète.
+     */
 
-        if (
-            !allowed.includes(level)
-        ) {
+    if (level === "global") {
 
-            level = "global";
+        this.meshes.forEach(mesh => {
 
-        }
+            mesh.setEnabled(true);
 
+        });
 
-        this.anatomicalLevel =
-            level;
-
-
-        /* ==================================================
-         * GLOBAL
-         * ==================================================
-         *
-         * Complete external representation.
-         *
-         * Everything remains visible.
-         */
-
-        if (
-            level === "global"
-        ) {
-
-            this.meshes.forEach(
-                mesh => {
-
-                    mesh.setEnabled(
-                        true
-                    );
-
-                }
-            );
-
-            return;
-
-        }
+        return;
+    }
 
 
-        /* ==================================================
-         * ORGANS
-         * ==================================================
-         *
-         * Keep the clinical representation:
-         *
-         * - organs
-         * - brain structures
-         * - eyes
-         *
-         * Hide:
-         *
-         * - muscles
-         * - bones
-         * - fascia
-         * - bursae
-         * - tendons
-         * - ligaments
-         * - other detailed structures
-         */
+    /*
+     * --------------------------------------------------
+     * ORGANS
+     * --------------------------------------------------
+     *
+     * Important :
+     *
+     * On ne doit JAMAIS considérer qu'un mesh
+     * non classifié doit être masqué.
+     *
+     * Le GLB Z-Anatomy est beaucoup plus riche que
+     * notre classification clinique actuelle.
+     *
+     * Les structures identifiées comme organes sont
+     * mises en avant, mais les autres meshes restent
+     * disponibles afin d'éviter une disparition
+     * complète du modèle.
+     */
 
-        if (
-            level === "organs"
-        ) {
+    if (level === "organs") {
 
-            this.meshes.forEach(
-                mesh => {
+        this.meshes.forEach(mesh => {
 
-                    const descriptor =
-                        mesh.metadata
-                            ?.mdt
-                            ?.anatomical;
+            const descriptor =
+                mesh.metadata
+                    ?.mdt
+                    ?.anatomical;
 
+            /*
+             * Mesh reconnu comme structure clinique.
+             */
 
-                    const visible =
-                        descriptor &&
-                        (
-                            descriptor.clinicalOrgan !== null ||
-                            descriptor.category === "organs" ||
-                            descriptor.category === "brain" ||
-                            descriptor.category === "eyes"
-                        );
+            const isClinicalOrgan =
+                descriptor?.clinicalOrgan != null;
 
+            const isOrganCategory =
+                [
+                    "organs",
+                    "brain",
+                    "eyes"
+                ].includes(
+                    descriptor?.category
+                );
 
-                    mesh.setEnabled(
-                        Boolean(
-                            visible
-                        )
-                    );
+            /*
+             * Pour l'instant, on garde TOUS les meshes
+             * actifs.
+             *
+             * L'isolation visuelle des organes sera faite
+             * par BodyAppearance, pas par destruction de
+             * visibilité du modèle.
+             */
 
-                }
-            );
+            mesh.setEnabled(true);
 
+            /*
+             * Marqueur interne utile pour la couche
+             * d'apparence.
+             */
 
-            return;
+            mesh.metadata = {
 
-        }
+                ...(mesh.metadata || {}),
 
+                mdt: {
 
-        /* ==================================================
-         * DETAIL
-         * ==================================================
-         *
-         * Full anatomical representation.
-         */
+                    ...(mesh.metadata?.mdt || {}),
 
-        if (
-            level === "detail"
-        ) {
+                    presentation: {
 
-            this.meshes.forEach(
-                mesh => {
+                        ...(mesh.metadata?.mdt?.presentation || {}),
 
-                    mesh.setEnabled(
-                        true
-                    );
+                        isClinicalOrgan:
+                            isClinicalOrgan ||
+                            isOrganCategory
+
+                    }
 
                 }
-            );
 
-        }
+            };
+
+        });
+
+        return;
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * DETAIL
+     * --------------------------------------------------
+     *
+     * Anatomie complète.
+     */
+
+    if (level === "detail") {
+
+        this.meshes.forEach(mesh => {
+
+            mesh.setEnabled(true);
+
+        });
 
     }
+
+}
 
 
     /* ======================================================
