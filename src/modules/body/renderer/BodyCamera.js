@@ -2,10 +2,9 @@
  * ==========================================================
  * Medical Digital Twin
  * BodyCamera.js
- * Camera Controller
+ * Body Twin Camera Controller
  * ==========================================================
  */
-
 
 export default class BodyCamera {
 
@@ -17,7 +16,7 @@ export default class BodyCamera {
 
         this.camera = null;
 
-        this.autoRotate = true;
+        this.autoRotate = false;
 
     }
 
@@ -33,7 +32,7 @@ export default class BodyCamera {
 
             -Math.PI / 2,
 
-            Math.PI / 2.2,
+            Math.PI / 2.15,
 
             3,
 
@@ -51,17 +50,67 @@ export default class BodyCamera {
 
         );
 
-        this.camera.lowerRadiusLimit = 1.2;
+        this.camera.lowerRadiusLimit = 0.05;
 
-        this.camera.upperRadiusLimit = 8;
+        this.camera.upperRadiusLimit = 20;
 
         this.camera.wheelDeltaPercentage = 0.01;
 
         this.camera.panningSensibility = 0;
 
-        this.camera.useAutoRotationBehavior = true;
+        this.disableAutoRotate();
 
-        this.camera.autoRotationBehavior.idleRotationSpeed = 0.12;
+    }
+
+    /* ======================================================
+     * Frame Model
+     * ====================================================== */
+
+    frameModel(model) {
+
+        const bounds =
+
+            model?.getBounds();
+
+        if (!bounds) {
+
+            return;
+
+        }
+
+        this.camera.target =
+
+            bounds.center.clone();
+
+        this.camera.radius =
+
+            Math.max(
+
+                bounds.radius * 2.4,
+
+                0.5
+
+            );
+
+        this.camera.minZ =
+
+            Math.max(
+
+                bounds.radius * 0.001,
+
+                0.001
+
+            );
+
+        this.camera.maxZ =
+
+            Math.max(
+
+                bounds.radius * 100,
+
+                100
+
+            );
 
     }
 
@@ -109,13 +158,17 @@ export default class BodyCamera {
 
     }
 
-    reset() {
+    reset(model = null) {
 
         this.camera.alpha = -Math.PI / 2;
 
-        this.camera.beta = Math.PI / 2.2;
+        this.camera.beta = Math.PI / 2.15;
 
-        this.camera.radius = 3;
+        if (model) {
+
+            this.frameModel(model);
+
+        }
 
     }
 
@@ -141,13 +194,11 @@ export default class BodyCamera {
 
     toggleAutoRotate() {
 
-        this.autoRotate ?
+        this.autoRotate
 
-            this.disableAutoRotate()
+            ? this.disableAutoRotate()
 
-            :
-
-            this.enableAutoRotate();
+            : this.enableAutoRotate();
 
     }
 
@@ -157,7 +208,17 @@ export default class BodyCamera {
 
     focus(target) {
 
-        this.camera.setTarget(target);
+        if (!target) {
+
+            return;
+
+        }
+
+        this.camera.setTarget(
+
+            target
+
+        );
 
     }
 

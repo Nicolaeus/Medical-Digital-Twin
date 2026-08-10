@@ -2,7 +2,7 @@
  * ==========================================================
  * Medical Digital Twin
  * BodyModel.js
- * Human Body Model
+ * Interactive Human Body Model
  * ==========================================================
  */
 
@@ -18,103 +18,369 @@ export default class BodyModel {
 
         this.material = null;
 
+        this.manifest = null;
+
+        this.entities = new Map();
+
+        this.meshEntities = new Map();
+
         this.visible = true;
 
-        this.opacity = 0.35;
+        this.opacity = 1.0;
+
+        this.loaded = false;
 
     }
 
     /* ======================================================
-     * Load Model
+     * Load
      * ====================================================== */
 
-    async load(path = "assets/models/body.glb") {
+    async load(
 
-        const result = await BABYLON.SceneLoader.ImportMeshAsync(
+        modelPath =
+            "src/modules/body/assets/models/body_twin/body_twin.glb",
 
-            "",
+        manifestPath =
+            "src/modules/body/assets/models/body_twin/body_twin_manifest.json"
 
-            "",
+    ) {
 
-            path,
+        await this.loadManifest(
 
-            this.scene
+            manifestPath
 
         );
 
-        this.meshes = result.meshes;
+        const result =
 
-        this.root = result.meshes[0];
+            await BABYLON.SceneLoader.ImportMeshAsync(
 
-        this.createMaterial();
+                "",
 
-        this.applyMaterial();
+                "",
 
-    }
+                modelPath,
 
-    /* ======================================================
-     * Material
-     * ====================================================== */
+                this.scene
 
-    createMaterial() {
+            );
 
-        this.material = new BABYLON.StandardMaterial(
+        this.meshes = result.meshes.filter(
 
-            "BodyMaterial",
-
-            this.scene
+            mesh => mesh instanceof BABYLON.Mesh
 
         );
 
-        this.material.diffuseColor =
+        this.root =
 
-            new BABYLON.Color3(
+            result.meshes.find(
 
-                0.55,
+                mesh =>
 
-                0.85,
+                    mesh.name === "__root__"
 
-                1.0
+            )
 
-            );
+            || result.meshes[0];
 
-        this.material.emissiveColor =
+        this.buildEntityIndex();
 
-            new BABYLON.Color3(
+        this.loaded = true;
 
-                0.15,
-
-                0.35,
-
-                0.45
-
-            );
-
-        this.material.alpha = this.opacity;
-
-        this.material.backFaceCulling = false;
+        return this;
 
     }
 
     /* ======================================================
-     * Apply Material
+     * Manifest
      * ====================================================== */
 
-    applyMaterial() {
+    async loadManifest(path) {
+
+        const response = await fetch(path);
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                `Unable to load Body Twin manifest: ${path}`
+
+            );
+
+        }
+
+        this.manifest =
+
+            await response.json();
+
+        this.indexManifestEntities();
+
+    }
+
+    /* ======================================================
+     * Manifest Index
+     * ====================================================== */
+
+    indexManifestEntities() {
+
+        this.entities.clear();
+
+        const entities =
+
+            this.manifest?.entities || {};
+
+        Object.entries(entities).forEach(
+
+            ([id, entity]) => {
+
+                this.entities.set(
+
+                    id,
+
+                    entity
+
+                );
+
+            }
+
+        );
+
+    }
+
+    /* ======================================================
+     * Mesh → Entity Index
+     * ====================================================== */
+
+    buildEntityIndex() {
+
+        this.meshEntities.clear();
 
         this.meshes.forEach(mesh => {
 
-            if (
+            const entity =
 
-                mesh instanceof BABYLON.Mesh
+                this.findEntityForMesh(
 
-            ) {
+                    mesh.name
 
-                mesh.material = this.material;
+                );
+
+            if (entity) {
+
+                this.meshEntities.set(
+
+                    mesh.name,
+
+                    entity
+
+                );
 
             }
 
         });
+
+    }
+
+    findEntityForMesh(meshName) {
+
+        for (const entity of this.entities.values()) {
+
+            const objects =
+
+                entity.objects || [];
+
+            const match = objects.find(
+
+                object =>
+
+                    object.object_name === meshName
+
+            );
+
+            if (match) {
+
+                return entity;
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    /* ======================================================
+     * Entity Access
+     * ====================================================== */
+
+    getEntity(id) {
+
+        return this.entities.get(id) || null;
+
+    }
+
+    getEntityForMesh(meshOrName) {
+
+        const name =
+
+            typeof meshOrName === "string"
+
+                ? meshOrName
+
+                : meshOrName?.name;
+
+        if (!name) {
+
+            return null;
+
+        }
+
+        return (
+
+            this.meshEntities.get(name)
+
+            || this.findEntityForMesh(name)
+
+        );
+
+    }
+
+    getEntities() {
+
+        return Array.from(
+
+            this.entities.values()
+
+        );
+
+    }
+
+    /* ======================================================
+     * Mesh Access
+     * ====================================================== */
+
+    getOrgan(name) {
+
+        return this.meshes.find(
+
+            mesh =>
+
+                mesh.name.toLowerCase() ===
+
+                name.toLowerCase()
+
+        );
+
+    }
+
+    getMeshes() {
+
+        return this.meshes;
+
+    }
+
+    getRoot() {
+
+        return this.root;
+
+    }
+
+    /* ======================================================
+     * Bounds
+     * ====================================================== */
+
+    getBounds() {
+
+        if (!this.meshes.length) {
+
+            return null;
+
+        }
+
+        let min = null;
+
+        let max = null;
+
+        this.meshes.forEach(mesh => {
+
+            if (!mesh.getBoundingInfo) {
+
+                return;
+
+            }
+
+            const bounding =
+
+                mesh.getBoundingInfo()
+
+                    .boundingBox;
+
+            const meshMin =
+
+                bounding.minimumWorld;
+
+            const meshMax =
+
+                bounding.maximumWorld;
+
+            if (!min) {
+
+                min = meshMin.clone();
+
+                max = meshMax.clone();
+
+                return;
+
+            }
+
+            min = BABYLON.Vector3.Minimize(
+
+                min,
+
+                meshMin
+
+            );
+
+            max = BABYLON.Vector3.Maximize(
+
+                max,
+
+                meshMax
+
+            );
+
+        });
+
+        if (!min || !max) {
+
+            return null;
+
+        }
+
+        const center =
+
+            min.add(max)
+
+                .scale(0.5);
+
+        const size =
+
+            max.subtract(min);
+
+        return {
+
+            min,
+
+            max,
+
+            center,
+
+            size,
+
+            radius: size.length() / 2
+
+        };
 
     }
 
@@ -148,13 +414,11 @@ export default class BodyModel {
 
     toggle() {
 
-        this.visible ?
+        this.visible
 
-            this.hide()
+            ? this.hide()
 
-            :
-
-            this.show();
+            : this.show();
 
     }
 
@@ -166,11 +430,13 @@ export default class BodyModel {
 
         this.opacity = value;
 
-        if (this.material) {
+        if (!this.material) {
 
-            this.material.alpha = value;
+            return;
 
         }
+
+        this.material.alpha = value;
 
     }
 
@@ -178,37 +444,75 @@ export default class BodyModel {
      * Selection
      * ====================================================== */
 
-    getOrgan(name) {
-
-        return this.meshes.find(
-
-            mesh =>
-
-                mesh.name.toLowerCase() ===
-
-                name.toLowerCase()
-
-        );
-
-    }
-
     highlight(name) {
 
-        const organ = this.getOrgan(name);
+        this.clearSelection();
 
-        if (!organ) {
+        const mesh =
+
+            this.getOrgan(name);
+
+        if (!mesh) {
 
             return;
 
         }
 
-        organ.renderOutline = true;
+        mesh.renderOutline = true;
 
-        organ.outlineWidth = 0.08;
+        mesh.outlineWidth = 0.04;
 
-        organ.outlineColor =
+        mesh.outlineColor =
 
-            BABYLON.Color3.Cyan();
+            BABYLON.Color3.FromHexString(
+
+                "#00A8FF"
+
+            );
+
+    }
+
+    highlightEntity(entityId) {
+
+        this.clearSelection();
+
+        const entity =
+
+            this.getEntity(entityId);
+
+        if (!entity) {
+
+            return;
+
+        }
+
+        const names = new Set(
+
+            (entity.objects || [])
+
+                .map(object => object.object_name)
+
+        );
+
+        this.meshes.forEach(mesh => {
+
+            if (names.has(mesh.name)) {
+
+                mesh.renderOutline = true;
+
+                mesh.outlineWidth = 0.04;
+
+                mesh.outlineColor =
+
+                    BABYLON.Color3.FromHexString(
+
+                        "#00A8FF"
+
+                    );
+
+            }
+
+        });
 
     }
 
@@ -223,23 +527,7 @@ export default class BodyModel {
     }
 
     /* ======================================================
-     * Access
-     * ====================================================== */
-
-    getRoot() {
-
-        return this.root;
-
-    }
-
-    getMeshes() {
-
-        return this.meshes;
-
-    }
-
-    /* ======================================================
-     * Destroy
+     * Dispose
      * ====================================================== */
 
     destroy() {
@@ -254,7 +542,15 @@ export default class BodyModel {
 
         this.meshes = [];
 
+        this.entities.clear();
+
+        this.meshEntities.clear();
+
         this.root = null;
+
+        this.manifest = null;
+
+        this.loaded = false;
 
     }
 

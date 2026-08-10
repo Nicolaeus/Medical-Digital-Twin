@@ -1,0 +1,22 @@
+========================================================================
+MDT - BODY TWIN Z-ANATOMY PROTOTYPE
+========================================================================
+
+Surface objects : 2710
+Pilot entities  : 7
+Found           : 5
+Missing         : 2
+
+FOUND:
+  - brain
+  - heart
+  - lung_left
+  - lung_right
+  - liver
+
+MISSING:
+  - kidney_left
+  - kidney_right
+
+This export is intentionally a prototype.
+The complete Z-Anatomy ontology remains separate.

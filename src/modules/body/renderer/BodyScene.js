@@ -2,20 +2,25 @@
  * ==========================================================
  * Medical Digital Twin
  * BodyScene.js
- * Babylon Scene
+ * Babylon Body Twin Scene
  * ==========================================================
  */
 
 import BodyCamera from "./BodyCamera.js";
 import BodyLights from "./BodyLights.js";
+import BodyModel from "./BodyModel.js";
+import BodySelection from "./BodySelection.js";
+import BodyAnimation from "./BodyAnimation.js";
 
 export default class BodyScene {
 
-    constructor(engine, canvas) {
+    constructor(engine, canvas, container = null) {
 
         this.engine = engine;
 
         this.canvas = canvas;
+
+        this.container = container;
 
         this.scene = null;
 
@@ -24,6 +29,12 @@ export default class BodyScene {
         this.lights = null;
 
         this.model = null;
+
+        this.selection = null;
+
+        this.animation = null;
+
+        this.pointerObserver = null;
 
     }
 
@@ -57,9 +68,37 @@ export default class BodyScene {
 
         this.createLights();
 
-        await this.loadModel();
+        this.model = new BodyModel(
 
-        this.startAnimation();
+            this.scene
+
+        );
+
+        await this.model.load();
+
+        this.camera.frameModel(
+
+            this.model
+
+        );
+
+        this.selection = new BodySelection({
+
+            model: this.model,
+
+            camera: this.camera
+
+        });
+
+        this.animation = new BodyAnimation({
+
+            scene: this.scene,
+
+            model: this.model
+
+        });
+
+        this.enablePicking();
 
     }
 
@@ -98,16 +137,74 @@ export default class BodyScene {
     }
 
     /* ======================================================
-     * Model
+     * Picking
      * ====================================================== */
 
-    async loadModel() {
+    enablePicking() {
 
-        //
-        // MVP
-        //
-        // On ajoutera le GLB plus tard.
-        //
+        this.pointerObserver =
+
+            this.scene.onPointerObservable.add(
+
+                pointerInfo => {
+
+                    if (
+
+                        pointerInfo.type !==
+
+                        BABYLON.PointerEventTypes.POINTERPICK
+
+                    ) {
+
+                        return;
+
+                    }
+
+                    const pickInfo =
+
+                        pointerInfo.pickInfo;
+
+                    if (
+
+                        !pickInfo?.hit ||
+
+                        !pickInfo.pickedMesh
+
+                    ) {
+
+                        this.selection.clear();
+
+                        return;
+
+                    }
+
+                    const mesh =
+
+                        pickInfo.pickedMesh;
+
+                    const entity =
+
+                        this.model.getEntityForMesh(
+
+                            mesh
+
+                        );
+
+                    if (!entity) {
+
+                        return;
+
+                    }
+
+                    this.selection.selectEntity(
+
+                        entity.id
+
+                    );
+
+                }
+
+            );
 
     }
 
@@ -117,11 +214,8 @@ export default class BodyScene {
 
     startAnimation() {
 
-        //
-        // Rotation automatique
-        // Respiration
-        // Battement du cœur
-        //
+        // Animations are intentionally disabled
+        // for the initial interactive prototype.
 
     }
 
@@ -139,6 +233,12 @@ export default class BodyScene {
 
     render() {
 
+        this.animation?.update(
+
+            this.engine.getDeltaTime()
+
+        );
+
         this.scene.render();
 
     }
@@ -148,6 +248,24 @@ export default class BodyScene {
      * ====================================================== */
 
     destroy() {
+
+        if (this.pointerObserver) {
+
+            this.scene?.onPointerObservable.remove(
+
+                this.pointerObserver
+
+            );
+
+        }
+
+        this.selection?.clear();
+
+        this.animation?.clear();
+
+        this.model?.destroy();
+
+        this.lights?.destroy();
 
         this.scene?.dispose();
 

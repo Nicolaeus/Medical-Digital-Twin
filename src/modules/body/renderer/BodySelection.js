@@ -2,7 +2,7 @@
  * ==========================================================
  * Medical Digital Twin
  * BodySelection.js
- * Organ Selection Manager
+ * Anatomical Entity Selection Manager
  * ==========================================================
  */
 
@@ -24,21 +24,129 @@ export default class BodySelection {
 
         this.selected = null;
 
+        this.selectedEntity = null;
+
     }
 
     /* ======================================================
-     * Selection
+     * Select Entity
      * ====================================================== */
 
-    select(name) {
+    selectEntity(entityId) {
 
-        if (!name) {
+        if (!entityId) {
 
             return;
 
         }
 
-        if (this.selected === name) {
+        const entity =
+
+            this.model?.getEntity(
+
+                entityId
+
+            );
+
+        if (!entity) {
+
+            console.warn(
+
+                "Unknown anatomical entity:",
+
+                entityId
+
+            );
+
+            return;
+
+        }
+
+        this.clear();
+
+        this.selected = entityId;
+
+        this.selectedEntity = entity;
+
+        this.model?.highlightEntity(
+
+            entityId
+
+        );
+
+        Store.set(
+
+            "body.selected",
+
+            entityId
+
+        );
+
+        Store.set(
+
+            "body.selectedEntity",
+
+            entity
+
+        );
+
+    }
+
+    /* ======================================================
+     * Select Mesh
+     * ====================================================== */
+
+    selectMesh(mesh) {
+
+        const entity =
+
+            this.model?.getEntityForMesh(
+
+                mesh
+
+            );
+
+        if (!entity) {
+
+            return;
+
+        }
+
+        this.selectEntity(
+
+            entity.id
+
+        );
+
+    }
+
+    /* ======================================================
+     * Legacy Select
+     * ====================================================== */
+
+    select(name) {
+
+        const entity =
+
+            this.model?.getEntityForMesh(
+
+                name
+
+            );
+
+        if (entity) {
+
+            this.selectEntity(
+
+                entity.id
+
+            );
+
+            return;
+
+        }
+
+        if (!name) {
 
             return;
 
@@ -70,9 +178,19 @@ export default class BodySelection {
 
         this.selected = null;
 
+        this.selectedEntity = null;
+
         Store.set(
 
             "body.selected",
+
+            null
+
+        );
+
+        Store.set(
+
+            "body.selectedEntity",
 
             null
 
@@ -87,6 +205,46 @@ export default class BodySelection {
     focus(name = this.selected) {
 
         if (!name) {
+
+            return;
+
+        }
+
+        const entity =
+
+            this.model?.getEntity(name);
+
+        if (entity) {
+
+            const objects =
+
+                entity.objects || [];
+
+            const first =
+
+                objects[0];
+
+            if (first) {
+
+                const mesh =
+
+                    this.model.getOrgan(
+
+                        first.object_name
+
+                    );
+
+                if (mesh) {
+
+                    this.camera?.focus(
+
+                        mesh.getAbsolutePosition()
+
+                    );
+
+                }
+
+            }
 
             return;
 
@@ -132,6 +290,12 @@ export default class BodySelection {
 
     }
 
+    getSelectedEntity() {
+
+        return this.selectedEntity;
+
+    }
+
     /* ======================================================
      * Toggle
      * ====================================================== */
@@ -150,7 +314,7 @@ export default class BodySelection {
 
         }
 
-        this.select(name);
+        this.selectEntity(name);
 
     }
 

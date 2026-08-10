@@ -48,7 +48,9 @@ export default class BodyRenderer {
 
             this.engine,
 
-            this.canvas
+            this.canvas,
+
+            this.container
 
         );
 
@@ -56,14 +58,16 @@ export default class BodyRenderer {
 
         this.startRenderLoop();
 
-        this.onResize = this.resize.bind(this);
+        this.onResize =
+
+            this.resize.bind(this);
 
         window.addEventListener(
-        
+
             "resize",
-        
+
             this.onResize
-        
+
         );
 
         this.initialized = true;
@@ -76,11 +80,13 @@ export default class BodyRenderer {
 
     createCanvas() {
 
-        this.canvas = document.createElement(
+        this.canvas =
 
-            "canvas"
+            document.createElement(
 
-        );
+                "canvas"
+
+            );
 
         this.canvas.className =
 
@@ -102,19 +108,39 @@ export default class BodyRenderer {
 
     createEngine() {
 
-        this.engine = new BABYLON.Engine(
+        this.engine =
 
-            this.canvas,
+            new BABYLON.Engine(
 
-            true,
+                this.canvas,
 
-            {
+                true,
 
-                preserveDrawingBuffer: true,
+                {
 
-                stencil: true,
+                    preserveDrawingBuffer: true,
 
-                antialias: true
+                    stencil: true,
+
+                    antialias: true
+
+                }
+
+            );
+
+    }
+
+    /* ======================================================
+     * Render Loop
+     * ====================================================== */
+
+    startRenderLoop() {
+
+        this.engine.runRenderLoop(
+
+            () => {
+
+                this.scene?.render();
 
             }
 
@@ -122,21 +148,6 @@ export default class BodyRenderer {
 
     }
 
-
-    /* ======================================================
-     * Render Loop
-     * ====================================================== */
-    
-    startRenderLoop() {
-    
-        this.engine.runRenderLoop(() => {
-    
-            this.scene?.render();
-    
-        });
-    
-    }
-    
     /* ======================================================
      * Refresh
      * ====================================================== */
@@ -163,13 +174,21 @@ export default class BodyRenderer {
 
     show() {
 
-        this.canvas.style.display = "";
+        if (this.canvas) {
+
+            this.canvas.style.display = "";
+
+        }
 
     }
 
     hide() {
 
-        this.canvas.style.display = "none";
+        if (this.canvas) {
+
+            this.canvas.style.display = "none";
+
+        }
 
     }
 
@@ -180,17 +199,17 @@ export default class BodyRenderer {
     destroy() {
 
         this.engine?.stopRenderLoop();
-        
+
         if (this.onResize) {
-        
+
             window.removeEventListener(
-        
+
                 "resize",
-        
+
                 this.onResize
-        
+
             );
-        
+
         }
 
         this.scene?.destroy();
