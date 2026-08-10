@@ -1734,7 +1734,11 @@ export default class BodyModel {
     }
 
 
-    setAnatomicalLevel(level = "global") {
+   /* ======================================================
+ * Anatomical Level
+ * ====================================================== */
+
+setAnatomicalLevel(level = "global") {
 
     const allowed = [
         "global",
@@ -1743,24 +1747,21 @@ export default class BodyModel {
     ];
 
     if (!allowed.includes(level)) {
+
         level = "global";
+
     }
 
     this.anatomicalLevel = level;
 
-    /*
-     * --------------------------------------------------
+
+    /* ==================================================
      * GLOBAL
-     * --------------------------------------------------
+     * ==================================================
      *
-     * Important:
-     * The GLB already contains the correct complete
-     * external representation.
+     * Complete external representation.
      *
-     * We therefore do NOT try to reconstruct the skin
-     * layer from material names at this stage.
-     *
-     * Global = original GLB visibility.
+     * Everything remains visible.
      */
 
     if (level === "global") {
@@ -1772,19 +1773,23 @@ export default class BodyModel {
         });
 
         return;
+
     }
 
 
-    /*
-     * --------------------------------------------------
+    /* ==================================================
      * ORGANS
-     * --------------------------------------------------
+     * ==================================================
      *
-     * Keep the external body visible for now and
-     * progressively expose anatomical structures.
+     * Hide the external surface and detailed anatomy.
      *
-     * We deliberately avoid hiding meshes until the
-     * GLB classification has been validated.
+     * Keep:
+     *
+     * - major organs
+     * - brain
+     * - eyes
+     *
+     * This gives us the clinical organ view.
      */
 
     if (level === "organs") {
@@ -1796,26 +1801,33 @@ export default class BodyModel {
                     ?.mdt
                     ?.anatomical;
 
-            /*
-             * Keep everything visible for the first
-             * implementation.
-             *
-             * The organ isolation layer will be added
-             * once the anatomical inventory is validated.
-             */
+            if (!descriptor) {
 
-            mesh.setEnabled(true);
+                mesh.setEnabled(false);
+
+                return;
+
+            }
+
+            const visible =
+                descriptor.category === "organs" ||
+                descriptor.category === "brain" ||
+                descriptor.category === "eyes";
+
+            mesh.setEnabled(
+                visible
+            );
 
         });
 
         return;
+
     }
 
 
-    /*
-     * --------------------------------------------------
+    /* ==================================================
      * DETAIL
-     * --------------------------------------------------
+     * ==================================================
      *
      * Full anatomical representation.
      */
