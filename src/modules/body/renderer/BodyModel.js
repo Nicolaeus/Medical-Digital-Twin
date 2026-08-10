@@ -14,6 +14,8 @@
  * - Detect laterality
  * - Group primitive meshes
  * - Classify anatomical structures
+ * - Detect clinical organs
+ * - Detect physiological systems
  * - Build anatomical entities
  * - Support global / organs / detail levels
  * - Provide mesh -> entity resolution
@@ -40,6 +42,7 @@ export default class BodyModel {
 
         this.meshes = [];
 
+
         /*
          * Anatomical entities
          *
@@ -47,6 +50,7 @@ export default class BodyModel {
          */
 
         this.entities = new Map();
+
 
         /*
          * Exact mesh lookup
@@ -56,11 +60,15 @@ export default class BodyModel {
 
         this.meshEntities = new Map();
 
+
         /*
          * Normalized anatomical lookup
+         *
+         * category::name::laterality
          */
 
         this.anatomyIndex = new Map();
+
 
         /*
          * Category index
@@ -70,11 +78,13 @@ export default class BodyModel {
 
         this.categoryIndex = new Map();
 
+
         /*
          * Current presentation level
          */
 
         this.anatomicalLevel = "global";
+
 
         /*
          * Visibility
@@ -82,11 +92,13 @@ export default class BodyModel {
 
         this.visible = true;
 
+
         /*
          * Model state
          */
 
         this.loaded = false;
+
 
         /*
          * Optional manifest
@@ -94,11 +106,13 @@ export default class BodyModel {
 
         this.manifest = null;
 
+
         /*
          * Material cache
          */
 
         this.materials = new Map();
+
 
         /*
          * Current selection
@@ -203,7 +217,7 @@ export default class BodyModel {
 
 
         /*
-         * Build manifest mappings when available.
+         * Merge manifest mappings when available.
          */
 
         this.mergeManifestEntities();
@@ -237,6 +251,7 @@ export default class BodyModel {
 
         }
 
+
         const response =
             await fetch(path);
 
@@ -264,6 +279,7 @@ export default class BodyModel {
 
         this.materials.clear();
 
+
         this.meshes.forEach(
             mesh => {
 
@@ -276,9 +292,11 @@ export default class BodyModel {
 
                 }
 
+
                 const name =
                     material.name ||
                     "UnnamedMaterial";
+
 
                 if (
                     !this.materials.has(name)
@@ -319,6 +337,7 @@ export default class BodyModel {
                     this.describeMesh(
                         mesh
                     );
+
 
                 /*
                  * Save metadata on the mesh.
@@ -369,15 +388,18 @@ export default class BodyModel {
                             descriptor
                         );
 
+
                     this.anatomyIndex.set(
                         key,
                         entity
                     );
 
+
                     this.entities.set(
                         entity.id,
                         entity
                     );
+
 
                     this.addCategoryEntity(
                         entity
@@ -436,8 +458,7 @@ export default class BodyModel {
 
 
         const material =
-            mesh?.material?.name ||
-            "";
+            mesh?.material?.name || "";
 
 
         const anatomicalName =
@@ -464,16 +485,31 @@ export default class BodyModel {
                 material,
                 rawName
             );
-        
+
+
+        /*
+         * Clinical organ is deliberately independent
+         * from the visual GLB category.
+         *
+         * Example:
+         *
+         * Hippocampus
+         *   category      = brain
+         *   clinicalOrgan = brain
+         *   system        = nervous
+         */
+
         const clinicalOrgan =
             this.detectClinicalOrgan(
                 anatomicalName
             );
 
+
         const system =
             this.detectSystem(
                 anatomicalName,
-                category
+                category,
+                clinicalOrgan
             );
 
 
@@ -481,43 +517,37 @@ export default class BodyModel {
             this.detectAnatomicalLevel(
                 anatomicalName,
                 category,
-                material
+                material,
+                clinicalOrgan
             );
 
 
         return {
 
-            name,
-        
+            name:
+                rawName,
+
             anatomicalName,
-        
-            material,
-        
-            category,
-        
-            clinicalOrgan,
-        
-            system:
-                clinicalOrgan
-                    ? this.detectSystem(
-                        anatomicalName
-                    )
-                    : this.detectSystem(
-                        anatomicalName
-                    ),
-        
-            level:
-                this.detectAnatomicalLevel(
-                    name,
-                    material,
-                    category
-                ),
-        
-            laterality:
-                this.detectLaterality(
+
+            displayName:
+                this.formatDisplayName(
                     anatomicalName
-                )
-        
+                ),
+
+            material,
+
+            primitive,
+
+            category,
+
+            clinicalOrgan,
+
+            system,
+
+            level,
+
+            laterality
+
         };
 
     }
@@ -568,8 +598,7 @@ export default class BodyModel {
 
 
         /*
-         * Remove skin material suffixes
-         * only when they are explicit suffixes.
+         * Remove explicit skin suffix.
          */
 
         value =
@@ -706,6 +735,9 @@ export default class BodyModel {
 
             category:
                 descriptor.category,
+
+            clinicalOrgan:
+                descriptor.clinicalOrgan,
 
             system:
                 descriptor.system,
@@ -847,7 +879,9 @@ export default class BodyModel {
             name.includes("phalanx") ||
             name.includes("metatarsal") ||
             name.includes("carpal") ||
-            name.includes("tarsal")
+            name.includes("tarsal") ||
+            name.includes("mandible") ||
+            name.includes("maxilla")
         ) {
 
             return "bones";
@@ -979,7 +1013,8 @@ export default class BodyModel {
             mat.includes("eye") ||
             name.includes("eye") ||
             name.includes("iris") ||
-            name.includes("retina")
+            name.includes("retina") ||
+            name.includes("lacrimal")
         ) {
 
             return "eyes";
@@ -1018,7 +1053,7 @@ export default class BodyModel {
 
 
         /*
-         * Organs
+         * Major organs
          */
 
         if (
@@ -1067,6 +1102,14 @@ export default class BodyModel {
 
             "intestine",
 
+            "colon",
+
+            "duodenum",
+
+            "jejunum",
+
+            "ileum",
+
             "gallbladder",
 
             "thyroid",
@@ -1087,9 +1130,19 @@ export default class BodyModel {
 
             "testis",
 
+            "epididymis",
+
             "adrenal",
 
-            "appendix"
+            "suprarenal",
+
+            "appendix",
+
+            "rectum",
+
+            "ureter",
+
+            "urethra"
 
         ];
 
@@ -1105,12 +1158,585 @@ export default class BodyModel {
 
 
     /* ======================================================
+     * Clinical Organ Classification
+     * ====================================================== */
+
+    detectClinicalOrgan(name) {
+
+        const value =
+            String(name || "")
+                .toLowerCase()
+                .trim();
+
+
+        /*
+         * --------------------------------------------------
+         * Brain
+         * --------------------------------------------------
+         *
+         * Brain and internal brain structures.
+         */
+
+        const brainTerms = [
+
+            "brain",
+
+            "amygdaloid body",
+            "anterior commissure",
+            "posterior commissure",
+            "corpus callosum",
+            "hippocamp",
+            "hypothalam",
+            "thalam",
+            "putamen",
+            "globus pallidus",
+            "mamillary body",
+            "mammillary body",
+            "septal nuclei",
+            "septum pellucidum",
+            "fornix",
+            "habenula",
+            "inferior colliculus",
+            "superior colliculus",
+            "lateral geniculate body",
+            "medial geniculate body",
+            "occipital pole",
+            "temporal pole",
+            "orbital gyri",
+            "precuneus",
+            "cuneus",
+            "superior occipital gyri",
+            "superior parietal lobule",
+            "temporal plane",
+            "transverse temporal gyri",
+            "flocculus",
+            "folium of vermis",
+            "central lobule",
+            "biventral lobule",
+            "gracile lobule",
+            "inferior semilunar lobule",
+            "superior semilunar lobule",
+            "nodule of vermis",
+            "pyramis of vermis",
+            "declive",
+            "culmen",
+            "tuber of vermis",
+            "uvula of vermis",
+            "vestibular nuclei",
+            "olive",
+            "peduncle of flocculus",
+            "base of peduncle",
+            "interpeduncular fossa"
+
+        ];
+
+
+        if (
+            brainTerms.some(
+                term =>
+                    value.includes(term)
+            )
+        ) {
+
+            return "brain";
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Digestive
+         * --------------------------------------------------
+         */
+
+        const digestiveMap = [
+
+            [
+                "stomach",
+                "stomach"
+            ],
+
+            [
+                "duodenum",
+                "intestines"
+            ],
+
+            [
+                "jejunum",
+                "intestines"
+            ],
+
+            [
+                "ileum",
+                "intestines"
+            ],
+
+            [
+                "ascending colon",
+                "intestines"
+            ],
+
+            [
+                "transverse colon",
+                "intestines"
+            ],
+
+            [
+                "descending colon",
+                "intestines"
+            ],
+
+            [
+                "sigmoid colon",
+                "intestines"
+            ],
+
+            [
+                "rectum",
+                "intestines"
+            ],
+
+            [
+                "cecum",
+                "intestines"
+            ],
+
+            [
+                "appendix",
+                "intestines"
+            ],
+
+            [
+                "greater omentum",
+                "intestines"
+            ],
+
+            [
+                "lesser omentum",
+                "intestines"
+            ],
+
+            [
+                "mesocolon",
+                "intestines"
+            ],
+
+            [
+                "liver",
+                "liver"
+            ],
+
+            [
+                "pancreas",
+                "pancreas"
+            ],
+
+            [
+                "gallbladder",
+                "gallbladder"
+            ]
+
+        ];
+
+
+        for (
+            const [
+                term,
+                organ
+            ]
+            of digestiveMap
+        ) {
+
+            if (
+                value.includes(term)
+            ) {
+
+                return organ;
+
+            }
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Urinary
+         * --------------------------------------------------
+         */
+
+        const urinaryMap = [
+
+            [
+                "kidney",
+                "kidneys"
+            ],
+
+            [
+                "renal pelvis",
+                "kidneys"
+            ],
+
+            [
+                "ureter",
+                "kidneys"
+            ],
+
+            [
+                "bladder",
+                "bladder"
+            ],
+
+            [
+                "urethra",
+                "bladder"
+            ]
+
+        ];
+
+
+        for (
+            const [
+                term,
+                organ
+            ]
+            of urinaryMap
+        ) {
+
+            if (
+                value.includes(term)
+            ) {
+
+                return organ;
+
+            }
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Endocrine
+         * --------------------------------------------------
+         */
+
+        const endocrineMap = [
+
+            [
+                "thyroid",
+                "thyroid"
+            ],
+
+            [
+                "suprarenal gland",
+                "adrenal"
+            ],
+
+            [
+                "adrenal gland",
+                "adrenal"
+            ],
+
+            [
+                "pituitary",
+                "pituitary"
+            ],
+
+            [
+                "hypophysis",
+                "pituitary"
+            ],
+
+            [
+                "parathyroid",
+                "parathyroid"
+            ],
+
+            [
+                "pineal gland",
+                "pineal"
+            ],
+
+            [
+                "thymus",
+                "thymus"
+            ]
+
+        ];
+
+
+        for (
+            const [
+                term,
+                organ
+            ]
+            of endocrineMap
+        ) {
+
+            if (
+                value.includes(term)
+            ) {
+
+                return organ;
+
+            }
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Reproductive
+         * --------------------------------------------------
+         */
+
+        const reproductiveMap = [
+
+            [
+                "testis",
+                "testis"
+            ],
+
+            [
+                "testicle",
+                "testis"
+            ],
+
+            [
+                "epididymis",
+                "testis"
+            ],
+
+            [
+                "seminal gland",
+                "seminal_glands"
+            ],
+
+            [
+                "seminal vesicle",
+                "seminal_glands"
+            ],
+
+            [
+                "prostate",
+                "prostate"
+            ],
+
+            [
+                "penis",
+                "penis"
+            ],
+
+            [
+                "glans penis",
+                "penis"
+            ],
+
+            [
+                "corpus cavernosum",
+                "penis"
+            ],
+
+            [
+                "corpus spongiosum",
+                "penis"
+            ],
+
+            [
+                "ovary",
+                "ovaries"
+            ],
+
+            [
+                "uterus",
+                "uterus"
+            ],
+
+            [
+                "fallopian",
+                "uterine_tubes"
+            ],
+
+            [
+                "uterine tube",
+                "uterine_tubes"
+            ],
+
+            [
+                "vagina",
+                "vagina"
+            ],
+
+            [
+                "clitoris",
+                "clitoris"
+            ]
+
+        ];
+
+
+        for (
+            const [
+                term,
+                organ
+            ]
+            of reproductiveMap
+        ) {
+
+            if (
+                value.includes(term)
+            ) {
+
+                return organ;
+
+            }
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Respiratory
+         * --------------------------------------------------
+         */
+
+        const respiratoryMap = [
+
+            [
+                "lung",
+                "lungs"
+            ],
+
+            [
+                "bronch",
+                "lungs"
+            ],
+
+            [
+                "trachea",
+                "trachea"
+            ],
+
+            [
+                "pleura",
+                "lungs"
+            ],
+
+            [
+                "alveol",
+                "lungs"
+            ]
+
+        ];
+
+
+        for (
+            const [
+                term,
+                organ
+            ]
+            of respiratoryMap
+        ) {
+
+            if (
+                value.includes(term)
+            ) {
+
+                return organ;
+
+            }
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Cardiovascular
+         * --------------------------------------------------
+         *
+         * For the organ view we group the heart itself
+         * separately from the vascular network.
+         */
+
+        if (
+            value.includes("heart") ||
+            value.includes("atrium") ||
+            value.includes("ventricle")
+        ) {
+
+            return "heart";
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Lymphatic
+         * --------------------------------------------------
+         */
+
+        if (
+            value.includes("spleen")
+        ) {
+
+            return "spleen";
+
+        }
+
+
+        if (
+            value.includes("thymus")
+        ) {
+
+            return "thymus";
+
+        }
+
+
+        if (
+            value.includes("lymph node")
+        ) {
+
+            return "lymph_nodes";
+
+        }
+
+
+        /*
+         * --------------------------------------------------
+         * Eyes
+         * --------------------------------------------------
+         */
+
+        if (
+            value.includes("eye") ||
+            value.includes("retina") ||
+            value.includes("iris") ||
+            value.includes("cornea") ||
+            value.includes("lacrimal")
+        ) {
+
+            return "eyes";
+
+        }
+
+
+        /*
+         * No clinical organ identified.
+         */
+
+        return null;
+
+    }
+
+
+    /* ======================================================
      * Anatomical System
      * ====================================================== */
 
     detectSystem(
         anatomicalName,
-        category
+        category,
+        clinicalOrgan = null
     ) {
 
         const name =
@@ -1119,6 +1745,143 @@ export default class BodyModel {
                 ""
             ).toLowerCase();
 
+
+        /*
+         * Explicit clinical organ mapping.
+         */
+
+        if (
+            clinicalOrgan === "brain"
+        ) {
+
+            return "nervous";
+
+        }
+
+
+        if (
+            [
+                "heart"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "cardiovascular";
+
+        }
+
+
+        if (
+            [
+                "stomach",
+                "intestines",
+                "liver",
+                "pancreas",
+                "gallbladder"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "digestive";
+
+        }
+
+
+        if (
+            [
+                "kidneys",
+                "bladder"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "urinary";
+
+        }
+
+
+        if (
+            [
+                "thyroid",
+                "adrenal",
+                "pituitary",
+                "parathyroid",
+                "pineal",
+                "thymus"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "endocrine";
+
+        }
+
+
+        if (
+            [
+                "testis",
+                "seminal_glands",
+                "prostate",
+                "penis",
+                "ovaries",
+                "uterus",
+                "uterine_tubes",
+                "vagina",
+                "clitoris"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "reproductive";
+
+        }
+
+
+        if (
+            [
+                "lungs",
+                "trachea"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "respiratory";
+
+        }
+
+
+        if (
+            [
+                "spleen",
+                "lymph_nodes"
+            ].includes(
+                clinicalOrgan
+            )
+        ) {
+
+            return "lymphatic";
+
+        }
+
+
+        if (
+            clinicalOrgan === "eyes"
+        ) {
+
+            return "sensory";
+
+        }
+
+
+        /*
+         * Category fallback.
+         */
 
         if (
             category === "brain" ||
@@ -1191,7 +1954,8 @@ export default class BodyModel {
             name.includes("kidney") ||
             name.includes("bladder") ||
             name.includes("renal") ||
-            name.includes("ureter")
+            name.includes("ureter") ||
+            name.includes("urethra")
         ) {
 
             return "urinary";
@@ -1245,7 +2009,8 @@ export default class BodyModel {
     detectAnatomicalLevel(
         anatomicalName,
         category,
-        material
+        material,
+        clinicalOrgan = null
     ) {
 
         /*
@@ -1262,12 +2027,26 @@ export default class BodyModel {
 
 
         /*
-         * Major organs and systems.
+         * Clinical organs.
+         */
+
+        if (
+            clinicalOrgan !== null
+        ) {
+
+            return "organs";
+
+        }
+
+
+        /*
+         * Major visual organ categories.
          */
 
         if (
             category === "organs" ||
-            category === "brain"
+            category === "brain" ||
+            category === "eyes"
         ) {
 
             return "organs";
@@ -1333,7 +2112,9 @@ export default class BodyModel {
 
         this.categoryIndex
             .get(category)
-            .push(entity);
+            .push(
+                entity
+            );
 
     }
 
@@ -1731,8 +2512,7 @@ export default class BodyModel {
             size,
 
             /*
-             * Compatibility with existing
-             * BodyCamera code.
+             * Compatibility with BodyCamera.
              */
 
             dimensions:
@@ -1746,416 +2526,148 @@ export default class BodyModel {
     }
 
 
-   /* ======================================================
- * Anatomical Level
- * ====================================================== */
+    /* ======================================================
+     * Anatomical Level
+     * ====================================================== */
 
-setAnatomicalLevel(level = "global") {
+    setAnatomicalLevel(
+        level = "global"
+    ) {
 
-    const allowed = [
-        "global",
-        "organs",
-        "detail"
-    ];
+        const allowed = [
 
-    if (!allowed.includes(level)) {
+            "global",
+            "organs",
+            "detail"
 
-        level = "global";
-
-    }
-
-    this.anatomicalLevel = level;
+        ];
 
 
-    /* ==================================================
-     * GLOBAL
-     * ==================================================
-     *
-     * Complete external representation.
-     *
-     * Everything remains visible.
-     */
+        if (
+            !allowed.includes(level)
+        ) {
 
-    if (level === "global") {
+            level = "global";
 
-        this.meshes.forEach(mesh => {
-
-            mesh.setEnabled(true);
-
-        });
-
-        return;
-
-    }
+        }
 
 
-    /* ==================================================
-     * ORGANS
-     * ==================================================
-     *
-     * Hide the external surface and detailed anatomy.
-     *
-     * Keep:
-     *
-     * - major organs
-     * - brain
-     * - eyes
-     *
-     * This gives us the clinical organ view.
-     */
+        this.anatomicalLevel =
+            level;
 
-    if (level === "organs") {
 
-    this.meshes.forEach(mesh => {
+        /* ==================================================
+         * GLOBAL
+         * ==================================================
+         *
+         * Complete external representation.
+         *
+         * Everything remains visible.
+         */
 
-        const descriptor =
-            mesh.metadata
-                ?.mdt
-                ?.anatomical;
+        if (
+            level === "global"
+        ) {
 
-        const visible =
-            descriptor &&
-            (
-                descriptor.clinicalOrgan !== null ||
-                descriptor.category === "brain" ||
-                descriptor.category === "eyes"
+            this.meshes.forEach(
+                mesh => {
+
+                    mesh.setEnabled(
+                        true
+                    );
+
+                }
             );
 
-        mesh.setEnabled(
-            Boolean(visible)
-        );
+            return;
 
-    });
-
-    return;
-
-}
+        }
 
 
-    /* ======================================================
- * Clinical Organ Classification
- * ====================================================== */
+        /* ==================================================
+         * ORGANS
+         * ==================================================
+         *
+         * Keep the clinical representation:
+         *
+         * - organs
+         * - brain structures
+         * - eyes
+         *
+         * Hide:
+         *
+         * - muscles
+         * - bones
+         * - fascia
+         * - bursae
+         * - tendons
+         * - ligaments
+         * - other detailed structures
+         */
 
-detectClinicalOrgan(name) {
+        if (
+            level === "organs"
+        ) {
 
-    const value =
-        String(name || "")
-            .toLowerCase()
-            .trim();
+            this.meshes.forEach(
+                mesh => {
+
+                    const descriptor =
+                        mesh.metadata
+                            ?.mdt
+                            ?.anatomical;
 
 
-    /*
-     * --------------------------------------------------
-     * Brain
-     * --------------------------------------------------
-     *
-     * Includes both the brain itself and its
-     * anatomical substructures.
-     */
+                    const visible =
+                        descriptor &&
+                        (
+                            descriptor.clinicalOrgan !== null ||
+                            descriptor.category === "organs" ||
+                            descriptor.category === "brain" ||
+                            descriptor.category === "eyes"
+                        );
 
-    const brainTerms = [
 
-        "brain",
+                    mesh.setEnabled(
+                        Boolean(
+                            visible
+                        )
+                    );
 
-        "amygdaloid body",
-        "anterior commissure",
-        "posterior commissure",
-        "corpus callosum",
-        "hippocamp",
-        "hypothalam",
-        "thalam",
-        "putamen",
-        "globus pallidus",
-        "mamillary body",
-        "mammillary body",
-        "septal nuclei",
-        "septum pellucidum",
-        "fornix",
-        "habenula",
-        "inferior colliculus",
-        "superior colliculus",
-        "lateral geniculate body",
-        "medial geniculate body",
-        "occipital pole",
-        "temporal pole",
-        "orbital gyri",
-        "precuneus",
-        "cuneus",
-        "superior occipital gyri",
-        "superior parietal lobule",
-        "temporal plane",
-        "transverse temporal gyri",
-        "flocculus",
-        "folium of vermis",
-        "central lobule",
-        "biventral lobule",
-        "gracile lobule",
-        "inferior semilunar lobule",
-        "superior semilunar lobule",
-        "nodule of vermis",
-        "pyramis of vermis",
-        "declive",
-        "culmen",
-        "tuber of vermis",
-        "uvula of vermis",
-        "vestibular nuclei",
-        "olive",
-        "peduncle of flocculus",
-        "base of peduncle",
-        "interpeduncular fossa"
+                }
+            );
 
-    ];
 
-    if (
-        brainTerms.some(
-            term => value.includes(term)
-        )
-    ) {
+            return;
 
-        return "brain";
+        }
+
+
+        /* ==================================================
+         * DETAIL
+         * ==================================================
+         *
+         * Full anatomical representation.
+         */
+
+        if (
+            level === "detail"
+        ) {
+
+            this.meshes.forEach(
+                mesh => {
+
+                    mesh.setEnabled(
+                        true
+                    );
+
+                }
+            );
+
+        }
 
     }
 
-
-    /*
-     * --------------------------------------------------
-     * Digestive system
-     * --------------------------------------------------
-     */
-
-    const digestiveTerms = [
-
-        "stomach",
-        "duodenum",
-        "jejunum",
-        "ileum",
-        "ascending colon",
-        "transverse colon",
-        "descending colon",
-        "sigmoid colon",
-        "rectum",
-        "anus",
-        "anal sphincter",
-        "cecum",
-        "appendix",
-        "greater omentum",
-        "lesser omentum",
-        "mesocolon"
-
-    ];
-
-    if (
-        digestiveTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "digestive";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Urinary system
-     * --------------------------------------------------
-     */
-
-    const urinaryTerms = [
-
-        "kidney",
-        "renal pelvis",
-        "ureter",
-        "bladder",
-        "urethra"
-
-    ];
-
-    if (
-        urinaryTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "urinary";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Endocrine
-     * --------------------------------------------------
-     */
-
-    const endocrineTerms = [
-
-        "thyroid",
-        "suprarenal gland",
-        "adrenal gland",
-        "pituitary",
-        "hypophysis",
-        "parathyroid",
-        "pineal gland"
-
-    ];
-
-    if (
-        endocrineTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "endocrine";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Reproductive
-     * --------------------------------------------------
-     */
-
-    const reproductiveTerms = [
-
-        "testis",
-        "testicle",
-        "epididymis",
-        "seminal gland",
-        "seminal vesicle",
-        "prostate",
-        "penis",
-        "glans penis",
-        "corpus cavernosum",
-        "corpus spongiosum",
-        "ovary",
-        "uterus",
-        "fallopian",
-        "uterine tube",
-        "vagina",
-        "clitoris"
-
-    ];
-
-    if (
-        reproductiveTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "reproductive";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Respiratory
-     * --------------------------------------------------
-     */
-
-    const respiratoryTerms = [
-
-        "lung",
-        "bronch",
-        "trachea",
-        "pleura",
-        "alveol"
-
-    ];
-
-    if (
-        respiratoryTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "respiratory";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Cardiovascular
-     * --------------------------------------------------
-     */
-
-    const cardiovascularTerms = [
-
-        "heart",
-        "atrium",
-        "ventricle",
-        "aorta",
-        "artery",
-        "vein"
-
-    ];
-
-    if (
-        cardiovascularTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "cardiovascular";
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * Lymphatic
-     * --------------------------------------------------
-     */
-
-    const lymphaticTerms = [
-
-        "lymph node",
-        "lymphatic",
-        "spleen",
-        "thymus"
-
-    ];
-
-    if (
-        lymphaticTerms.some(
-            term => value.includes(term)
-        )
-    ) {
-
-        return "lymphatic";
-
-    }
-
-
-    return null;
-
-}
-    
-
-    /* ==================================================
-     * DETAIL
-     * ==================================================
-     *
-     * Full anatomical representation.
-     */
-
-    if (level === "detail") {
-
-        this.meshes.forEach(mesh => {
-
-            mesh.setEnabled(true);
-
-        });
-
-    }
-
-}
-
-
-    
 
     /* ======================================================
      * Visibility
@@ -2164,6 +2676,7 @@ detectClinicalOrgan(name) {
     show() {
 
         this.visible = true;
+
 
         this.meshes.forEach(
             mesh =>
@@ -2178,6 +2691,7 @@ detectClinicalOrgan(name) {
     hide() {
 
         this.visible = false;
+
 
         this.meshes.forEach(
             mesh =>
