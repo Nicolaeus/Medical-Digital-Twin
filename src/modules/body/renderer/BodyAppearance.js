@@ -54,21 +54,33 @@ export default class BodyAppearance {
 
     init(options = {}) {
 
-        this.mode =
-            options.mode || "reference";
+    this.mode =
+        options.mode || "reference";
 
-        const skinColor =
-            options.skinColor ||
-            this.defaultSkinHex;
+    const skinColor =
+        options.skinColor ||
+        this.defaultSkinHex;
 
-        this.setSkinColor(
-            skinColor,
-            false
-        );
+    /*
+     * Build the appearance profile without applying it
+     * yet.
+     */
 
-        return this.profile;
+    this.setSkinColor(
+        skinColor,
+        false
+    );
 
-    }
+    /*
+     * Apply the complete appearance once the profile
+     * has been built.
+     */
+
+    this.apply();
+
+    return this.profile;
+
+}
 
 
     /* ======================================================
