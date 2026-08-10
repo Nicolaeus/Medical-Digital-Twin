@@ -24,9 +24,31 @@ export default class BodyModel {
 
         this.meshEntities = new Map();
 
+        /*
+         * --------------------------------------------------
+         * Anatomical layers
+         * --------------------------------------------------
+         */
+
         this.skinMeshes = new Set();
 
+        this.organMeshes = new Set();
+
+        this.detailMeshes = new Set();
+
         this.clonedMaterials = new Set();
+
+        /*
+         * Current anatomical display level.
+         */
+
+        this.anatomicalLevel = "global";
+
+        /*
+         * --------------------------------------------------
+         * State
+         * --------------------------------------------------
+         */
 
         this.visible = true;
 
@@ -35,6 +57,7 @@ export default class BodyModel {
         this.loaded = false;
 
     }
+
 
     /* ======================================================
      * Load
@@ -76,15 +99,30 @@ export default class BodyModel {
             ||
             result.meshes[0];
 
+        /*
+         * Build anatomical indexes.
+         */
+
         this.buildEntityIndex();
 
+        this.buildAnatomicalIndex();
+
         this.buildSkinIndex();
+
+        /*
+         * Start with the complete patient surface.
+         */
+
+        this.setAnatomicalLevel(
+            "global"
+        );
 
         this.loaded = true;
 
         return this;
 
     }
+
 
     /* ======================================================
      * Manifest
@@ -110,6 +148,7 @@ export default class BodyModel {
 
     }
 
+
     /* ======================================================
      * Manifest Index
      * ====================================================== */
@@ -133,6 +172,7 @@ export default class BodyModel {
         );
 
     }
+
 
     /* ======================================================
      * Mesh → Entity Index
@@ -161,6 +201,7 @@ export default class BodyModel {
         });
 
     }
+
 
     findEntityForMesh(meshName) {
 
@@ -191,6 +232,7 @@ export default class BodyModel {
 
     }
 
+
     /* ======================================================
      * Entity Access
      * ====================================================== */
@@ -204,6 +246,7 @@ export default class BodyModel {
         );
 
     }
+
 
     getEntityForMesh(meshOrName) {
 
@@ -226,6 +269,7 @@ export default class BodyModel {
 
     }
 
+
     getEntities() {
 
         return Array.from(
@@ -233,6 +277,7 @@ export default class BodyModel {
         );
 
     }
+
 
     /* ======================================================
      * Mesh Access
@@ -248,17 +293,114 @@ export default class BodyModel {
 
     }
 
+
     getMeshes() {
 
         return this.meshes;
 
     }
 
+
     getRoot() {
 
         return this.root;
 
     }
+
+
+    /* ======================================================
+     * Anatomical Index
+     * ====================================================== */
+
+    buildAnatomicalIndex() {
+
+        this.organMeshes.clear();
+
+        this.detailMeshes.clear();
+
+        this.meshes.forEach(mesh => {
+
+            /*
+             * Root / technical meshes are not anatomical.
+             */
+
+            if (
+                !this.isRenderableMesh(mesh)
+            ) {
+
+                return;
+
+            }
+
+            if (
+                mesh === this.root
+            ) {
+
+                return;
+
+            }
+
+            /*
+             * Skin is handled separately.
+             */
+
+            if (
+                this.isLikelySkinMesh(mesh)
+            ) {
+
+                return;
+
+            }
+
+            /*
+             * If the mesh belongs to an entity,
+             * it is considered anatomical.
+             */
+
+            const entity =
+                this.getEntityForMesh(
+                    mesh
+                );
+
+            if (entity) {
+
+                this.organMeshes.add(
+                    mesh
+                );
+
+                this.detailMeshes.add(
+                    mesh
+                );
+
+                return;
+
+            }
+
+            /*
+             * Otherwise use anatomical naming
+             * heuristics.
+             */
+
+            if (
+                this.isLikelyAnatomicalMesh(
+                    mesh
+                )
+            ) {
+
+                this.organMeshes.add(
+                    mesh
+                );
+
+                this.detailMeshes.add(
+                    mesh
+                );
+
+            }
+
+        });
+
+    }
+
 
     /* ======================================================
      * Skin / Surface Index
@@ -274,7 +416,9 @@ export default class BodyModel {
                 this.isLikelySkinMesh(mesh)
             ) {
 
-                this.skinMeshes.add(mesh);
+                this.skinMeshes.add(
+                    mesh
+                );
 
             }
 
@@ -285,7 +429,8 @@ export default class BodyModel {
          * a skin/body surface.
          *
          * If no explicit skin meshes can be identified,
-         * use the imported surface meshes as fallback.
+         * use meshes which do not belong to an anatomical
+         * entity as the surface fallback.
          */
 
         if (
@@ -295,10 +440,13 @@ export default class BodyModel {
             this.meshes.forEach(mesh => {
 
                 if (
-                    this.isRenderableMesh(mesh)
+                    this.isRenderableMesh(mesh) &&
+                    !this.organMeshes.has(mesh)
                 ) {
 
-                    this.skinMeshes.add(mesh);
+                    this.skinMeshes.add(
+                        mesh
+                    );
 
                 }
 
@@ -308,6 +456,11 @@ export default class BodyModel {
 
     }
 
+
+    /* ======================================================
+     * Renderable Mesh
+     * ====================================================== */
+
     isRenderableMesh(mesh) {
 
         return (
@@ -316,6 +469,11 @@ export default class BodyModel {
         );
 
     }
+
+
+    /* ======================================================
+     * Skin Detection
+     * ====================================================== */
 
     isLikelySkinMesh(mesh) {
 
@@ -338,10 +496,6 @@ export default class BodyModel {
         const combined =
             `${meshName} ${materialName}`;
 
-        /*
-         * Strong skin / body surface identifiers.
-         */
-
         const skinTerms = [
 
             "skin",
@@ -351,15 +505,12 @@ export default class BodyModel {
             "integument",
             "body_surface",
             "body surface",
-            
+            "surface_body",
             "external",
-            "outer"          
+            "outer",
+            "body"
 
         ];
-
-        /*
-         * Explicitly avoid obvious internal anatomy.
-         */
 
         const internalTerms = [
 
@@ -371,13 +522,15 @@ export default class BodyModel {
             "spleen",
             "stomach",
             "intestine",
+            "colon",
             "bone",
             "skull",
             "vertebra",
             "arter",
             "vein",
             "nerve",
-            "muscle"
+            "muscle",
+            "organ"
 
         ];
 
@@ -393,18 +546,294 @@ export default class BodyModel {
                     combined.includes(term)
             );
 
-        if (
+        return (
             hasSkinTerm &&
             !hasInternalTerm
-        ) {
+        );
 
-            return true;
+    }
+
+
+    /* ======================================================
+     * Anatomical Detection
+     * ====================================================== */
+
+    isLikelyAnatomicalMesh(mesh) {
+
+        if (!mesh) {
+
+            return false;
 
         }
 
-        return false;
+        const name =
+            String(
+                mesh.name || ""
+            ).toLowerCase();
+
+        const material =
+            String(
+                mesh.material?.name || ""
+            ).toLowerCase();
+
+        const combined =
+            `${name} ${material}`;
+
+        const anatomicalTerms = [
+
+            "brain",
+            "heart",
+            "lung",
+            "liver",
+            "kidney",
+            "spleen",
+            "stomach",
+            "intestin",
+            "colon",
+            "pancre",
+            "thyroid",
+            "bladder",
+            "prostate",
+            "uter",
+            "ovary",
+            "test",
+            "bone",
+            "skull",
+            "mandible",
+            "vertebr",
+            "pelvis",
+            "femur",
+            "tibia",
+            "fibula",
+            "humer",
+            "radius",
+            "ulna",
+            "rib",
+            "stern",
+            "muscle",
+            "arter",
+            "vein",
+            "vessel",
+            "nerve",
+            "cartilage",
+            "tendon",
+            "organ"
+
+        ];
+
+        return anatomicalTerms.some(
+            term =>
+                combined.includes(term)
+        );
 
     }
+
+
+    /* ======================================================
+     * Anatomical Level
+     * ====================================================== */
+
+    setAnatomicalLevel(level) {
+
+        const allowedLevels = [
+
+            "global",
+            "organs",
+            "detail"
+
+        ];
+
+        if (
+            !allowedLevels.includes(
+                level
+            )
+        ) {
+
+            return;
+
+        }
+
+        this.anatomicalLevel =
+            level;
+
+        /*
+         * Do not do anything before the
+         * model is actually loaded.
+         */
+
+        if (!this.loaded && !this.meshes.length) {
+
+            return;
+
+        }
+
+        /*
+         * --------------------------------------------------
+         * GLOBAL
+         * --------------------------------------------------
+         *
+         * Patient surface only.
+         */
+
+        if (
+            level === "global"
+        ) {
+
+            this.applyGlobalView();
+
+            return;
+
+        }
+
+        /*
+         * --------------------------------------------------
+         * ORGANS
+         * --------------------------------------------------
+         *
+         * Hide external body surface and expose
+         * anatomical structures.
+         */
+
+        if (
+            level === "organs"
+        ) {
+
+            this.applyOrganView();
+
+            return;
+
+        }
+
+        /*
+         * --------------------------------------------------
+         * DETAIL
+         * --------------------------------------------------
+         *
+         * Expose all anatomical meshes available
+         * in the GLB.
+         */
+
+        if (
+            level === "detail"
+        ) {
+
+            this.applyDetailView();
+
+        }
+
+    }
+
+
+    /* ======================================================
+     * Global View
+     * ====================================================== */
+
+    applyGlobalView() {
+
+        /*
+         * Skin ON.
+         */
+
+        this.skinMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(true)
+        );
+
+        /*
+         * Internal anatomy OFF.
+         */
+
+        this.organMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(false)
+        );
+
+        /*
+         * Detail meshes OFF.
+         */
+
+        this.detailMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(false)
+        );
+
+    }
+
+
+    /* ======================================================
+     * Organ View
+     * ====================================================== */
+
+    applyOrganView() {
+
+        /*
+         * Skin OFF.
+         */
+
+        this.skinMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(false)
+        );
+
+        /*
+         * Main anatomical structures ON.
+         */
+
+        this.organMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(true)
+        );
+
+        /*
+         * Detail structures stay hidden.
+         *
+         * At the moment organMeshes and detailMeshes
+         * may overlap because the current GLB does not
+         * necessarily declare explicit detail layers.
+         *
+         * We therefore keep the entity meshes visible.
+         */
+
+    }
+
+
+    /* ======================================================
+     * Detail View
+     * ====================================================== */
+
+    applyDetailView() {
+
+        /*
+         * Skin OFF.
+         */
+
+        this.skinMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(false)
+        );
+
+        /*
+         * Everything anatomical ON.
+         */
+
+        this.detailMeshes.forEach(
+            mesh =>
+                mesh.setEnabled(true)
+        );
+
+    }
+
+
+    /* ======================================================
+     * Current Anatomical Level
+     * ====================================================== */
+
+    getAnatomicalLevel() {
+
+        return this.anatomicalLevel;
+
+    }
+
 
     /* ======================================================
      * Skin Appearance
@@ -417,10 +846,6 @@ export default class BodyModel {
             return;
 
         }
-
-        /*
-         * Make sure the skin index exists.
-         */
 
         if (
             this.skinMeshes.size === 0
@@ -457,6 +882,7 @@ export default class BodyModel {
         );
 
     }
+
 
     /* ======================================================
      * Apply Color To Mesh
@@ -511,16 +937,13 @@ export default class BodyModel {
 
         }
 
-        /*
-         * Standard / PBR / compatible material
-         */
-
         this.applyColorToMaterial(
             material,
             color
         );
 
     }
+
 
     /* ======================================================
      * Prepare Material
@@ -576,7 +999,8 @@ export default class BodyModel {
                         }
                     );
 
-                mesh.material = clone;
+                mesh.material =
+                    clone;
 
                 this.clonedMaterials.add(
                     clone
@@ -604,9 +1028,6 @@ export default class BodyModel {
 
         /*
          * Clone before modifying.
-         *
-         * This is important because several meshes may
-         * share the same GLB material.
          */
 
         const clone =
@@ -614,7 +1035,8 @@ export default class BodyModel {
                 `${original.name}_skin`
             );
 
-        mesh.material = clone;
+        mesh.material =
+            clone;
 
         this.clonedMaterials.add(
             clone
@@ -623,6 +1045,7 @@ export default class BodyModel {
         return clone;
 
     }
+
 
     /* ======================================================
      * Apply Color To Material
@@ -639,10 +1062,6 @@ export default class BodyModel {
 
         }
 
-        /*
-         * Babylon PBR material.
-         */
-
         if (
             "albedoColor"
             in material
@@ -652,10 +1071,6 @@ export default class BodyModel {
                 color.clone();
 
         }
-
-        /*
-         * Babylon Standard material.
-         */
 
         if (
             "diffuseColor"
@@ -668,7 +1083,7 @@ export default class BodyModel {
         }
 
         /*
-         * Slightly matte skin appearance.
+         * Matte clinical skin.
          */
 
         if (
@@ -680,10 +1095,6 @@ export default class BodyModel {
                 0.72;
 
         }
-
-        /*
-         * Skin should not behave like metal.
-         */
 
         if (
             "metallic"
@@ -707,15 +1118,12 @@ export default class BodyModel {
 
     }
 
+
     /* ======================================================
      * Color Normalization
      * ====================================================== */
 
     normalizeColor(color) {
-
-        /*
-         * Babylon Color3
-         */
 
         if (
             color instanceof
@@ -725,10 +1133,6 @@ export default class BodyModel {
             return color.clone();
 
         }
-
-        /*
-         * HEX string
-         */
 
         if (
             typeof color === "string"
@@ -749,10 +1153,6 @@ export default class BodyModel {
 
         }
 
-        /*
-         * RGB object
-         */
-
         if (
             typeof color === "object" &&
             color !== null &&
@@ -772,6 +1172,7 @@ export default class BodyModel {
         return null;
 
     }
+
 
     /* ======================================================
      * Bounds
@@ -863,11 +1264,6 @@ export default class BodyModel {
 
             size,
 
-            /*
-             * BodyCamera expects dimensions in some
-             * versions of the framing implementation.
-             */
-
             dimensions:
                 size.clone(),
 
@@ -877,6 +1273,7 @@ export default class BodyModel {
         };
 
     }
+
 
     /* ======================================================
      * Visibility
@@ -891,7 +1288,16 @@ export default class BodyModel {
                 mesh.setEnabled(true)
         );
 
+        /*
+         * Restore current anatomical state.
+         */
+
+        this.setAnatomicalLevel(
+            this.anatomicalLevel
+        );
+
     }
+
 
     hide() {
 
@@ -904,6 +1310,7 @@ export default class BodyModel {
 
     }
 
+
     toggle() {
 
         this.visible
@@ -911,6 +1318,7 @@ export default class BodyModel {
             : this.show();
 
     }
+
 
     /* ======================================================
      * Opacity
@@ -954,6 +1362,7 @@ export default class BodyModel {
 
     }
 
+
     /* ======================================================
      * Selection
      * ====================================================== */
@@ -971,9 +1380,11 @@ export default class BodyModel {
 
         }
 
-        mesh.renderOutline = true;
+        mesh.renderOutline =
+            true;
 
-        mesh.outlineWidth = 0.04;
+        mesh.outlineWidth =
+            0.04;
 
         mesh.outlineColor =
             BABYLON.Color3.FromHexString(
@@ -981,6 +1392,7 @@ export default class BodyModel {
             );
 
     }
+
 
     highlightEntity(entityId) {
 
@@ -1031,6 +1443,7 @@ export default class BodyModel {
 
     }
 
+
     clearSelection() {
 
         this.meshes.forEach(
@@ -1043,6 +1456,7 @@ export default class BodyModel {
         );
 
     }
+
 
     /* ======================================================
      * Dispose
@@ -1057,11 +1471,6 @@ export default class BodyModel {
 
             }
         );
-
-        /*
-         * Materials cloned specifically for appearance
-         * are disposed separately.
-         */
 
         this.clonedMaterials.forEach(
             material => {
@@ -1084,6 +1493,10 @@ export default class BodyModel {
 
         this.skinMeshes.clear();
 
+        this.organMeshes.clear();
+
+        this.detailMeshes.clear();
+
         this.entities.clear();
 
         this.meshEntities.clear();
@@ -1093,6 +1506,9 @@ export default class BodyModel {
         this.manifest = null;
 
         this.material = null;
+
+        this.anatomicalLevel =
+            "global";
 
         this.loaded = false;
 
