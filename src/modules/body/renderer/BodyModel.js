@@ -1845,64 +1845,7 @@ setAnatomicalLevel(level = "global") {
 }
 
 
-    /* ======================================================
-     * Progressive Zoom Support
-     * ====================================================== */
-
-updateAnatomicalLevel(
-        radius,
-        thresholds = {}
-    ) {
-
-        const organs =
-            thresholds.organs ??
-            1.8;
-
-
-        const detail =
-            thresholds.detail ??
-            0.9;
-
-
-        let level =
-            "global";
-
-
-        if (
-            radius <= detail
-        ) {
-
-            level =
-                "detail";
-
-        }
-
-        else if (
-            radius <= organs
-        ) {
-
-            level =
-                "organs";
-
-        }
-
-
-        if (
-            level !==
-            this.anatomicalLevel
-        ) {
-
-            this.setAnatomicalLevel(
-                level
-            );
-
-        }
-
-
-        return level;
-
-    }
-
+    
 
     /* ======================================================
      * Visibility
