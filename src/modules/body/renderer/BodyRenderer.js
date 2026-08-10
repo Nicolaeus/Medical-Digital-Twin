@@ -79,27 +79,18 @@ export default class BodyRenderer {
      * ====================================================== */
 
     createCanvas() {
-
-        this.canvas =
-
-            document.createElement(
-
-                "canvas"
-
-            );
-
-        this.canvas.className =
-
-            "body-canvas";
-
+    
+        this.canvas = document.createElement("canvas");
+    
+        this.canvas.className = "body-canvas";
+    
         this.canvas.tabIndex = 1;
-
-        this.container.appendChild(
-
-            this.canvas
-
-        );
-
+    
+        this.canvas.style.width = "100%";
+        this.canvas.style.height = "100%";
+        this.canvas.style.display = "block";
+    
+        this.container.appendChild(this.canvas);
     }
 
     /* ======================================================
@@ -127,6 +118,8 @@ export default class BodyRenderer {
                 }
 
             );
+
+        this.engine.resize();
 
     }
 
