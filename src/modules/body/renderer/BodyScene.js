@@ -115,8 +115,6 @@ export default class BodyScene {
             skinColor: "#D8B99A"
         });
         
-        this.appearance.init();
-        
         this.camera.frameModel(
             this.model
         );
