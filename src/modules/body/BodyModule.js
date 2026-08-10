@@ -7,6 +7,7 @@
  */
 
 import BodyRenderer from "./renderer/BodyRenderer.js";
+import AnatomicalCard from "./ui/AnatomicalCard.js";
 
 export default class BodyModule {
 
@@ -15,6 +16,10 @@ export default class BodyModule {
         this.root = null;
 
         this.renderer = null;
+
+        this.card = null;
+
+        this.cardRoot = null;
 
     }
 
@@ -26,12 +31,70 @@ export default class BodyModule {
 
         this.root = root;
 
-        this.renderer = new BodyRenderer();
+        /*
+         * --------------------------------------------------
+         * 3D Body
+         * --------------------------------------------------
+         */
+
+        this.renderer =
+            new BodyRenderer();
 
         await this.renderer.render(
-
             this.root
+        );
 
+        /*
+         * --------------------------------------------------
+         * Anatomical UI layer
+         * --------------------------------------------------
+         */
+
+        this.createCardRoot();
+
+        this.card =
+            new AnatomicalCard({
+
+                id:
+                    "body-anatomical-card",
+
+                icon:
+                    "🧬",
+
+                title:
+                    "Structure anatomique"
+
+            });
+
+        await this.card.init();
+
+        this.card.mount(
+            this.cardRoot
+        );
+
+    }
+
+    /* ======================================================
+     * Card Root
+     * ====================================================== */
+
+    createCardRoot() {
+
+        this.cardRoot =
+            document.createElement(
+                "div"
+            );
+
+        this.cardRoot.className =
+            "body-anatomical-overlay";
+
+        this.cardRoot.setAttribute(
+            "aria-live",
+            "polite"
+        );
+
+        this.root.appendChild(
+            this.cardRoot
         );
 
     }
@@ -64,6 +127,8 @@ export default class BodyModule {
 
         this.renderer?.show();
 
+        this.card?.show();
+
     }
 
     /* ======================================================
@@ -74,6 +139,8 @@ export default class BodyModule {
 
         this.renderer?.hide();
 
+        this.card?.hide();
+
     }
 
     /* ======================================================
@@ -81,6 +148,14 @@ export default class BodyModule {
      * ====================================================== */
 
     async destroy() {
+
+        this.card?.destroy();
+
+        this.card = null;
+
+        this.cardRoot?.remove();
+
+        this.cardRoot = null;
 
         await this.renderer?.destroy?.();
 
