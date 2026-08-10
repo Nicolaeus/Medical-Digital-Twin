@@ -702,6 +702,31 @@ export default class BodyScene {
 
 
         /*
+         * --------------------------------------------------
+         * Anatomical zoom callback
+         * --------------------------------------------------
+         */
+        
+        this.camera.setAnatomicalLevelCallback(
+            (level, previous) => {
+        
+                console.log(
+                    "🧬 Anatomical level:",
+                    previous,
+                    "→",
+                    level
+                );
+        
+                this.setAnatomicalLevel(
+                    level
+                );
+        
+            }
+        );
+
+        this.enableCameraObserver();
+
+        /*
          * Notify the clinical UI.
          *
          * This will later open the patient/global
@@ -1288,4 +1313,30 @@ export default class BodyScene {
 
     }
 
+
+    /* ======================================================
+     * Camera Observer
+     * ====================================================== */
+    
+    enableCameraObserver() {
+    
+        if (
+            this.cameraObserver ||
+            !this.camera?.camera
+        ) {
+    
+            return;
+    
+        }
+    
+        this.cameraObserver =
+            this.camera.camera
+                .onViewMatrixChangedObservable
+                .add(() => {
+    
+                    this.camera.updateAnatomicalLevel();
+    
+                });
+    
+    }
 }
