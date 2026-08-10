@@ -57,25 +57,6 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
-         * Clinical background
-         * --------------------------------------------------
-         *
-         * We deliberately do NOT use a transparent scene.
-         * The Body Twin needs its own visual environment.
-         *
-         * This is a deep clinical blue rather than black.
-         */
-
-        this.scene.clearColor =
-            new BABYLON.Color4(
-                0.086,
-                0.227,
-                0.373,
-                1
-            );
-
-        /*
-         * --------------------------------------------------
          * Image processing
          * --------------------------------------------------
          *
