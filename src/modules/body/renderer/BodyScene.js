@@ -114,6 +114,14 @@ export default class BodyScene {
             mode: "reference",
             skinColor: "#D8B99A"
         });
+
+        this.scene.clearColor =
+            new BABYLON.Color4(
+                220 / 255,
+                239 / 255,
+                247 / 255,
+                1
+            );
         
         this.camera.frameModel(
             this.model
