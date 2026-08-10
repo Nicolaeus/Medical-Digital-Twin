@@ -224,3 +224,645 @@
     color: #668094;
 
 }
+
+
+/* ==========================================================
+   Clinical Card
+   ========================================================== */
+
+.clinical-card {
+
+    position: fixed;
+
+    top: 96px;
+
+    right: 24px;
+
+    bottom: 96px;
+
+    width: min(
+        430px,
+        calc(100vw - 48px)
+    );
+
+    z-index: 900;
+
+    overflow: hidden;
+
+    pointer-events: auto;
+
+    border-radius: 24px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    border:
+        1px solid
+        rgba(35, 105, 145, 0.12);
+
+    box-shadow:
+        0 24px 70px
+        rgba(26, 67, 91, 0.18);
+
+    backdrop-filter:
+        blur(24px);
+
+    -webkit-backdrop-filter:
+        blur(24px);
+
+    color: #183247;
+
+    opacity: 0;
+
+    transform:
+        translateX(24px);
+
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+
+}
+
+.clinical-card.is-open {
+
+    opacity: 1;
+
+    transform:
+        translateX(0);
+
+}
+
+.clinical-card[hidden] {
+
+    display: none;
+
+}
+
+.clinical-card-inner {
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.clinical-card-header {
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 22px 22px 18px;
+
+    border-bottom:
+        1px solid
+        rgba(35, 105, 145, 0.09);
+
+}
+
+.clinical-card-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    min-width: 0;
+
+}
+
+.clinical-card-icon {
+
+    width: 44px;
+
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 14px;
+
+    background:
+        rgba(105, 177, 207, 0.14);
+
+    color: #397b9a;
+
+    font-size: 22px;
+
+}
+
+.clinical-card-eyebrow {
+
+    margin-bottom: 3px;
+
+    font-size: 10px;
+
+    font-weight: 650;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+
+    color: #7390a1;
+
+}
+
+.clinical-card-title {
+
+    margin: 0;
+
+    font-size: 21px;
+
+    line-height: 1.15;
+
+    font-weight: 650;
+
+    color: #183247;
+
+}
+
+.clinical-card-subtitle {
+
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    color: #7790a0;
+
+}
+
+.clinical-card-close {
+
+    width: 32px;
+
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    display: grid;
+
+    place-items: center;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background:
+        rgba(25, 65, 85, 0.055);
+
+    color: #668094;
+
+    font-size: 21px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 120ms ease,
+        color 120ms ease;
+
+}
+
+.clinical-card-close:hover {
+
+    background:
+        rgba(25, 65, 85, 0.10);
+
+    color: #183247;
+
+}
+
+.clinical-card-content {
+
+    flex: 1 1 auto;
+
+    overflow-y: auto;
+
+    padding: 4px 22px 24px;
+
+    scrollbar-width: thin;
+
+}
+
+.clinical-section {
+
+    padding: 17px 0;
+
+    border-bottom:
+        1px solid
+        rgba(35, 105, 145, 0.075);
+
+}
+
+.clinical-section:last-child {
+
+    border-bottom: 0;
+
+}
+
+.clinical-section-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 11px;
+
+    font-size: 12px;
+
+    font-weight: 650;
+
+    color: #46677b;
+
+}
+
+.clinical-section-icon {
+
+    width: 20px;
+
+    height: 20px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 7px;
+
+    background:
+        rgba(105, 177, 207, 0.11);
+
+    color: #4b89a5;
+
+    font-size: 11px;
+
+}
+
+.clinical-section-count {
+
+    margin-left: auto;
+
+    min-width: 21px;
+
+    height: 21px;
+
+    padding: 0 6px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(220, 95, 82, 0.10);
+
+    color: #b45d55;
+
+    font-size: 10px;
+
+}
+
+.clinical-status-value {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    border-radius: 13px;
+
+    background:
+        rgba(92, 169, 129, 0.075);
+
+    color: #42755e;
+
+    font-size: 13px;
+
+}
+
+.clinical-status-value strong {
+
+    font-size: 14px;
+
+}
+
+.clinical-empty {
+
+    padding: 11px 13px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(40, 80, 100, 0.035);
+
+    color: #8a9ba6;
+
+    font-size: 12px;
+
+}
+
+.clinical-alert-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+.clinical-alert {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 10px 12px;
+
+    border-radius: 11px;
+
+    background:
+        rgba(220, 95, 82, 0.055);
+
+    color: #6e5350;
+
+    font-size: 12px;
+
+}
+
+.clinical-alert-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    flex: 0 0 7px;
+
+    border-radius: 50%;
+
+    background: #d2675d;
+
+}
+
+.clinical-alert-info {
+
+    background:
+        rgba(82, 143, 177, 0.055);
+
+}
+
+.clinical-alert-info
+.clinical-alert-dot {
+
+    background: #6599b3;
+
+}
+
+.clinical-data-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+}
+
+.clinical-data-item {
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(40, 80, 100, 0.035);
+
+}
+
+.clinical-data-label {
+
+    font-size: 11px;
+
+    color: #718895;
+
+}
+
+.clinical-data-value {
+
+    margin-top: 4px;
+
+    font-size: 14px;
+
+    font-weight: 650;
+
+    color: #28495d;
+
+}
+
+.clinical-data-date {
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #9aaab3;
+
+}
+
+.clinical-measurements {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+.clinical-measurement {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 9px 0;
+
+    border-bottom:
+        1px solid
+        rgba(35, 105, 145, 0.055);
+
+}
+
+.clinical-measurement:last-child {
+
+    border-bottom: 0;
+
+}
+
+.clinical-measurement-label {
+
+    font-size: 12px;
+
+    color: #718895;
+
+}
+
+.clinical-measurement-value {
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    color: #28495d;
+
+}
+
+.clinical-measurement-value small {
+
+    margin-left: 3px;
+
+    font-weight: 450;
+
+    color: #8498a4;
+
+}
+
+.clinical-history {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.clinical-history-item {
+
+    position: relative;
+
+    display: flex;
+
+    gap: 12px;
+
+    padding-bottom: 15px;
+
+}
+
+.clinical-history-marker {
+
+    width: 8px;
+
+    height: 8px;
+
+    margin-top: 5px;
+
+    flex: 0 0 8px;
+
+    border-radius: 50%;
+
+    background: #72a9bd;
+
+}
+
+.clinical-history-content {
+
+    min-width: 0;
+
+}
+
+.clinical-history-date {
+
+    font-size: 10px;
+
+    color: #94a5af;
+
+}
+
+.clinical-history-label {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+
+    color: #4c6979;
+
+}
+
+.clinical-history-value {
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #294b5e;
+
+}
+
+@media (max-width: 700px) {
+
+    .clinical-card {
+
+        top: auto;
+
+        left: 12px;
+
+        right: 12px;
+
+        bottom: 88px;
+
+        width: auto;
+
+        max-height: 68vh;
+
+        height: auto;
+
+        min-height: 300px;
+
+        border-radius: 20px;
+
+    }
+
+    .clinical-card-content {
+
+        max-height: 55vh;
+
+    }
+
+    .clinical-data-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
