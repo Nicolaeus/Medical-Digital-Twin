@@ -65,9 +65,9 @@ export default class BodyScene {
 
         this.scene.clearColor =
             new BABYLON.Color4(
-                0.055,
-                0.090,
-                0.145,
+                0.086,
+                0.227,
+                0.373,
                 1
             );
 
