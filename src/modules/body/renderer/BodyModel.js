@@ -794,7 +794,6 @@ export default class BodyModel {
 
         if (
             name.includes("skin") ||
-            name.includes("region") ||
             mat.includes("skin")
         ) {
 
