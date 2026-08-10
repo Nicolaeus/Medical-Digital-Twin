@@ -109,6 +109,11 @@ export default class BodyScene {
             this.scene,
             this.model
         );
+
+        this.appearance.init({
+            mode: "reference",
+            skinColor: "#D8B99A"
+        });
         
         this.appearance.init();
         
