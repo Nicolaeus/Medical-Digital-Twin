@@ -1734,118 +1734,103 @@ export default class BodyModel {
     }
 
 
-    /* ======================================================
-     * Presentation Level
-     * ====================================================== */
+    setAnatomicalLevel(level = "global") {
 
-    setAnatomicalLevel(
-        level = "global"
-    ) {
+    const allowed = [
+        "global",
+        "organs",
+        "detail"
+    ];
 
-        const allowed = [
+    if (!allowed.includes(level)) {
+        level = "global";
+    }
 
-            "global",
+    this.anatomicalLevel = level;
 
-            "organs",
+    /*
+     * --------------------------------------------------
+     * GLOBAL
+     * --------------------------------------------------
+     *
+     * Important:
+     * The GLB already contains the correct complete
+     * external representation.
+     *
+     * We therefore do NOT try to reconstruct the skin
+     * layer from material names at this stage.
+     *
+     * Global = original GLB visibility.
+     */
 
-            "detail"
+    if (level === "global") {
 
-        ];
+        this.meshes.forEach(mesh => {
 
+            mesh.setEnabled(true);
 
-        if (
-            !allowed.includes(
-                level
-            )
-        ) {
+        });
 
-            level = "global";
-
-        }
-
-
-        this.anatomicalLevel =
-            level;
-
-
-        /*
-         * Important:
-         *
-         * We do NOT hide the model aggressively.
-         * The first implementation should preserve
-         * the visual integrity of the GLB.
-         *
-         * We only progressively reveal detailed
-         * anatomical structures.
-         */
-
-        this.meshes.forEach(
-            mesh => {
-
-                const descriptor =
-                    mesh.metadata
-                        ?.mdt
-                        ?.anatomical;
-
-
-                if (!descriptor) {
-
-                    return;
-
-                }
-
-
-                let enabled = true;
-
-
-                if (
-                    level === "global"
-                ) {
-
-                    enabled =
-                        descriptor.level ===
-                        "global";
-
-                }
-
-
-                else if (
-                    level === "organs"
-                ) {
-
-                    enabled =
-                        descriptor.level ===
-                            "global" ||
-                        descriptor.level ===
-                            "organs";
-
-                }
-
-
-                else if (
-                    level === "detail"
-                ) {
-
-                    enabled = true;
-
-                }
-
-
-                mesh.setEnabled(
-                    enabled
-                );
-
-            }
-        );
-
+        return;
     }
 
 
-    getAnatomicalLevel() {
+    /*
+     * --------------------------------------------------
+     * ORGANS
+     * --------------------------------------------------
+     *
+     * Keep the external body visible for now and
+     * progressively expose anatomical structures.
+     *
+     * We deliberately avoid hiding meshes until the
+     * GLB classification has been validated.
+     */
 
-        return this.anatomicalLevel;
+    if (level === "organs") {
+
+        this.meshes.forEach(mesh => {
+
+            const descriptor =
+                mesh.metadata
+                    ?.mdt
+                    ?.anatomical;
+
+            /*
+             * Keep everything visible for the first
+             * implementation.
+             *
+             * The organ isolation layer will be added
+             * once the anatomical inventory is validated.
+             */
+
+            mesh.setEnabled(true);
+
+        });
+
+        return;
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * DETAIL
+     * --------------------------------------------------
+     *
+     * Full anatomical representation.
+     */
+
+    if (level === "detail") {
+
+        this.meshes.forEach(mesh => {
+
+            mesh.setEnabled(true);
+
+        });
 
     }
+
+}
 
 
     /* ======================================================
