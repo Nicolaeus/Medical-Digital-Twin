@@ -5,18 +5,18 @@
  * Body Twin Visual Appearance
  * ==========================================================
  *
- * Responsible for visual adaptation of the Body Twin:
+ * Centralizes the visual appearance of the Body Twin.
  *
- * - skin material detection
- * - skin color estimation
- * - clinical background generation
- * - appearance profile
+ * Design principles:
  *
- * This class does NOT contain medical data.
- * It does NOT classify sex, ethnicity or population.
+ * 1. Appearance is driven by the actual skin color.
+ * 2. No ethnicity / origin / population classification.
+ * 3. The reference model has a neutral default skin tone.
+ * 4. Patient mode can later receive a color extracted from
+ *    a body scan / photograph.
+ * 5. Background color is automatically derived from the
+ *    skin color to maintain visual contrast.
  *
- * The visual environment is derived from the actual
- * appearance of the loaded 3D model.
  * ==========================================================
  */
 
@@ -28,625 +28,360 @@ export default class BodyAppearance {
 
         this.model = model;
 
-        this.skinColor = null;
+        this.mode = "reference";
 
-        this.skinMaterial = null;
+        this.skinColor = null;
 
         this.backgroundColor = null;
 
         this.profile = null;
 
+        /*
+         * Neutral reference skin.
+         *
+         * This is a visual reference only.
+         * It does NOT represent an ethnicity.
+         */
+
+        this.defaultSkinHex = "#D8B99A";
+
     }
+
 
     /* ======================================================
      * Initialize
      * ====================================================== */
 
-    init() {
+    init(options = {}) {
 
-        this.detectSkinMaterial();
+        this.mode =
+            options.mode || "reference";
 
-        this.buildAppearanceProfile();
+        const skinColor =
+            options.skinColor ||
+            this.defaultSkinHex;
 
-        this.applyBackground();
+        this.setSkinColor(
+            skinColor,
+            false
+        );
 
         return this.profile;
 
     }
 
+
     /* ======================================================
-     * Skin Material Detection
+     * Skin Color
      * ====================================================== */
 
-    detectSkinMaterial() {
+    setSkinColor(hex, refresh = true) {
 
-        if (!this.scene) {
+        const rgb =
+            this.hexToRgb(hex);
 
-            return null;
+        if (!rgb) {
 
-        }
-
-        const materials = [];
-
-        /*
-         * Collect unique materials from the scene.
-         */
-
-        this.scene.meshes.forEach(mesh => {
-
-            if (!mesh.material) {
-
-                return;
-
-            }
-
-            if (!materials.includes(mesh.material)) {
-
-                materials.push(mesh.material);
-
-            }
-
-        });
-
-        /*
-         * First pass:
-         *
-         * identify materials whose names strongly suggest
-         * skin / epidermis / body surface.
-         */
-
-        const candidates = materials
-            .map(material => {
-
-                return {
-
-                    material,
-
-                    score: this.scoreSkinMaterial(
-                        material
-                    )
-
-                };
-
-            })
-            .filter(candidate => candidate.score > 0)
-            .sort(
-                (a, b) =>
-                    b.score - a.score
+            console.warn(
+                "BodyAppearance: invalid skin color:",
+                hex
             );
 
-        if (candidates.length > 0) {
-
-            this.skinMaterial =
-                candidates[0].material;
-
-            this.skinColor =
-                this.extractMaterialColor(
-                    this.skinMaterial
-                );
-
-            if (this.skinColor) {
-
-                return this.skinMaterial;
-
-            }
+            return false;
 
         }
 
-        /*
-         * Fallback:
-         *
-         * estimate skin color from materials with warm,
-         * moderately saturated, mid/high luminance colors.
-         */
-
-        const visualCandidates = materials
-            .map(material => {
-
-                const color =
-                    this.extractMaterialColor(
-                        material
-                    );
-
-                if (!color) {
-
-                    return null;
-
-                }
-
-                return {
-
-                    material,
-
-                    color,
-
-                    score:
-                        this.scoreSkinColor(
-                            color
-                        )
-
-                };
-
-            })
-            .filter(Boolean)
-            .sort(
-                (a, b) =>
-                    b.score - a.score
+        this.skinColor =
+            new BABYLON.Color3(
+                rgb.r / 255,
+                rgb.g / 255,
+                rgb.b / 255
             );
 
-        if (visualCandidates.length > 0) {
-
-            this.skinMaterial =
-                visualCandidates[0].material;
-
-            this.skinColor =
-                visualCandidates[0].color;
-
-        }
-
-        return this.skinMaterial;
-
-    }
-
-    /* ======================================================
-     * Material Name Scoring
-     * ====================================================== */
-
-    scoreSkinMaterial(material) {
-
-        const name =
-            String(
-                material?.name || ""
-            ).toLowerCase();
-
-        if (!name) {
-
-            return 0;
-
-        }
-
-        let score = 0;
-
-        const strongTerms = [
-
-            "skin",
-            "skinmat",
-            "epiderm",
-            "dermis",
-            "cutaneous",
-            "integument"
-
-        ];
-
-        const bodyTerms = [
-
-            "body",
-            "human",
-            "surface",
-            "soft"
-
-        ];
-
-        strongTerms.forEach(term => {
-
-            if (name.includes(term)) {
-
-                score += 10;
-
-            }
-
-        });
-
-        bodyTerms.forEach(term => {
-
-            if (name.includes(term)) {
-
-                score += 2;
-
-            }
-
-        });
-
-        return score;
-
-    }
-
-    /* ======================================================
-     * Material Color Extraction
-     * ====================================================== */
-
-    extractMaterialColor(material) {
-
-        if (!material) {
-
-            return null;
-
-        }
-
         /*
-         * Babylon PBR material.
+         * Automatically derive a complementary
+         * pastel background.
          */
 
-        if (material.albedoColor) {
-
-            return material.albedoColor.clone();
-
-        }
-
-        /*
-         * Babylon Standard material.
-         */
-
-        if (material.diffuseColor) {
-
-            return material.diffuseColor.clone();
-
-        }
-
-        /*
-         * Generic color property.
-         */
-
-        if (material.color) {
-
-            return material.color.clone();
-
-        }
-
-        return null;
-
-    }
-
-    /* ======================================================
-     * Visual Skin Color Scoring
-     * ====================================================== */
-
-    scoreSkinColor(color) {
-
-        if (!color) {
-
-            return 0;
-
-        }
-
-        /*
-         * Convert RGB to HSL.
-         */
-
-        const hsl =
-            this.rgbToHsl(
-
-                color.r,
-                color.g,
-                color.b
-
-            );
-
-        let score = 0;
-
-        /*
-         * Skin tends to occupy warm hues.
-         *
-         * This is only a visual heuristic.
-         */
-
-        const hue = hsl.h;
-
-        if (
-            hue >= 0 &&
-            hue <= 55
-        ) {
-
-            score += 4;
-
-        }
-
-        /*
-         * Avoid extremely saturated materials such as
-         * vascular red, blue veins, etc.
-         */
-
-        if (hsl.s < 0.65) {
-
-            score += 3;
-
-        }
-
-        /*
-         * Avoid extremely dark / extremely bright materials.
-         */
-
-        if (
-            hsl.l >= 0.18 &&
-            hsl.l <= 0.88
-        ) {
-
-            score += 3;
-
-        }
-
-        /*
-         * Slight preference for warmer tones.
-         */
-
-        if (
-            hue >= 5 &&
-            hue <= 40
-        ) {
-
-            score += 2;
-
-        }
-
-        return score;
-
-    }
-
-    /* ======================================================
-     * Appearance Profile
-     * ====================================================== */
-
-    buildAppearanceProfile() {
-
-        /*
-         * Fallback neutral skin if the GLB does not expose
-         * a readable material color.
-         */
-
-        if (!this.skinColor) {
-
-            this.skinColor =
-                new BABYLON.Color3(
-                    0.72,
-                    0.58,
-                    0.48
-                );
-
-        }
-
-        const background =
-            this.calculateClinicalBackground(
+        this.backgroundColor =
+            this.createComplementaryBackground(
                 this.skinColor
             );
 
-        this.backgroundColor =
-            background;
+        this.updateProfile(
+            hex
+        );
 
-        this.profile = {
+        if (refresh) {
 
-            skin: {
+            this.apply();
 
-                r: this.skinColor.r,
+        }
 
-                g: this.skinColor.g,
-
-                b: this.skinColor.b
-
-            },
-
-            background: {
-
-                r: background.r,
-
-                g: background.g,
-
-                b: background.b
-
-            },
-
-            material:
-                this.skinMaterial?.name || null
-
-        };
-
-        return this.profile;
+        return true;
 
     }
 
+
     /* ======================================================
-     * Clinical Background
+     * Complementary Background
      * ====================================================== */
 
-    calculateClinicalBackground(skinColor) {
+    createComplementaryBackground(
+        skinColor
+    ) {
 
         /*
-         * Convert skin color to HSL.
+         * Convert RGB → HSV.
          */
 
-        const hsl =
-            this.rgbToHsl(
-
+        const hsv =
+            this.rgbToHsv(
                 skinColor.r,
                 skinColor.g,
                 skinColor.b
-
             );
 
         /*
-         * We start from the complementary hue.
+         * We don't use a mathematically pure
+         * complementary color directly.
+         *
+         * Instead:
+         *
+         * - shift hue by ~180°
+         * - reduce saturation
+         * - increase lightness
+         *
+         * This gives us a clinical pastel background.
          */
 
-        let complementaryHue =
-            (hsl.h + 180) % 360;
+        let hue =
+            (hsv.h + 180) % 360;
 
         /*
-         * We want a BLUE / CYAN clinical environment.
+         * Keep the background in a
+         * blue / cyan clinical family.
          *
-         * A raw mathematical complement could produce green,
-         * purple or other unwanted colors depending on the
-         * source material.
-         *
-         * Therefore we constrain the result to the blue/cyan
-         * clinical range.
+         * The skin still influences the result,
+         * but we prevent extreme colors.
          */
 
-        complementaryHue =
-            this.clampClinicalBlueHue(
-                complementaryHue
+        const blueBias = 205;
+
+        hue =
+            this.interpolateHue(
+                hue,
+                blueBias,
+                0.65
             );
 
         /*
-         * Lighter than the current dark navy.
-         *
-         * This is deliberately responsive to skin luminance.
+         * Pastel saturation.
          */
-
-        let lightness =
-
-            0.30 +
-
-            (hsl.l * 0.10);
-
-        /*
-         * Very dark skin should receive a slightly lighter
-         * background to maintain silhouette separation.
-         */
-
-        if (hsl.l < 0.35) {
-
-            lightness += 0.08;
-
-        }
-
-        /*
-         * Very light skin should receive a slightly deeper
-         * background so the silhouette remains readable.
-         */
-
-        if (hsl.l > 0.72) {
-
-            lightness -= 0.04;
-
-        }
-
-        lightness =
-            Math.max(
-                0.24,
-                Math.min(
-                    lightness,
-                    0.42
-                )
-            );
 
         const saturation =
-            0.48;
+            this.clamp(
+                0.18 +
+                (hsv.s * 0.08),
+                0.14,
+                0.28
+            );
 
-        return this.hslToRgbColor3(
+        /*
+         * Keep the background bright.
+         */
 
-            complementaryHue,
+        const value =
+            this.clamp(
+                0.88 -
+                (hsv.v * 0.03),
+                0.82,
+                0.91
+            );
 
-            saturation,
+        const rgb =
+            this.hsvToRgb(
+                hue,
+                saturation,
+                value
+            );
 
-            lightness
-
+        return new BABYLON.Color3(
+            rgb.r,
+            rgb.g,
+            rgb.b
         );
 
     }
 
-    /* ======================================================
-     * Clinical Blue Constraint
-     * ====================================================== */
-
-    clampClinicalBlueHue(hue) {
-
-        /*
-         * Preferred clinical blue/cyan range.
-         *
-         * 185° → cyan
-         * 200° → blue-cyan
-         * 215° → clinical blue
-         * 230° → blue
-         */
-
-        const minHue = 185;
-
-        const maxHue = 230;
-
-        /*
-         * If the mathematical complement already lands in
-         * our preferred range, keep it.
-         */
-
-        if (
-            hue >= minHue &&
-            hue <= maxHue
-        ) {
-
-            return hue;
-
-        }
-
-        /*
-         * Otherwise project it into the clinical range.
-         *
-         * This guarantees that the environment remains blue
-         * regardless of the skin tone.
-         */
-
-        const distanceToMin =
-            Math.abs(
-                hue - minHue
-            );
-
-        const distanceToMax =
-            Math.abs(
-                hue - maxHue
-            );
-
-        return distanceToMin <
-            distanceToMax
-            ? minHue
-            : maxHue;
-
-    }
 
     /* ======================================================
-     * Apply Background
+     * Apply
      * ====================================================== */
 
-    applyBackground() {
+    apply() {
 
-        if (
-            !this.scene ||
-            !this.backgroundColor
-        ) {
+        if (!this.scene) {
 
             return;
 
         }
 
-        this.scene.clearColor =
+        /*
+         * Background
+         */
 
-            new BABYLON.Color4(
+        if (this.backgroundColor) {
 
-                this.backgroundColor.r,
+            this.scene.clearColor =
+                new BABYLON.Color4(
+                    this.backgroundColor.r,
+                    this.backgroundColor.g,
+                    this.backgroundColor.b,
+                    1
+                );
 
-                this.backgroundColor.g,
+        }
 
-                this.backgroundColor.b,
+        /*
+         * Skin material application is intentionally
+         * delegated to BodyModel.
+         *
+         * BodyAppearance determines the desired
+         * appearance; BodyModel applies it to the
+         * appropriate anatomical materials.
+         */
 
-                1
+        if (
+            this.model &&
+            typeof this.model.applySkinAppearance ===
+            "function"
+        ) {
 
+            this.model.applySkinAppearance(
+                this.skinColor
             );
 
+        }
+
     }
 
+
     /* ======================================================
-     * Refresh
+     * Mode
      * ====================================================== */
 
-    refresh() {
+    setMode(mode) {
 
-        this.detectSkinMaterial();
+        if (
+            mode !== "reference" &&
+            mode !== "patient"
+        ) {
 
-        this.buildAppearanceProfile();
+            console.warn(
+                "BodyAppearance: unsupported mode:",
+                mode
+            );
 
-        this.applyBackground();
+            return;
+
+        }
+
+        this.mode = mode;
+
+        this.updateProfile();
+
+        this.apply();
 
     }
 
+
+    useReferenceAppearance() {
+
+        this.mode = "reference";
+
+        this.setSkinColor(
+            this.defaultSkinHex
+        );
+
+    }
+
+
+    usePatientAppearance(skinColor = null) {
+
+        this.mode = "patient";
+
+        if (skinColor) {
+
+            this.setSkinColor(
+                skinColor
+            );
+
+            return;
+
+        }
+
+        this.updateProfile();
+
+        this.apply();
+
+    }
+
+
     /* ======================================================
-     * Access
+     * Profile
+     * ====================================================== */
+
+    updateProfile(hex = null) {
+
+        this.profile = {
+
+            mode: this.mode,
+
+            skin: {
+
+                hex:
+                    hex ||
+                    this.color3ToHex(
+                        this.skinColor
+                    ),
+
+                r:
+                    this.skinColor?.r ?? 0,
+
+                g:
+                    this.skinColor?.g ?? 0,
+
+                b:
+                    this.skinColor?.b ?? 0
+
+            },
+
+            background: {
+
+                hex:
+                    this.color3ToHex(
+                        this.backgroundColor
+                    ),
+
+                r:
+                    this.backgroundColor?.r ?? 0,
+
+                g:
+                    this.backgroundColor?.g ?? 0,
+
+                b:
+                    this.backgroundColor?.b ?? 0
+
+            }
+
+        };
+
+    }
+
+
+    /* ======================================================
+     * Accessors
      * ====================================================== */
 
     getSkinColor() {
@@ -655,11 +390,13 @@ export default class BodyAppearance {
 
     }
 
+
     getBackgroundColor() {
 
         return this.backgroundColor;
 
     }
+
 
     getProfile() {
 
@@ -667,11 +404,90 @@ export default class BodyAppearance {
 
     }
 
+
+    getMode() {
+
+        return this.mode;
+
+    }
+
+
     /* ======================================================
-     * RGB → HSL
+     * HEX → RGB
      * ====================================================== */
 
-    rgbToHsl(r, g, b) {
+    hexToRgb(hex) {
+
+        if (
+            typeof hex !== "string"
+        ) {
+
+            return null;
+
+        }
+
+        let value =
+            hex.trim();
+
+        if (value.startsWith("#")) {
+
+            value =
+                value.substring(1);
+
+        }
+
+        if (value.length === 3) {
+
+            value =
+                value
+                    .split("")
+                    .map(
+                        c => c + c
+                    )
+                    .join("");
+
+        }
+
+        if (
+            !/^[0-9a-fA-F]{6}$/.test(
+                value
+            )
+        ) {
+
+            return null;
+
+        }
+
+        return {
+
+            r:
+                parseInt(
+                    value.substring(0, 2),
+                    16
+                ),
+
+            g:
+                parseInt(
+                    value.substring(2, 4),
+                    16
+                ),
+
+            b:
+                parseInt(
+                    value.substring(4, 6),
+                    16
+                )
+
+        };
+
+    }
+
+
+    /* ======================================================
+     * RGB → HSV
+     * ====================================================== */
+
+    rgbToHsv(r, g, b) {
 
         const max =
             Math.max(r, g, b);
@@ -679,207 +495,283 @@ export default class BodyAppearance {
         const min =
             Math.min(r, g, b);
 
-        let h = 0;
-
-        let s = 0;
-
-        const l =
-            (max + min) / 2;
-
         const delta =
             max - min;
 
+        let h = 0;
+
+        let s =
+            max === 0
+                ? 0
+                : delta / max;
+
+        const v = max;
+
         if (delta !== 0) {
 
-            s =
-                l > 0.5
+            if (max === r) {
 
-                    ? delta /
-                      (2 - max - min)
+                h =
+                    60 *
+                    (
+                        ((g - b) / delta)
+                        % 6
+                    );
 
-                    : delta /
-                      (max + min);
+            }
 
-            switch (max) {
+            else if (max === g) {
 
-                case r:
+                h =
+                    60 *
+                    (
+                        ((b - r) / delta) + 2
+                    );
 
-                    h =
-                        (
-                            (g - b) /
-                            delta
-                        ) +
-                        (
-                            g < b
-                                ? 6
-                                : 0
-                        );
+            }
 
-                    h /= 6;
+            else {
 
-                    break;
-
-                case g:
-
-                    h =
-                        (
-                            (b - r) /
-                            delta
-                        ) +
-                        2;
-
-                    h /= 6;
-
-                    break;
-
-                case b:
-
-                    h =
-                        (
-                            (r - g) /
-                            delta
-                        ) +
-                        4;
-
-                    h /= 6;
-
-                    break;
+                h =
+                    60 *
+                    (
+                        ((r - g) / delta) + 4
+                    );
 
             }
 
         }
 
+        if (h < 0) {
+
+            h += 360;
+
+        }
+
         return {
 
-            h: h * 360,
-
+            h,
             s,
-
-            l
+            v
 
         };
 
     }
 
+
     /* ======================================================
-     * HSL → Babylon Color3
+     * HSV → RGB
      * ====================================================== */
 
-    hslToRgbColor3(h, s, l) {
+    hsvToRgb(h, s, v) {
 
-        h /= 360;
+        const c =
+            v * s;
 
-        let r;
+        const x =
+            c *
+            (
+                1 -
+                Math.abs(
+                    ((h / 60) % 2) - 1
+                )
+            );
 
-        let g;
+        const m =
+            v - c;
 
-        let b;
+        let r = 0;
+        let g = 0;
+        let b = 0;
 
-        if (s === 0) {
+        if (h < 60) {
 
-            r = l;
-
-            g = l;
-
-            b = l;
-
-        } else {
-
-            const hue2rgb =
-                (p, q, t) => {
-
-                    if (t < 0) {
-
-                        t += 1;
-
-                    }
-
-                    if (t > 1) {
-
-                        t -= 1;
-
-                    }
-
-                    if (t < 1 / 6) {
-
-                        return p +
-                            (
-                                q - p
-                            ) *
-                            6 *
-                            t;
-
-                    }
-
-                    if (t < 1 / 2) {
-
-                        return q;
-
-                    }
-
-                    if (t < 2 / 3) {
-
-                        return p +
-                            (
-                                q - p
-                            ) *
-                            (
-                                2 / 3 -
-                                t
-                            ) *
-                            6;
-
-                    }
-
-                    return p;
-
-                };
-
-            const q =
-                l < 0.5
-
-                    ? l *
-                      (1 + s)
-
-                    : l +
-                      s -
-                      l * s;
-
-            const p =
-                2 * l - q;
-
-            r =
-                hue2rgb(
-                    p,
-                    q,
-                    h + 1 / 3
-                );
-
-            g =
-                hue2rgb(
-                    p,
-                    q,
-                    h
-                );
-
-            b =
-                hue2rgb(
-                    p,
-                    q,
-                    h - 1 / 3
-                );
+            r = c;
+            g = x;
 
         }
 
-        return new BABYLON.Color3(
+        else if (h < 120) {
 
-            r,
+            r = x;
+            g = c;
 
-            g,
+        }
 
-            b
+        else if (h < 180) {
 
+            g = c;
+            b = x;
+
+        }
+
+        else if (h < 240) {
+
+            g = x;
+            b = c;
+
+        }
+
+        else if (h < 300) {
+
+            r = x;
+            b = c;
+
+        }
+
+        else {
+
+            r = c;
+            b = x;
+
+        }
+
+        return {
+
+            r: r + m,
+            g: g + m,
+            b: b + m
+
+        };
+
+    }
+
+
+    /* ======================================================
+     * Hue Interpolation
+     * ====================================================== */
+
+    interpolateHue(
+        a,
+        b,
+        amount
+    ) {
+
+        let difference =
+            b - a;
+
+        if (difference > 180) {
+
+            difference -= 360;
+
+        }
+
+        if (difference < -180) {
+
+            difference += 360;
+
+        }
+
+        return (
+            a +
+            difference * amount +
+            360
+        ) % 360;
+
+    }
+
+
+    /* ======================================================
+     * Color3 → HEX
+     * ====================================================== */
+
+    color3ToHex(color) {
+
+        if (!color) {
+
+            return "#000000";
+
+        }
+
+        const r =
+            Math.round(
+                this.clamp(
+                    color.r,
+                    0,
+                    1
+                ) * 255
+            );
+
+        const g =
+            Math.round(
+                this.clamp(
+                    color.g,
+                    0,
+                    1
+                ) * 255
+            );
+
+        const b =
+            Math.round(
+                this.clamp(
+                    color.b,
+                    0,
+                    1
+                ) * 255
+            );
+
+        return (
+            "#" +
+            [r, g, b]
+                .map(
+                    value =>
+                        value
+                            .toString(16)
+                            .padStart(2, "0")
+                )
+                .join("")
         );
+
+    }
+
+
+    /* ======================================================
+     * Clamp
+     * ====================================================== */
+
+    clamp(
+        value,
+        min,
+        max
+    ) {
+
+        return Math.min(
+            Math.max(
+                value,
+                min
+            ),
+            max
+        );
+
+    }
+
+
+    /* ======================================================
+     * Refresh
+     * ====================================================== */
+
+    refresh() {
+
+        this.apply();
+
+    }
+
+
+    /* ======================================================
+     * Destroy
+     * ====================================================== */
+
+    destroy() {
+
+        this.scene = null;
+
+        this.model = null;
+
+        this.skinColor = null;
+
+        this.backgroundColor = null;
+
+        this.profile = null;
 
     }
 
