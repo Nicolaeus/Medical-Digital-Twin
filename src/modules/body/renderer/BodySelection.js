@@ -41,53 +41,68 @@ export default class BodySelection {
         }
 
         const entity =
-
             this.model?.getEntity(
-
                 entityId
-
             );
 
         if (!entity) {
 
             console.warn(
-
                 "Unknown anatomical entity:",
-
                 entityId
-
             );
 
             return;
 
         }
 
-        this.clear();
+        /*
+         * Clear previous visual selection without
+         * emitting a second "selection cleared" event.
+         */
 
-        this.selected = entityId;
+        this.clear({
+            emit: false
+        });
 
-        this.selectedEntity = entity;
+        this.selected =
+            entityId;
+
+        this.selectedEntity =
+            entity;
+
+        /*
+         * Highlight the anatomical entity
+         * directly on the 3D model.
+         */
 
         this.model?.highlightEntity(
-
             entityId
-
         );
 
-        Store.set(
+        /*
+         * Store
+         */
 
+        Store.set(
             "body.selected",
-
             entityId
-
         );
 
         Store.set(
-
             "body.selectedEntity",
-
             entity
+        );
 
+        /*
+         * Notify the rest of the application.
+         *
+         * The Body Twin does NOT open a card directly.
+         * The Card / UI layer decides what to display.
+         */
+
+        this.emitSelectionEvent(
+            entity
         );
 
     }
@@ -99,11 +114,8 @@ export default class BodySelection {
     selectMesh(mesh) {
 
         const entity =
-
             this.model?.getEntityForMesh(
-
                 mesh
-
             );
 
         if (!entity) {
@@ -113,9 +125,7 @@ export default class BodySelection {
         }
 
         this.selectEntity(
-
             entity.id
-
         );
 
     }
@@ -127,19 +137,14 @@ export default class BodySelection {
     select(name) {
 
         const entity =
-
             this.model?.getEntityForMesh(
-
                 name
-
             );
 
         if (entity) {
 
             this.selectEntity(
-
                 entity.id
-
             );
 
             return;
@@ -152,18 +157,34 @@ export default class BodySelection {
 
         }
 
-        this.clear();
+        this.clear({
+            emit: false
+        });
 
-        this.selected = name;
+        this.selected =
+            name;
 
-        this.model?.highlight(name);
+        this.model?.highlight(
+            name
+        );
 
         Store.set(
-
             "body.selected",
-
             name
+        );
 
+        /*
+         * Legacy mesh selection does not necessarily
+         * have a complete anatomical entity.
+         *
+         * Still expose the selection to the UI.
+         */
+
+        this.emitSelectionEvent(
+            null,
+            {
+                selected: name
+            }
         );
 
     }
@@ -172,29 +193,55 @@ export default class BodySelection {
      * Clear
      * ====================================================== */
 
-    clear() {
+    clear({
+
+        emit = true
+
+    } = {}) {
+
+        const previousEntity =
+            this.selectedEntity;
+
+        const previousId =
+            this.selected;
 
         this.model?.clearSelection();
 
-        this.selected = null;
+        this.selected =
+            null;
 
-        this.selectedEntity = null;
+        this.selectedEntity =
+            null;
 
         Store.set(
-
             "body.selected",
-
             null
-
         );
 
         Store.set(
-
             "body.selectedEntity",
-
             null
-
         );
+
+        /*
+         * Tell the UI that the anatomical selection
+         * has been cleared.
+         */
+
+        if (
+            emit &&
+            (
+                previousId !== null ||
+                previousEntity !== null
+            )
+        ) {
+
+            this.emitClearEvent(
+                previousId,
+                previousEntity
+            );
+
+        }
 
     }
 
@@ -202,7 +249,9 @@ export default class BodySelection {
      * Focus
      * ====================================================== */
 
-    focus(name = this.selected) {
+    focus(
+        name = this.selected
+    ) {
 
         if (!name) {
 
@@ -211,35 +260,29 @@ export default class BodySelection {
         }
 
         const entity =
-
-            this.model?.getEntity(name);
+            this.model?.getEntity(
+                name
+            );
 
         if (entity) {
 
             const objects =
-
                 entity.objects || [];
 
             const first =
-
                 objects[0];
 
             if (first) {
 
                 const mesh =
-
                     this.model.getOrgan(
-
                         first.object_name
-
                     );
 
                 if (mesh) {
 
                     this.camera?.focus(
-
                         mesh.getAbsolutePosition()
-
                     );
 
                 }
@@ -251,8 +294,9 @@ export default class BodySelection {
         }
 
         const organ =
-
-            this.model?.getOrgan(name);
+            this.model?.getOrgan(
+                name
+            );
 
         if (!organ) {
 
@@ -261,8 +305,150 @@ export default class BodySelection {
         }
 
         this.camera?.focus(
-
             organ.getAbsolutePosition()
+        );
+
+    }
+
+    /* ======================================================
+     * Selection Event
+     * ====================================================== */
+
+    emitSelectionEvent(
+        entity,
+        extra = {}
+    ) {
+
+        if (
+            typeof window ===
+            "undefined"
+        ) {
+
+            return;
+
+        }
+
+        const detail = {
+
+            /*
+             * Main identifier.
+             */
+
+            entityId:
+                entity?.id ||
+                this.selected ||
+                null,
+
+            /*
+             * Display name.
+             */
+
+            name:
+                entity?.canonical_name ||
+                entity?.display_name ||
+                entity?.name ||
+                null,
+
+            /*
+             * Anatomical hierarchy.
+             */
+
+            parent:
+                entity?.anatomical_parent_name ||
+                null,
+
+            /*
+             * Laterality.
+             */
+
+            laterality:
+                entity?.laterality ||
+                "none",
+
+            /*
+             * Entity category.
+             */
+
+            category:
+                entity?.category ||
+                null,
+
+            /*
+             * Complete entity.
+             *
+             * This lets the card layer access additional
+             * information without coupling itself to Babylon.
+             */
+
+            entity:
+                entity ||
+                null,
+
+            /*
+             * Source of the interaction.
+             */
+
+            source:
+                "3d",
+
+            ...extra
+
+        };
+
+        window.dispatchEvent(
+
+            new CustomEvent(
+                "mdt:anatomy:selected",
+                {
+                    detail
+                }
+            )
+
+        );
+
+    }
+
+    /* ======================================================
+     * Clear Event
+     * ====================================================== */
+
+    emitClearEvent(
+        entityId,
+        entity
+    ) {
+
+        if (
+            typeof window ===
+            "undefined"
+        ) {
+
+            return;
+
+        }
+
+        window.dispatchEvent(
+
+            new CustomEvent(
+                "mdt:anatomy:cleared",
+                {
+
+                    detail: {
+
+                        entityId:
+                            entityId ||
+                            null,
+
+                        entity:
+                            entity ||
+                            null,
+
+                        source:
+                            "3d"
+
+                    }
+
+                }
+            )
 
         );
 
@@ -274,13 +460,17 @@ export default class BodySelection {
 
     hasSelection() {
 
-        return this.selected !== null;
+        return (
+            this.selected !== null
+        );
 
     }
 
     isSelected(name) {
 
-        return this.selected === name;
+        return (
+            this.selected === name
+        );
 
     }
 
@@ -303,9 +493,7 @@ export default class BodySelection {
     toggle(name) {
 
         if (
-
             this.selected === name
-
         ) {
 
             this.clear();
@@ -314,7 +502,9 @@ export default class BodySelection {
 
         }
 
-        this.selectEntity(name);
+        this.selectEntity(
+            name
+        );
 
     }
 
