@@ -171,6 +171,8 @@ export default class BodyScene {
         const configuration =
             this.scene.imageProcessingConfiguration;
 
+        configuration.isEnabled = true;
+
         /*
          * ACES gives us a much more photographic / clinical
          * response than a raw linear output.
@@ -187,17 +189,18 @@ export default class BodyScene {
          * materials from becoming completely white.
          */
 
-        configuration.exposure = 0.82;
+        configuration.exposure = 0.72;
 
         /*
          * A restrained contrast increase helps distinguish
          * adjacent anatomical structures.
          */
 
-        configuration.contrast = 1.12;
+        configuration.contrast = 1.08;
 
     }
 
+    
     /* ======================================================
      * Camera
      * ====================================================== */
