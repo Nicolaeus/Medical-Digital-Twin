@@ -139,92 +139,19 @@ export default class BodyAppearance {
      * Complementary Background
      * ====================================================== */
 
-    createComplementaryBackground(
-        skinColor
-    ) {
+    createComplementaryBackground() {
 
-        /*
-         * Convert RGB → HSV.
-         */
+    /*
+     * Medical Digital Twin reference background.
+     *
+     * Very light, luminous pastel blue.
+     */
 
-        const hsv =
-            this.rgbToHsv(
-                skinColor.r,
-                skinColor.g,
-                skinColor.b
-            );
+    return BABYLON.Color3.FromHexString(
+        "#DCEFF7"
+    );
 
-        /*
-         * We don't use a mathematically pure
-         * complementary color directly.
-         *
-         * Instead:
-         *
-         * - shift hue by ~180°
-         * - reduce saturation
-         * - increase lightness
-         *
-         * This gives us a clinical pastel background.
-         */
-
-        let hue =
-            (hsv.h + 180) % 360;
-
-        /*
-         * Keep the background in a
-         * blue / cyan clinical family.
-         *
-         * The skin still influences the result,
-         * but we prevent extreme colors.
-         */
-
-        const blueBias = 205;
-
-        hue =
-            this.interpolateHue(
-                hue,
-                blueBias,
-                0.65
-            );
-
-        /*
-         * Pastel saturation.
-         */
-
-        const saturation =
-            this.clamp(
-                0.18 +
-                (hsv.s * 0.08),
-                0.14,
-                0.28
-            );
-
-        /*
-         * Keep the background bright.
-         */
-
-        const value =
-            this.clamp(
-                0.88 -
-                (hsv.v * 0.03),
-                0.82,
-                0.91
-            );
-
-        const rgb =
-            this.hsvToRgb(
-                hue,
-                saturation,
-                value
-            );
-
-        return new BABYLON.Color3(
-            rgb.r,
-            rgb.g,
-            rgb.b
-        );
-
-    }
+}
 
 
     /* ======================================================
