@@ -464,7 +464,11 @@ export default class BodyModel {
                 material,
                 rawName
             );
-
+        
+        const clinicalOrgan =
+            this.detectClinicalOrgan(
+                anatomicalName
+            );
 
         const system =
             this.detectSystem(
@@ -483,28 +487,37 @@ export default class BodyModel {
 
         return {
 
-            meshName:
-                rawName,
-
+            name,
+        
             anatomicalName,
-
-            displayName:
-                this.formatDisplayName(
-                    anatomicalName
-                ),
-
-            laterality,
-
-            primitive,
-
+        
             material,
-
+        
             category,
-
-            system,
-
-            level
-
+        
+            clinicalOrgan,
+        
+            system:
+                clinicalOrgan
+                    ? this.detectSystem(
+                        anatomicalName
+                    )
+                    : this.detectSystem(
+                        anatomicalName
+                    ),
+        
+            level:
+                this.detectAnatomicalLevel(
+                    name,
+                    material,
+                    category
+                ),
+        
+            laterality:
+                this.detectLaterality(
+                    anatomicalName
+                )
+        
         };
 
     }
@@ -1793,35 +1806,30 @@ setAnatomicalLevel(level = "global") {
 
     if (level === "organs") {
 
-        this.meshes.forEach(mesh => {
+    this.meshes.forEach(mesh => {
 
-            const descriptor =
-                mesh.metadata
-                    ?.mdt
-                    ?.anatomical;
+        const descriptor =
+            mesh.metadata
+                ?.mdt
+                ?.anatomical;
 
-            if (!descriptor) {
-
-                mesh.setEnabled(false);
-
-                return;
-
-            }
-
-            const visible =
-                descriptor.category === "organs" ||
+        const visible =
+            descriptor &&
+            (
+                descriptor.clinicalOrgan !== null ||
                 descriptor.category === "brain" ||
-                descriptor.category === "eyes";
-
-            mesh.setEnabled(
-                visible
+                descriptor.category === "eyes"
             );
 
-        });
+        mesh.setEnabled(
+            Boolean(visible)
+        );
 
-        return;
+    });
 
-    }
+    return;
+
+}
 
 
     /* ======================================================
