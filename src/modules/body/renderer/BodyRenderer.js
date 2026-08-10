@@ -24,6 +24,8 @@ export default class BodyRenderer {
 
         this.onResize = null;
 
+        this.resizeObserver = null;
+
     }
 
     /* ======================================================
@@ -56,6 +58,29 @@ export default class BodyRenderer {
 
         await this.scene.init();
 
+        /*
+         * The scene/model has now been created.
+         *
+         * At this point the container has its final layout
+         * dimensions, so force Babylon to synchronize its
+         * internal render buffer with the actual canvas size.
+         */
+
+        this.resize();
+
+        /*
+         * One additional frame guarantees that CSS layout has
+         * settled before the final resize.
+         */
+
+        requestAnimationFrame(() => {
+
+            this.resize();
+
+        });
+
+        this.startResizeObserver();
+
         this.startRenderLoop();
 
         this.onResize =
@@ -79,18 +104,33 @@ export default class BodyRenderer {
      * ====================================================== */
 
     createCanvas() {
-    
-        this.canvas = document.createElement("canvas");
-    
-        this.canvas.className = "body-canvas";
-    
+
+        this.canvas =
+
+            document.createElement("canvas");
+
+        this.canvas.className =
+
+            "body-canvas";
+
         this.canvas.tabIndex = 1;
-    
+
         this.canvas.style.width = "100%";
+
         this.canvas.style.height = "100%";
+
         this.canvas.style.display = "block";
-    
-        this.container.appendChild(this.canvas);
+
+        this.canvas.style.outline = "none";
+
+        this.canvas.style.touchAction = "none";
+
+        this.container.appendChild(
+
+            this.canvas
+
+        );
+
     }
 
     /* ======================================================
@@ -115,11 +155,62 @@ export default class BodyRenderer {
 
                     antialias: true
 
-                }
+                },
+
+                true
 
             );
 
+        /*
+         * The fourth argument enables device-pixel-ratio
+         * adaptation.
+         *
+         * This is important on high-DPI displays because the
+         * CSS dimensions and the actual GPU render buffer are
+         * not necessarily the same.
+         */
+
         this.engine.resize();
+
+    }
+
+    /* ======================================================
+     * Resize Observer
+     * ====================================================== */
+
+    startResizeObserver() {
+
+        if (!this.container) {
+
+            return;
+
+        }
+
+        if (
+
+            typeof ResizeObserver ===
+
+            "undefined"
+
+        ) {
+
+            return;
+
+        }
+
+        this.resizeObserver =
+
+            new ResizeObserver(() => {
+
+                this.resize();
+
+            });
+
+        this.resizeObserver.observe(
+
+            this.container
+
+        );
 
     }
 
@@ -149,6 +240,8 @@ export default class BodyRenderer {
 
         this.scene?.refresh();
 
+        this.resize();
+
     }
 
     /* ======================================================
@@ -157,7 +250,13 @@ export default class BodyRenderer {
 
     resize() {
 
-        this.engine?.resize();
+        if (!this.engine) {
+
+            return;
+
+        }
+
+        this.engine.resize();
 
     }
 
@@ -169,7 +268,13 @@ export default class BodyRenderer {
 
         if (this.canvas) {
 
-            this.canvas.style.display = "";
+            this.canvas.style.display = "block";
+
+            requestAnimationFrame(() => {
+
+                this.resize();
+
+            });
 
         }
 
@@ -191,7 +296,15 @@ export default class BodyRenderer {
 
     destroy() {
 
+        /*
+         * Stop Babylon render loop.
+         */
+
         this.engine?.stopRenderLoop();
+
+        /*
+         * Remove window resize listener.
+         */
 
         if (this.onResize) {
 
@@ -205,11 +318,36 @@ export default class BodyRenderer {
 
         }
 
+        /*
+         * Disconnect ResizeObserver.
+         */
+
+        this.resizeObserver?.disconnect();
+
+        this.resizeObserver = null;
+
+        /*
+         * Destroy scene.
+         */
+
         this.scene?.destroy();
+
+        /*
+         * Dispose engine.
+         */
 
         this.engine?.dispose();
 
+        /*
+         * Remove canvas.
+
+         */
+
         this.canvas?.remove();
+
+        /*
+         * Reset state.
+         */
 
         this.scene = null;
 
