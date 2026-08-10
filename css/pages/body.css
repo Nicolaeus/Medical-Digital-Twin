@@ -1,0 +1,161 @@
+/* =========================================================
+   MEDICAL DIGITAL TWIN
+   BODY TWIN
+   ========================================================= */
+
+.body-module {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+/* ---------------------------------------------------------
+   3D viewer
+   --------------------------------------------------------- */
+
+.body-viewer {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+
+    touch-action: none;
+}
+
+/* ---------------------------------------------------------
+   Babylon canvas
+   --------------------------------------------------------- */
+
+.body-canvas {
+    position: absolute;
+
+    inset: 0;
+
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0;
+    min-height: 0;
+
+    outline: none;
+    border: 0;
+
+    touch-action: none;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    cursor: grab;
+}
+
+.body-canvas:active {
+    cursor: grabbing;
+}
+
+/* ---------------------------------------------------------
+   3D interaction layer
+   --------------------------------------------------------- */
+
+.body-interaction-layer {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 10;
+}
+
+/* ---------------------------------------------------------
+   Anatomical pins
+   --------------------------------------------------------- */
+
+.body-pin {
+    position: absolute;
+
+    pointer-events: auto;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(255, 255, 255, 0.95);
+
+    background:
+        rgba(220, 38, 38, 0.95);
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.18),
+        0 0 0 5px rgba(220, 38, 38, 0.12);
+
+    cursor: pointer;
+
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.body-pin:hover {
+    transform:
+        translate(-50%, -50%)
+        scale(1.12);
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.2),
+        0 0 0 8px rgba(220, 38, 38, 0.14);
+}
+
+/* ---------------------------------------------------------
+   Loading
+   --------------------------------------------------------- */
+
+.body-loading {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+
+    z-index: 20;
+
+    font-size: 13px;
+
+    color: rgba(15, 23, 42, 0.65);
+}
+
+/* ---------------------------------------------------------
+   Responsive
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+    .body-pin {
+        width: 24px;
+        height: 24px;
+    }
+
+}
