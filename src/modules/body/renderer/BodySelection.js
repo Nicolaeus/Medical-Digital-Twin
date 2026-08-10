@@ -28,6 +28,7 @@ export default class BodySelection {
 
     }
 
+
     /* ======================================================
      * Select Entity
      * ====================================================== */
@@ -57,8 +58,14 @@ export default class BodySelection {
         }
 
         /*
-         * Clear previous visual selection without
-         * emitting a second "selection cleared" event.
+         * If the same entity is clicked again,
+         * keep the selection and notify the UI.
+         *
+         * The UI can decide whether this means:
+         *
+         * - keep the ClinicalCard open
+         * - focus the organ
+         * - toggle the card
          */
 
         this.clear({
@@ -72,8 +79,9 @@ export default class BodySelection {
             entity;
 
         /*
-         * Highlight the anatomical entity
-         * directly on the 3D model.
+         * --------------------------------------------------
+         * 3D highlight
+         * --------------------------------------------------
          */
 
         this.model?.highlightEntity(
@@ -81,7 +89,9 @@ export default class BodySelection {
         );
 
         /*
-         * Store
+         * --------------------------------------------------
+         * Global Store
+         * --------------------------------------------------
          */
 
         Store.set(
@@ -95,17 +105,26 @@ export default class BodySelection {
         );
 
         /*
-         * Notify the rest of the application.
+         * --------------------------------------------------
+         * UI event
+         * --------------------------------------------------
          *
-         * The Body Twin does NOT open a card directly.
-         * The Card / UI layer decides what to display.
+         * BodySelection does NOT create a card.
+         *
+         * The UI layer listens to this event and decides
+         * which clinical interface to display.
          */
 
         this.emitSelectionEvent(
-            entity
+            entity,
+            {
+                selectionType:
+                    "entity"
+            }
         );
 
     }
+
 
     /* ======================================================
      * Select Mesh
@@ -113,33 +132,21 @@ export default class BodySelection {
 
     selectMesh(mesh) {
 
-        const entity =
-            this.model?.getEntityForMesh(
-                mesh
-            );
-
-        if (!entity) {
+        if (!mesh) {
 
             return;
 
         }
 
-        this.selectEntity(
-            entity.id
-        );
-
-    }
-
-    /* ======================================================
-     * Legacy Select
-     * ====================================================== */
-
-    select(name) {
-
         const entity =
             this.model?.getEntityForMesh(
-                name
+                mesh
             );
+
+        /*
+         * If the mesh belongs to an entity,
+         * promote the selection to the entity level.
+         */
 
         if (entity) {
 
@@ -151,11 +158,63 @@ export default class BodySelection {
 
         }
 
+        /*
+         * Otherwise expose the raw mesh selection.
+         *
+         * This is useful while the anatomical resolver
+         * is still incomplete.
+         */
+
+        const meshName =
+            mesh?.name;
+
+        if (!meshName) {
+
+            return;
+
+        }
+
+        this.select(
+            meshName
+        );
+
+    }
+
+
+    /* ======================================================
+     * Legacy / Mesh Select
+     * ====================================================== */
+
+    select(name) {
+
         if (!name) {
 
             return;
 
         }
+
+        const entity =
+            this.model?.getEntityForMesh(
+                name
+            );
+
+        /*
+         * Prefer the entity whenever possible.
+         */
+
+        if (entity) {
+
+            this.selectEntity(
+                entity.id
+            );
+
+            return;
+
+        }
+
+        /*
+         * Raw mesh selection.
+         */
 
         this.clear({
             emit: false
@@ -163,6 +222,9 @@ export default class BodySelection {
 
         this.selected =
             name;
+
+        this.selectedEntity =
+            null;
 
         this.model?.highlight(
             name
@@ -173,21 +235,31 @@ export default class BodySelection {
             name
         );
 
+        Store.set(
+            "body.selectedEntity",
+            null
+        );
+
         /*
-         * Legacy mesh selection does not necessarily
-         * have a complete anatomical entity.
-         *
-         * Still expose the selection to the UI.
+         * The UI can still display a generic
+         * anatomical information card.
          */
 
         this.emitSelectionEvent(
             null,
             {
-                selected: name
+
+                selectionType:
+                    "mesh",
+
+                selectedMesh:
+                    name
+
             }
         );
 
     }
+
 
     /* ======================================================
      * Clear
@@ -205,13 +277,25 @@ export default class BodySelection {
         const previousId =
             this.selected;
 
+        /*
+         * Remove visual highlight.
+         */
+
         this.model?.clearSelection();
+
+        /*
+         * Reset local state.
+         */
 
         this.selected =
             null;
 
         this.selectedEntity =
             null;
+
+        /*
+         * Reset Store.
+         */
 
         Store.set(
             "body.selected",
@@ -224,8 +308,8 @@ export default class BodySelection {
         );
 
         /*
-         * Tell the UI that the anatomical selection
-         * has been cleared.
+         * Notify UI only when there was
+         * actually something selected.
          */
 
         if (
@@ -245,8 +329,9 @@ export default class BodySelection {
 
     }
 
+
     /* ======================================================
-     * Focus
+     * Focus Selected
      * ====================================================== */
 
     focus(
@@ -259,6 +344,10 @@ export default class BodySelection {
 
         }
 
+        /*
+         * Entity
+         */
+
         const entity =
             this.model?.getEntity(
                 name
@@ -269,29 +358,39 @@ export default class BodySelection {
             const objects =
                 entity.objects || [];
 
-            const first =
-                objects[0];
+            /*
+             * Try to find the first usable mesh.
+             */
 
-            if (first) {
+            for (
+                const object
+                of objects
+            ) {
 
                 const mesh =
                     this.model.getOrgan(
-                        first.object_name
+                        object.object_name
                     );
 
-                if (mesh) {
+                if (!mesh) {
 
-                    this.camera?.focus(
-                        mesh.getAbsolutePosition()
-                    );
+                    continue;
 
                 }
 
+                this.camera?.focus(
+                    mesh.getAbsolutePosition()
+                );
+
+                return;
+
             }
 
-            return;
-
         }
+
+        /*
+         * Raw mesh.
+         */
 
         const organ =
             this.model?.getOrgan(
@@ -309,6 +408,7 @@ export default class BodySelection {
         );
 
     }
+
 
     /* ======================================================
      * Selection Event
@@ -331,7 +431,9 @@ export default class BodySelection {
         const detail = {
 
             /*
-             * Main identifier.
+             * --------------------------------------------------
+             * Identifier
+             * --------------------------------------------------
              */
 
             entityId:
@@ -340,25 +442,33 @@ export default class BodySelection {
                 null,
 
             /*
-             * Display name.
+             * --------------------------------------------------
+             * Display name
+             * --------------------------------------------------
              */
 
             name:
                 entity?.canonical_name ||
                 entity?.display_name ||
                 entity?.name ||
+                this.selected ||
                 null,
 
             /*
-             * Anatomical hierarchy.
+             * --------------------------------------------------
+             * Anatomical hierarchy
+             * --------------------------------------------------
              */
 
             parent:
                 entity?.anatomical_parent_name ||
+                entity?.parent_name ||
                 null,
 
             /*
-             * Laterality.
+             * --------------------------------------------------
+             * Laterality
+             * --------------------------------------------------
              */
 
             laterality:
@@ -366,7 +476,9 @@ export default class BodySelection {
                 "none",
 
             /*
-             * Entity category.
+             * --------------------------------------------------
+             * Category
+             * --------------------------------------------------
              */
 
             category:
@@ -374,10 +486,12 @@ export default class BodySelection {
                 null,
 
             /*
-             * Complete entity.
+             * --------------------------------------------------
+             * Complete entity
+             * --------------------------------------------------
              *
-             * This lets the card layer access additional
-             * information without coupling itself to Babylon.
+             * ClinicalCard can use this without having
+             * any Babylon dependency.
              */
 
             entity:
@@ -385,11 +499,24 @@ export default class BodySelection {
                 null,
 
             /*
-             * Source of the interaction.
+             * --------------------------------------------------
+             * Interaction source
+             * --------------------------------------------------
              */
 
             source:
                 "3d",
+
+            /*
+             * --------------------------------------------------
+             * Timestamp
+             * --------------------------------------------------
+             *
+             * Useful later for interaction tracking.
+             */
+
+            timestamp:
+                Date.now(),
 
             ...extra
 
@@ -407,6 +534,7 @@ export default class BodySelection {
         );
 
     }
+
 
     /* ======================================================
      * Clear Event
@@ -443,16 +571,21 @@ export default class BodySelection {
                             null,
 
                         source:
-                            "3d"
+                            "3d",
+
+                        timestamp:
+                            Date.now()
 
                     }
 
                 }
+
             )
 
         );
 
     }
+
 
     /* ======================================================
      * Helpers
@@ -466,6 +599,7 @@ export default class BodySelection {
 
     }
 
+
     isSelected(name) {
 
         return (
@@ -474,17 +608,20 @@ export default class BodySelection {
 
     }
 
+
     getSelected() {
 
         return this.selected;
 
     }
 
+
     getSelectedEntity() {
 
         return this.selectedEntity;
 
     }
+
 
     /* ======================================================
      * Toggle
@@ -502,7 +639,30 @@ export default class BodySelection {
 
         }
 
-        this.selectEntity(
+        /*
+         * Prefer entity selection.
+         */
+
+        const entity =
+            this.model?.getEntity(
+                name
+            );
+
+        if (entity) {
+
+            this.selectEntity(
+                name
+            );
+
+            return;
+
+        }
+
+        /*
+         * Otherwise mesh selection.
+         */
+
+        this.select(
             name
         );
 
