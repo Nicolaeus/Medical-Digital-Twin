@@ -6,7 +6,7 @@
  * ==========================================================
  */
 
-import Card from "../../../components/Card.js";
+import Card from "../../../components/base/Card.js";
 import Store from "../../../core/store.js";
 
 export default class AnatomicalCard extends Card {
