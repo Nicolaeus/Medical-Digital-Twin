@@ -1824,6 +1824,309 @@ setAnatomicalLevel(level = "global") {
     }
 
 
+    /* ======================================================
+ * Clinical Organ Classification
+ * ====================================================== */
+
+detectClinicalOrgan(name) {
+
+    const value =
+        String(name || "")
+            .toLowerCase()
+            .trim();
+
+
+    /*
+     * --------------------------------------------------
+     * Brain
+     * --------------------------------------------------
+     *
+     * Includes both the brain itself and its
+     * anatomical substructures.
+     */
+
+    const brainTerms = [
+
+        "brain",
+
+        "amygdaloid body",
+        "anterior commissure",
+        "posterior commissure",
+        "corpus callosum",
+        "hippocamp",
+        "hypothalam",
+        "thalam",
+        "putamen",
+        "globus pallidus",
+        "mamillary body",
+        "mammillary body",
+        "septal nuclei",
+        "septum pellucidum",
+        "fornix",
+        "habenula",
+        "inferior colliculus",
+        "superior colliculus",
+        "lateral geniculate body",
+        "medial geniculate body",
+        "occipital pole",
+        "temporal pole",
+        "orbital gyri",
+        "precuneus",
+        "cuneus",
+        "superior occipital gyri",
+        "superior parietal lobule",
+        "temporal plane",
+        "transverse temporal gyri",
+        "flocculus",
+        "folium of vermis",
+        "central lobule",
+        "biventral lobule",
+        "gracile lobule",
+        "inferior semilunar lobule",
+        "superior semilunar lobule",
+        "nodule of vermis",
+        "pyramis of vermis",
+        "declive",
+        "culmen",
+        "tuber of vermis",
+        "uvula of vermis",
+        "vestibular nuclei",
+        "olive",
+        "peduncle of flocculus",
+        "base of peduncle",
+        "interpeduncular fossa"
+
+    ];
+
+    if (
+        brainTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "brain";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Digestive system
+     * --------------------------------------------------
+     */
+
+    const digestiveTerms = [
+
+        "stomach",
+        "duodenum",
+        "jejunum",
+        "ileum",
+        "ascending colon",
+        "transverse colon",
+        "descending colon",
+        "sigmoid colon",
+        "rectum",
+        "anus",
+        "anal sphincter",
+        "cecum",
+        "appendix",
+        "greater omentum",
+        "lesser omentum",
+        "mesocolon"
+
+    ];
+
+    if (
+        digestiveTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "digestive";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Urinary system
+     * --------------------------------------------------
+     */
+
+    const urinaryTerms = [
+
+        "kidney",
+        "renal pelvis",
+        "ureter",
+        "bladder",
+        "urethra"
+
+    ];
+
+    if (
+        urinaryTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "urinary";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Endocrine
+     * --------------------------------------------------
+     */
+
+    const endocrineTerms = [
+
+        "thyroid",
+        "suprarenal gland",
+        "adrenal gland",
+        "pituitary",
+        "hypophysis",
+        "parathyroid",
+        "pineal gland"
+
+    ];
+
+    if (
+        endocrineTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "endocrine";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Reproductive
+     * --------------------------------------------------
+     */
+
+    const reproductiveTerms = [
+
+        "testis",
+        "testicle",
+        "epididymis",
+        "seminal gland",
+        "seminal vesicle",
+        "prostate",
+        "penis",
+        "glans penis",
+        "corpus cavernosum",
+        "corpus spongiosum",
+        "ovary",
+        "uterus",
+        "fallopian",
+        "uterine tube",
+        "vagina",
+        "clitoris"
+
+    ];
+
+    if (
+        reproductiveTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "reproductive";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Respiratory
+     * --------------------------------------------------
+     */
+
+    const respiratoryTerms = [
+
+        "lung",
+        "bronch",
+        "trachea",
+        "pleura",
+        "alveol"
+
+    ];
+
+    if (
+        respiratoryTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "respiratory";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Cardiovascular
+     * --------------------------------------------------
+     */
+
+    const cardiovascularTerms = [
+
+        "heart",
+        "atrium",
+        "ventricle",
+        "aorta",
+        "artery",
+        "vein"
+
+    ];
+
+    if (
+        cardiovascularTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "cardiovascular";
+
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * Lymphatic
+     * --------------------------------------------------
+     */
+
+    const lymphaticTerms = [
+
+        "lymph node",
+        "lymphatic",
+        "spleen",
+        "thymus"
+
+    ];
+
+    if (
+        lymphaticTerms.some(
+            term => value.includes(term)
+        )
+    ) {
+
+        return "lymphatic";
+
+    }
+
+
+    return null;
+
+}
+    
+
     /* ==================================================
      * DETAIL
      * ==================================================
