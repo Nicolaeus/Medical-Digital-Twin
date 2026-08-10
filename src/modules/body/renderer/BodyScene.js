@@ -31,6 +31,8 @@ export default class BodyScene {
 
         this.model = null;
 
+        this.appearance = null;
+
         this.selection = null;
 
         this.animation = null;
@@ -38,8 +40,6 @@ export default class BodyScene {
         this.pointerObserver = null;
 
         this.renderPipeline = null;
-
-        this.appearance = null;
 
         this.initialized = false;
 
@@ -57,11 +57,31 @@ export default class BodyScene {
 
         /*
          * --------------------------------------------------
+         * Transparent background
+         * --------------------------------------------------
+         *
+         * Babylon renders only the anatomical model.
+         *
+         * The visual background is handled by CSS.
+         *
+         * This prevents ACES / exposure / post-processing
+         * from altering the application background color.
+         */
+
+        this.scene.clearColor =
+            new BABYLON.Color4(
+                0,
+                0,
+                0,
+                0
+            );
+
+        /*
+         * --------------------------------------------------
          * Image processing
          * --------------------------------------------------
          *
-         * This operates on the final rendered image.
-         * It does not modify anatomical materials.
+         * Applies to the 3D model.
          */
 
         this.configureImageProcessing();
@@ -86,9 +106,6 @@ export default class BodyScene {
          * --------------------------------------------------
          * Rendering pipeline
          * --------------------------------------------------
-         *
-         * Created after the camera so Babylon can associate
-         * the pipeline with the Body Twin camera.
          */
 
         this.createRenderPipeline();
@@ -104,32 +121,33 @@ export default class BodyScene {
         );
 
         await this.model.load();
-        
+
+        /*
+         * --------------------------------------------------
+         * Appearance
+         * --------------------------------------------------
+         *
+         * Appearance controls the anatomical model only.
+         *
+         * The background is deliberately NOT controlled here.
+         */
+
         this.appearance = new BodyAppearance(
             this.scene,
             this.model
         );
 
         this.appearance.init({
-            mode: "reference",
-            skinColor: "#D8B99A"
-        });
 
-        this.scene.clearColor =
-            new BABYLON.Color4(
-                220 / 255,
-                239 / 255,
-                247 / 255,
-                1
-            );
-        
-        this.camera.frameModel(
-            this.model
-        );
+            mode: "reference",
+
+            skinColor: "#D8B99A"
+
+        });
 
         /*
          * --------------------------------------------------
-         * Automatic framing
+         * Camera framing
          * --------------------------------------------------
          */
 
@@ -144,8 +162,11 @@ export default class BodyScene {
          */
 
         this.selection = new BodySelection({
+
             model: this.model,
+
             camera: this.camera
+
         });
 
         /*
@@ -155,8 +176,11 @@ export default class BodyScene {
          */
 
         this.animation = new BodyAnimation({
+
             scene: this.scene,
+
             model: this.model
+
         });
 
         /*
@@ -168,6 +192,7 @@ export default class BodyScene {
         this.enablePicking();
 
         this.initialized = true;
+
     }
 
     /* ======================================================
@@ -182,8 +207,9 @@ export default class BodyScene {
         configuration.isEnabled = true;
 
         /*
-         * ACES gives us a much more photographic / clinical
-         * response than a raw linear output.
+         * ACES tone mapping
+         *
+         * Used for the anatomical model.
          */
 
         configuration.toneMappingEnabled = true;
@@ -193,22 +219,19 @@ export default class BodyScene {
                 .TONEMAPPING_ACES;
 
         /*
-         * Slightly lower exposure prevents the pale Z-Anatomy
-         * materials from becoming completely white.
+         * Controlled exposure.
          */
 
         configuration.exposure = 0.72;
 
         /*
-         * A restrained contrast increase helps distinguish
-         * adjacent anatomical structures.
+         * Restrained contrast.
          */
 
         configuration.contrast = 1.08;
 
     }
 
-    
     /* ======================================================
      * Camera
      * ====================================================== */
@@ -216,8 +239,11 @@ export default class BodyScene {
     createCamera() {
 
         this.camera = new BodyCamera(
+
             this.scene,
+
             this.canvas
+
         );
 
         this.camera.init();
@@ -231,7 +257,9 @@ export default class BodyScene {
     createLights() {
 
         this.lights = new BodyLights(
+
             this.scene
+
         );
 
         this.lights.init();
@@ -247,71 +275,66 @@ export default class BodyScene {
         /*
          * Keep the post-processing deliberately restrained.
          *
-         * We want:
-         *
-         *     medical / premium
-         *
-         * and NOT:
-         *
-         *     videogame / neon / cinematic.
+         * Medical / premium.
+         * No videogame effects.
          */
 
         if (
             !BABYLON.DefaultRenderingPipeline
         ) {
+
             return;
+
         }
 
         this.renderPipeline =
             new BABYLON.DefaultRenderingPipeline(
+
                 "bodyTwinPremiumPipeline",
+
                 true,
+
                 this.scene,
+
                 [
                     this.camera.camera
                 ]
+
             );
 
         /*
+         * --------------------------------------------------
          * Anti-aliasing
+         * --------------------------------------------------
          */
 
         this.renderPipeline.fxaaEnabled = true;
 
         /*
-         * Sharpening gives back a little anatomical detail
-         * after tone mapping.
+         * --------------------------------------------------
+         * Sharpening
+         * --------------------------------------------------
          */
 
         this.renderPipeline.sharpenEnabled = true;
 
-        this.renderPipeline.sharpen.edgeAmount = 0.18;
+        this.renderPipeline.sharpen.edgeAmount =
+            0.18;
 
-        this.renderPipeline.sharpen.colorAmount = 0.85;
+        this.renderPipeline.sharpen.colorAmount =
+            0.85;
 
         /*
-         * Bloom intentionally disabled.
-         *
-         * Anatomical structures must remain clinically readable.
+         * --------------------------------------------------
+         * Disabled cinematic effects
+         * --------------------------------------------------
          */
 
         this.renderPipeline.bloomEnabled = false;
 
-        /*
-         * Motion blur intentionally disabled.
-         */
-
         this.renderPipeline.motionBlurEnabled = false;
 
-        /*
-         * Chromatic aberration intentionally disabled.
-         */
-
         this.renderPipeline.chromaticAberrationEnabled = false;
-
-        /*
-         * Grain intentionally disabled.
-         */
 
         this.renderPipeline.grainEnabled = false;
 
@@ -332,7 +355,9 @@ export default class BodyScene {
                         pointerInfo.type !==
                         BABYLON.PointerEventTypes.POINTERPICK
                     ) {
+
                         return;
+
                     }
 
                     const pickInfo =
@@ -346,6 +371,7 @@ export default class BodyScene {
                         this.selection.clear();
 
                         return;
+
                     }
 
                     const mesh =
@@ -357,8 +383,8 @@ export default class BodyScene {
                         );
 
                     /*
-                     * Not every mesh in the presentation GLB
-                     * necessarily has an anatomical entity.
+                     * Not every presentation mesh
+                     * necessarily maps to an entity.
                      */
 
                     if (!entity) {
@@ -366,6 +392,7 @@ export default class BodyScene {
                         this.selection.clear();
 
                         return;
+
                     }
 
                     this.selection.selectEntity(
@@ -385,7 +412,7 @@ export default class BodyScene {
     startAnimation() {
 
         /*
-         * Animations are intentionally disabled
+         * Animations intentionally disabled
          * for the initial interactive prototype.
          */
 
@@ -414,11 +441,15 @@ export default class BodyScene {
     render() {
 
         if (!this.scene) {
+
             return;
+
         }
 
         this.animation?.update(
+
             this.engine.getDeltaTime()
+
         );
 
         this.scene.render();
@@ -438,7 +469,9 @@ export default class BodyScene {
         if (this.pointerObserver) {
 
             this.scene?.onPointerObservable.remove(
+
                 this.pointerObserver
+
             );
 
             this.pointerObserver = null;
@@ -464,6 +497,12 @@ export default class BodyScene {
         this.model?.destroy();
 
         /*
+         * Appearance
+         */
+
+        this.appearance?.destroy?.();
+
+        /*
          * Lighting
          */
 
@@ -481,7 +520,13 @@ export default class BodyScene {
 
         this.scene?.dispose();
 
+        /*
+         * Reset
+         */
+
         this.renderPipeline = null;
+
+        this.appearance = null;
 
         this.selection = null;
 
