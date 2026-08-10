@@ -155,56 +155,33 @@ export default class BodyAppearance {
 
 
     /* ======================================================
-     * Apply
-     * ====================================================== */
+ * Apply
+ * ====================================================== */
 
-    apply() {
+apply() {
 
-        if (!this.scene) {
+    /*
+     * --------------------------------------------------
+     * Skin material
+     * --------------------------------------------------
+     *
+     * BodyAppearance defines the desired skin appearance.
+     * BodyModel applies it to the anatomical materials.
+     */
 
-            return;
+    if (
+        this.model &&
+        typeof this.model.applySkinAppearance ===
+        "function"
+    ) {
 
-        }
-
-        /*
-         * Background
-         */
-
-        if (this.backgroundColor) {
-
-            this.scene.clearColor =
-                new BABYLON.Color4(
-                    this.backgroundColor.r,
-                    this.backgroundColor.g,
-                    this.backgroundColor.b,
-                    1
-                );
-
-        }
-
-        /*
-         * Skin material application is intentionally
-         * delegated to BodyModel.
-         *
-         * BodyAppearance determines the desired
-         * appearance; BodyModel applies it to the
-         * appropriate anatomical materials.
-         */
-
-        if (
-            this.model &&
-            typeof this.model.applySkinAppearance ===
-            "function"
-        ) {
-
-            this.model.applySkinAppearance(
-                this.skinColor
-            );
-
-        }
+        this.model.applySkinAppearance(
+            this.skinColor
+        );
 
     }
 
+}
 
     /* ======================================================
      * Mode
